@@ -1,14 +1,13 @@
-import express, { Request, Response, NextFunction } from 'express';
-import router from './router/router';
+import express from 'express';
+import bodyParser from 'body-parser';
+import indexRouter from './router';
 
 const app = express();
 
-app.get('/', (request: Request, response: Response, next: NextFunction) => {
-  response.send('hello');
-});
+app.use(bodyParser.json());
 
-app.use('/router', router);
+app.use(indexRouter);
 
 app.listen(3000, () => {
-    console.log('start');
+    console.log('server start.');
 })
