@@ -1,34 +1,62 @@
+import * as path from 'path';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-import flash from 'connect-flash';
-import { join } from 'path';
-import passport from 'passport';
-import morgan from 'morgan';
+import * as morgan from 'morgan';
+import * as cors from 'cors';
+import * as passport from 'passport';
+import * as hpp from 'hpp';
+import * as helmet from 'helmet';
 import { sequelize } from '../models';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 import indexRouter from './router';
 
 const app = express();
-sequelize.sync();
+const prod: boolean = process.env.NODE_ENV === 'production';
 
-// app.use(morgan('dev'));
-app.use(express.static(join(__dirname, 'public')));
+app.set('port', prod ? process.env.PORT : 3000);
+
+if (prod) {
+    app.use(hpp());
+    app.use(helmet());
+    app.use(morgan('combined'));
+    app.use(cors({
+        origin: /nodebird\.com$/,
+        credentials: true,
+    }));
+}
+
+app.use('/', express.static('uploads'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser('secret code'));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'secret code',
+    secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true,
         secure: false,
+        domain: prod ? '.nodebird.com' : undefined,
     }
-}))
-// app.use(flash());
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log('database connection,');
+    }).catch((err: Error) => {
+        console.log(err);
+    });
+
 app.use(indexRouter);
 
-app.listen(3000, () => {
+app.listen(app.get('port'), () => {
     console.log('server start.');
 })

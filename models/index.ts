@@ -1,20 +1,15 @@
-import path from 'path';
-import { Sequelize } from 'sequelize';
-import config from '../config/config.json';
+import User, { associate as associateUser } from './user';
+import Post, { associate as associatePost } from './post';
+import Comment, { associate as associateComment } from './comment';
 
-const env = process.env.NODE_ENV || 'development';
-const config = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
-const db = {};
+export * from './sequelize';
+const db = {
+    User,
+    Post,
+    Comment
+};
+export type dbType = typeof db;
 
-export const sequelize = new Sequelize(config.database, config.username, config.password, config);
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-db.User = require('./user')(sequelize, Sequelize);
-db.Comment = require('./comment')(sequelize, Sequelize);
-
-db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
-db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
-
-module.exports = db;
+associateUser(db);
+associatePost(db);
+associateComment(db);
