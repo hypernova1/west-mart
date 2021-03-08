@@ -33,7 +33,8 @@ User.init({
 });
 
 export const associate = (db: dbType) => {
-
+  db.Post.belongsTo(db.User, { foreignKey: 'writer', targetKey: 'id' });
+  db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
 }
 
 export default User;

@@ -23,7 +23,7 @@ Post.init({
 });
 
 export const associate = (db: dbType) => {
-
+    db.User.hasMany(db.Post, { foreignKey: 'writer', sourceKey: 'id' })
 }
 
 export default Post;

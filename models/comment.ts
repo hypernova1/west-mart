@@ -23,7 +23,7 @@ Comment.init({
 });
 
 export const associate = (db: dbType) => {
-
+  db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' })
 };
 
 export default Comment;
