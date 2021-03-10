@@ -1,4 +1,3 @@
-
 {
   "compilerOptions": {
     "sourceMap": true,
@@ -12,6 +11,8 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "typeRoots": ["./types"],
+    "types": []
   },
   "include": [
     "src/**/*.ts"

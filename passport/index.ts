@@ -11,9 +11,12 @@ export default () => {
     //로그아웃시 실행
     passport.deserializeUser(async (id: number, done) => {
         try {
-            const user:User = await User.findOne({
+            const user: User = await User.findOne({
                 where: { id }
-            })
+            });
+            if (!user) {
+                return done(new Error('no user'));
+            }
             return done(null, user); //req.user
         } catch (err) {
             console.error(err);
