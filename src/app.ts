@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
@@ -9,15 +8,23 @@ import * as hpp from 'hpp';
 import * as helmet from 'helmet';
 import { sequelize } from '../models';
 import * as dotenv from 'dotenv';
+import indexRouter from './router';
+import userRouter from './router/user';
 
 dotenv.config();
-
-import indexRouter from './router';
 
 const app = express();
 const prod: boolean = process.env.NODE_ENV === 'production';
 
 app.set('port', prod ? process.env.PORT : 3000);
+
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log('database connection,');
+    }).catch((err: Error) => {
+    console.log(err);
+});
+
 
 if (prod) {
     app.use(hpp());
@@ -41,21 +48,15 @@ app.use(session({
     cookie: {
         httpOnly: true,
         secure: false,
-        domain: prod ? '.nodebird.com' : undefined,
+        domain: prod ? '.west-mart.com' : undefined,
     }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-sequelize.sync({ force: false })
-    .then(() => {
-        console.log('database connection,');
-    }).catch((err: Error) => {
-        console.log(err);
-    });
-
-app.use(indexRouter);
+app.use('/', indexRouter);
+app.use('/user', userRouter);
 
 app.listen(app.get('port'), () => {
     console.log('server start.');
