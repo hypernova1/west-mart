@@ -1,40 +1,28 @@
 import * as express from 'express';
-import * as bcrypt from 'bcrypt';
-import User from "../../models/user";
+import User from '../../models/user';
+import { isLoggedIn } from '../middleware';
+import * as userService from '../service/user';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    res.send({});
-});
-
-router.get('/:id', (req, res, next) => {
-    const user = req.user.toJSON();
-
-    // delete user.password;
+router.get('/', isLoggedIn, (req, res, next) => {
+    const user: User = req.user.toJSON() as User;
+    delete user.password;
     return res.json(user);
 });
 
-router.post('/', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const exUser = await User.findOne({
-            where: {
-                userId: req.body.userId,
-            }
-        });
-        if (exUser) {
-            return res.status(403).send('이미 사용중인 아이디입니다.');
+        const user = await userService.getUser(Number(req.params.id));
+        if (!user) {
+            res.status(404).send('존재하지 않는 회원입니다.');
         }
-        const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = await User.create({
-            nickname: req.body.nickname,
-            userId: req.body.userId,
-            password: hashedPassword,
-        });
-        return res.status(200).json(newUser);
+3
+        const jsonUser = user.toJSON() as User;
+        return res.json(jsonUser);
     } catch (err) {
-        console.error(err);
-        return next(err);
+        console.log(err);
+        next(err);
     }
 });
 
