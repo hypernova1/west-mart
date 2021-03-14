@@ -4,12 +4,12 @@ import * as session from 'express-session';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
 import * as passport from 'passport';
+import passportConfig from '../passport';
 import * as hpp from 'hpp';
 import * as helmet from 'helmet';
 import { sequelize } from '../models';
 import * as dotenv from 'dotenv';
-import indexRouter from './router';
-import userRouter from './router/user';
+import setRouter from './router';
 
 dotenv.config();
 
@@ -24,7 +24,6 @@ sequelize.sync({ force: false })
     }).catch((err: Error) => {
     console.log(err);
 });
-
 
 if (prod) {
     app.use(hpp());
@@ -54,9 +53,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+passportConfig(passport);
 
-app.use('/', indexRouter);
-app.use('/user', userRouter);
+setRouter(app);
 
 app.listen(app.get('port'), () => {
     console.log('server start.');

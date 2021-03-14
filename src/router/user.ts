@@ -10,8 +10,8 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
     const user = req.user.toJSON();
-    console.log(user);
-    delete user.password;
+
+    // delete user.password;
     return res.json(user);
 });
 

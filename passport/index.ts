@@ -1,8 +1,8 @@
-import * as passport from 'passport';
-import User from "../models/user";
-import local from "./local";
+import User from '../models/user';
+import local from './local';
+import { PassportStatic } from 'passport';
 
-export default () => {
+export default (passport: PassportStatic) => {
     //로그인시 실행
     passport.serializeUser((user: User, done) => {
         done(null, user.id);
