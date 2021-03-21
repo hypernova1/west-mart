@@ -1,29 +1,37 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from './sequelize';
-import { dbType } from "./index";
+import { NOW } from 'sequelize';
+import {
+  AllowNull,
+  AutoIncrement,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  Model,
+  PrimaryKey,
+  UpdatedAt
+} from 'sequelize-typescript';
 
-class Comment extends Model {
-  public readonly  id!: number;
-  public content!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+export class Comment extends Model {
+
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER.UNSIGNED)
+  readonly id!: number;
+
+  @AllowNull(false)
+  @Column(DataType.TEXT)
+  content!: string;
+
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @CreatedAt
+  readonly createdAt!: Date;
+
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @UpdatedAt
+  readonly updatedAt!: Date;
+
 }
-
-Comment.init({
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  }
-}, {
-  sequelize,
-  modelName: 'Comment',
-  tableName: 'comment',
-  charset: 'utf8mb4',
-  collate: 'utf8mb4_general_ci',
-});
-
-export const associate = (db: dbType) => {
-  db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' })
-};
-
-export default Comment;

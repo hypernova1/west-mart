@@ -1,15 +1,23 @@
-import User, { associate as associateUser } from './user';
-import Post, { associate as associatePost } from './post';
-import Comment, { associate as associateComment } from './comment';
+import { Sequelize } from 'sequelize-typescript';
+import config from '../config/config';
 
-export * from './sequelize';
-const db = {
+import { User } from './user';
+import { Post } from './post';
+import { Comment } from "./comment";
+
+const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
+
+const { database, username, password } = config[env];
+const sequelize = new Sequelize(database, username, password, {
+    dialect: "mysql",
+    models: ['/models/*.ts'],
+});
+
+sequelize.addModels([
     User,
     Post,
     Comment
-};
-export type dbType = typeof db;
+])
 
-associateUser(db);
-associatePost(db);
-associateComment(db);
+export { sequelize }
+export default sequelize;

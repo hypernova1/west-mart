@@ -1,40 +1,44 @@
-import { Model, DataTypes } from 'sequelize';
-import { dbType } from './index';
-import { sequelize } from './sequelize';
+import { NOW } from 'sequelize';
+import {
+  Model,
+  DataType,
+  AutoIncrement,
+  PrimaryKey,
+  Column,
+  AllowNull,
+  Default,
+  CreatedAt,
+  UpdatedAt
+} from 'sequelize-typescript';
 
-class User extends Model {
-  public id!: number;
-  public nickname!: string;
-  public userId!: string;
-  public password!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt: Date;
+export class User extends Model {
+
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER.UNSIGNED)
+  id!: number;
+
+  @AllowNull(false)
+  @Column(DataType.CHAR)
+  nickname!: string;
+
+  @AllowNull(false)
+  @Column(DataType.CHAR)
+  email!: string;
+
+  @AllowNull(false)
+  @Column(DataType.CHAR)
+  password!: string;
+
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @CreatedAt
+  readonly createdAt!: Date;
+
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @UpdatedAt
+  readonly updatedAt: Date;
 }
-
-User.init({
-  nickname: {
-    type: DataTypes.STRING(20),
-  },
-  userId: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-  }
-}, {
-  sequelize,
-  modelName: 'User',
-  tableName: 'user',
-  charset: 'utf8',
-  collate: 'utf8_general_ci',
-});
-
-export const associate = (db: dbType) => {
-  db.Post.belongsTo(db.User, { foreignKey: 'writer', targetKey: 'id' });
-  db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
-}
-
-export default User;

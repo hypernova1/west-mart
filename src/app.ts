@@ -9,6 +9,7 @@ import * as hpp from 'hpp';
 import * as helmet from 'helmet';
 import { sequelize } from '../models';
 import * as dotenv from 'dotenv';
+import 'reflect-metadata';
 import setRouter from './router';
 
 dotenv.config();
