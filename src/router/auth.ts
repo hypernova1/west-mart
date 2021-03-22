@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { User } from "../../models/user";
+import { User } from "../models/user";
 import { isLoggedIn, isNotLoggedIn } from '../middleware';
 import passport from "passport";
 import * as userService from '../service/user';

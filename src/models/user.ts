@@ -8,9 +8,15 @@ import {
   AllowNull,
   Default,
   CreatedAt,
-  UpdatedAt
+  UpdatedAt, HasMany, Table
 } from 'sequelize-typescript';
+import { Post } from './post';
 
+@Table({
+  tableName: 'user',
+  underscored: true,
+  timestamps: false
+})
 export class User extends Model {
 
   @PrimaryKey
@@ -29,6 +35,9 @@ export class User extends Model {
   @AllowNull(false)
   @Column(DataType.CHAR)
   password!: string;
+
+  @HasMany(() => Post)
+  posts: Post[];
 
   @Default(NOW)
   @AllowNull(false)

@@ -1,7 +1,7 @@
 import * as passport from 'passport';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from "passport-local";
-import { User } from '../models/user';
+import { User } from '../src/models/user';
 
 export default () => {
     passport.use('local', new Strategy({

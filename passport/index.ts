@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import { User } from '../src/models/user';
 import local from './local';
 import { PassportStatic } from 'passport';
 

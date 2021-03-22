@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import config from '../config/config';
+import config from '../../config/config';
 
 import { User } from './user';
 import { Post } from './post';
@@ -10,7 +10,7 @@ const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || '
 const { database, username, password } = config[env];
 const sequelize = new Sequelize(database, username, password, {
     dialect: "mysql",
-    models: ['/models/*.ts'],
+    models: ['/src/models/*.ts'],
 });
 
 sequelize.addModels([
