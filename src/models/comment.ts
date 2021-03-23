@@ -1,24 +1,24 @@
 import { NOW } from 'sequelize';
 import {
   AllowNull,
-  AutoIncrement, BelongsTo,
+  AutoIncrement,
   Column,
   CreatedAt,
   DataType,
-  Default, ForeignKey, HasOne,
+  Default, ForeignKey,
   Model,
   PrimaryKey, Table,
   UpdatedAt
 } from 'sequelize-typescript';
-import {Post} from "./post";
-import {User} from "./user";
+import Post from "./post";
+import User from "./user";
 
 @Table({
   tableName: 'comment',
   underscored: true,
   timestamps: false
 })
-export class Comment extends Model {
+export default class Comment extends Model {
 
   @PrimaryKey
   @AutoIncrement

@@ -10,17 +10,17 @@ import {
     Default,
     UpdatedAt,
     CreatedAt,
-    BelongsTo,
-    ForeignKey
+    ForeignKey, HasMany
 } from 'sequelize-typescript'
-import { User } from "./user";
+import User from "./user";
+import Comment from './comment';
 
 @Table({
     tableName: 'post',
     underscored: true,
     timestamps: false
 })
-export class Post extends Model {
+export default class Post extends Model {
 
     @PrimaryKey
     @AutoIncrement
@@ -35,9 +35,13 @@ export class Post extends Model {
     @Column(DataType.TEXT)
     content!: string;
 
+    @AllowNull(false)
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
     userId: number;
+
+    @HasMany(() => Comment)
+    comments: Comment[];
 
     @Default(NOW)
     @AllowNull(false)

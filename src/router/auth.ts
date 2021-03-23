@@ -1,11 +1,12 @@
 import * as express from 'express';
-import { User } from "../models/user";
-import { isLoggedIn, isNotLoggedIn } from '../middleware';
 import passport from "passport";
-import * as userService from '../service/user';
-import * as bcrypt from "bcrypt";
+import User from "../models/user";
+import { UserDto } from '../dto/user_dto';
+import { isLoggedIn, isNotLoggedIn } from '../middleware';
+import UserService from '../service/user_service';
 
 const router = express.Router();
+const userService = new UserService();
 
 router.post('/login', isNotLoggedIn, (req, res, next) => {
     passport.authenticate('local', (err: Error, user: User, info: { message: string }) => {
@@ -22,7 +23,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 if (loginErr) {
                     return next(loginErr);
                 }
-                const fullUser = await userService.getUser(user.id);
+                const fullUser = await userService.getUserById(user.id);
                 return res.json(fullUser);
             } catch (err) {
                 console.log(err);
@@ -40,22 +41,9 @@ router.post('/logout', isLoggedIn, (req, res) => {
 
 router.post('/join', async (req, res, next) => {
     try {
-        const exUser = await User.findOne({
-            where: {
-                userId: req.body.userId
-            }
-        });
-        if (exUser) {
-            return res.status(403).send('이미 사용중인 아이디입니다.');
-        }
-        const hashedPassword = await bcrypt.hash(req.body.password, 12);
-        const newUser = await User.create({
-            nickname: req.body.nickname,
-            userId: req.body.userId,
-            password: hashedPassword,
-        });
-
-        return res.status(201).json(newUser);
+        const userDto = req.body as UserDto;
+        const userId = await userService.join(userDto);
+        return res.status(201).json(userId);
     } catch (error) {
         console.log(error);
         next(error);

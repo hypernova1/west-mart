@@ -10,14 +10,15 @@ import {
   CreatedAt,
   UpdatedAt, HasMany, Table
 } from 'sequelize-typescript';
-import { Post } from './post';
+import Post from './post';
+import Comment from './comment';
 
 @Table({
   tableName: 'user',
   underscored: true,
   timestamps: false
 })
-export class User extends Model {
+export default class User extends Model {
 
   @PrimaryKey
   @AutoIncrement
@@ -38,6 +39,9 @@ export class User extends Model {
 
   @HasMany(() => Post)
   posts: Post[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
 
   @Default(NOW)
   @AllowNull(false)
