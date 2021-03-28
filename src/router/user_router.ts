@@ -39,4 +39,13 @@ router.put('/:id', async (req, res, next) => {
     return res.status(200).send('success');
 });
 
+router.get('/email/:email', async (req, res, next) => {
+    const email: string = req.params.email as string;
+    const isExistUser = await userService.existsByEmail(email);
+    if (!isExistUser) {
+        return res.status(404).send();
+    }
+    return res.status(200).send();
+});
+
 export default router;

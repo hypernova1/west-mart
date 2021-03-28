@@ -32,4 +32,8 @@ export default class UserService {
 
         return await userRepository.update(userDto);
     }
+
+    async existsByEmail(email: string): Promise<boolean> {
+        return await userRepository.existsByEmail(email);
+    }
 }

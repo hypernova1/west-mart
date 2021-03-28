@@ -35,4 +35,17 @@ export default class UserRepository {
             return false;
         })
     }
+
+    async existsByEmail(email: string): Promise<boolean> {
+        return User.findOne({
+            where: {
+                email: email,
+            }
+        }).then((user) => {
+            return !!user;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        })
+    }
 }
