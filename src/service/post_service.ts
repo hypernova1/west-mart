@@ -1,6 +1,6 @@
 import PostRepository from '../repository/post_repository';
-import Post from "../models/post";
-import {PostDto, PostListRequest} from '../dto/post_dto';
+import Post from '../models/post';
+import {PostDto, PostListRequest, PostRequest} from '../dto/post_dto';
 
 const postRepository = new PostRepository();
 
@@ -23,5 +23,9 @@ export default class PostService {
             postList: postDtoList,
             count: page.count,
         }
+    }
+
+    register(postDto: PostRequest): Promise<number | void> {
+        return postRepository.save(postDto);
     }
 }

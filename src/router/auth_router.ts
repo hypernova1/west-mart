@@ -43,10 +43,11 @@ router.post('/join', async (req, res, next) => {
     try {
         const userDto = req.body as UserDto;
         const userId = await userService.join(userDto);
-        return res.status(201).json(userId);
+
+        res.setHeader('Location', `${req.get('host')}/user/${userId}`);
+        return res.status(201).send();
     } catch (error) {
-        console.log(error);
-        next(error);
+        return res.status(409).send();
     }
 });
 

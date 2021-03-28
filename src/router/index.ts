@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Application, Router } from 'express';
-import userRouter from './user';
-import authRouter from './auth';
-import postRouter from './post';
+import userRouter from './user_router';
+import authRouter from './auth_router';
+import postRouter from './post_router';
 
 const router = Router();
 

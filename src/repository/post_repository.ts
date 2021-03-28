@@ -1,5 +1,6 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
+import { PostRequest } from '../dto/post_dto';
 
 export default class PostRepository {
 
@@ -25,5 +26,14 @@ export default class PostRepository {
                 ['createdAt', 'ASC']
             ]
         });
+    }
+
+    save(postDto: PostRequest): Promise<number | void> {
+        return Post.create(postDto)
+            .then((post) => {
+                return post.id;
+            }).catch((err) => {
+                console.log(err);
+            });
     }
 }

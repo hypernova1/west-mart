@@ -11,3 +11,9 @@ export interface PostListRequest {
     size?: number,
     keyword?: string,
 }
+
+export interface PostRequest {
+    title: string,
+    content: string,
+    userId?: number,
+}
