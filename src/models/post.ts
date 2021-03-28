@@ -10,7 +10,7 @@ import {
     Default,
     UpdatedAt,
     CreatedAt,
-    ForeignKey, HasMany
+    ForeignKey, HasMany, HasOne, BelongsTo
 } from 'sequelize-typescript'
 import User from "./user";
 import Comment from './comment';
@@ -35,7 +35,9 @@ export default class Post extends Model {
     @Column(DataType.TEXT)
     content!: string;
 
-    @AllowNull(false)
+    @BelongsTo(() => User)
+    writer: User;
+
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
     userId: number;
