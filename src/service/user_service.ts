@@ -6,8 +6,14 @@ import * as bcrypt from 'bcrypt';
 const userRepository = new UserRepository();
 
 export default class UserService {
-    async getUserById(userId: number): Promise<User> {
-        return await userRepository.findById(userId);
+    async getUserById(userId: number): Promise<UserDto> {
+        const user = await userRepository.findById(userId);
+
+        return {
+            id: user.id,
+            email: user.email,
+            nickname: user.nickname,
+        } as UserDto;
     }
 
     async join(userDto: UserDto): Promise<number> {

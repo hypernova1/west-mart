@@ -1,6 +1,6 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
-import { PostRequest } from '../dto/post_dto';
+import { PostForm } from '../dto/post_dto';
 
 export default class PostRepository {
 
@@ -28,12 +28,26 @@ export default class PostRepository {
         });
     }
 
-    save(postDto: PostRequest): Promise<number | void> {
+    save(postDto: PostForm): Promise<number | void> {
         return Post.create(postDto)
             .then((post) => {
                 return post.id;
             }).catch((err) => {
                 console.log(err);
+                return Promise.reject();
             });
+    }
+
+    update(id: number, postDto: PostForm) {
+        return Post.update(postDto, {
+            where: {
+                id: id
+            }
+        }).then(() => {
+            return Promise.resolve();
+        }).catch((err) => {
+            console.log(err);
+            return Promise.reject();
+        })
     }
 }

@@ -12,7 +12,7 @@ export interface PostListRequest {
     keyword?: string,
 }
 
-export interface PostRequest {
+export interface PostForm {
     title: string,
     content: string,
     userId?: number,

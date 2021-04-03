@@ -1,13 +1,12 @@
 import PostRepository from '../repository/post_repository';
 import Post from '../models/post';
-import {PostDto, PostListRequest, PostRequest} from '../dto/post_dto';
+import {PostDto, PostListRequest, PostForm} from '../dto/post_dto';
 
 const postRepository = new PostRepository();
 
 export default class PostService {
 
     async getPostList(request: PostListRequest)  {
-        console.log(request);
         const page = await postRepository.getList(request.pageNo, request.size, request.keyword);
         const postDtoList = page.rows.map((post: Post) => {
             return {
@@ -25,7 +24,11 @@ export default class PostService {
         }
     }
 
-    register(postDto: PostRequest): Promise<number | void> {
+    register(postDto: PostForm): Promise<number | void> {
         return postRepository.save(postDto);
+    }
+
+    async updatePost(postId: number, postDto: PostForm) {
+        await postRepository.update(postId, postDto);
     }
 }

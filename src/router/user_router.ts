@@ -19,17 +19,14 @@ router.get('/:id', async (req, res, next) => {
         if (!user) {
             return res.status(404).send('존재하지 않는 회원입니다.');
         }
-3
-        const jsonUser = user.toJSON() as User;
-        return res.json(jsonUser);
+
+        return res.json(user);
     } catch (err) {
-        console.log(err);
-        next(err);
+        return res.status(404).send();
     }
 });
 
 router.put('/:id', async (req, res, next) => {
-
     const userDto = req.body as UserDto;
     userDto.id = req.user.id;
     const result = await userService.updateUser(userDto);
