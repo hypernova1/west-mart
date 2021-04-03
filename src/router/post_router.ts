@@ -37,4 +37,11 @@ router.put('/:id', async (req, res, next) => {
     return res.status(200).send();
 });
 
+router.delete('/:id', async (req, res, next) => {
+    const id = +req.params.id;
+
+    await postService.deletePost(id);
+    return res.status(204).send();
+});
+
 export default router;

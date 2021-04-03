@@ -48,6 +48,21 @@ export default class PostRepository {
         }).catch((err) => {
             console.log(err);
             return Promise.reject();
-        })
+        });
+    }
+
+    async deleteById(id: number) {
+        return Post.update({
+            isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
+        }).then(() => {
+            return Promise.resolve();
+        }).catch((err) => {
+            console.log(err);
+            return Promise.reject();
+        });
     }
 }

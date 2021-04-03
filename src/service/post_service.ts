@@ -31,4 +31,8 @@ export default class PostService {
     async updatePost(postId: number, postDto: PostForm) {
         await postRepository.update(postId, postDto);
     }
+
+    async deletePost(id: number) {
+        await postRepository.deleteById(id);
+    }
 }
