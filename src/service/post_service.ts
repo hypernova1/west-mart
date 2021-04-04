@@ -1,6 +1,6 @@
 import PostRepository from '../repository/post_repository';
 import Post from '../models/post';
-import {PostDto, PostListRequest, PostForm} from '../dto/post_dto';
+import { PostDto, PostListRequest, PostForm, PostDetail } from '../dto/post_dto';
 
 const postRepository = new PostRepository();
 
@@ -34,5 +34,17 @@ export default class PostService {
 
     async deletePost(id: number) {
         await postRepository.deleteById(id);
+    }
+
+    async getPostDetail(postId: number): Promise<PostDetail> {
+        const post = await postRepository.getById(postId);
+
+        return {
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            writerId: post.writer.id,
+            writerName: post.writer.nickname,
+        } as PostDetail;
     }
 }

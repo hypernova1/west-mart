@@ -65,4 +65,17 @@ export default class PostRepository {
             return Promise.reject();
         });
     }
+
+    async getById(id: number) {
+        return Post.findOne({
+            where: {
+                id: id,
+            }
+        }).then((post) => {
+            return post;
+        }).catch((err) => {
+            console.log(err);
+            return Promise.reject();
+        })
+    }
 }

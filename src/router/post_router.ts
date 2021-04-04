@@ -16,6 +16,13 @@ router.get('/', async (req, res, next) => {
     res.status(200).json(result);
 });
 
+router.get('/:id', async (req, res, next) => {
+    const postId = +req.params.id;
+    const postDetail = await postService.getPostDetail(postId);
+
+    return res.status(200).json(postDetail);
+})
+
 router.post('/', async (req, res, next) => {
     const postDto = req.body as PostForm;
     postDto.userId = +req.user.id;

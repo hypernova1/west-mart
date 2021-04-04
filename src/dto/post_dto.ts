@@ -17,3 +17,11 @@ export interface PostForm {
     content: string,
     userId?: number,
 }
+
+export interface PostDetail {
+    id: number,
+    title: string,
+    content: string,
+    writerId: number,
+    writerName: string,
+}
