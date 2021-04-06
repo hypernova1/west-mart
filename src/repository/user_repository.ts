@@ -1,5 +1,5 @@
 import User from "../models/user";
-import { UserDto } from '../dto/user_dto';
+import { UserDto } from '../payload/user_dto';
 
 export default class UserRepository {
 

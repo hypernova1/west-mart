@@ -1,5 +1,5 @@
 import User from '../models/user';
-import {UserDto} from '../dto/user_dto';
+import {UserDto} from '../payload/user_dto';
 import UserRepository from '../repository/user_repository';
 import * as bcrypt from 'bcrypt';
 

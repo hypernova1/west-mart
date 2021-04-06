@@ -1,6 +1,6 @@
 import PostRepository from '../repository/post_repository';
 import Post from '../models/post';
-import { PostDto, PostListRequest, PostForm, PostDetail } from '../dto/post_dto';
+import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post_dto';
 
 const postRepository = new PostRepository();
 
@@ -24,7 +24,7 @@ export default class PostService {
         }
     }
 
-    register(postDto: PostForm): Promise<number | void> {
+    registerPost(postDto: PostForm): Promise<number | void> {
         return postRepository.save(postDto);
     }
 

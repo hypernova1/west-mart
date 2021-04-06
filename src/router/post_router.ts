@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import PostService from '../service/post_service';
-import {PostListRequest, PostForm} from '../dto/post_dto';
+import { PostListRequest, PostForm } from '../payload/post_dto';
 
 const router = Router();
 const postService = new PostService();
@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
     const postDto = req.body as PostForm;
     postDto.userId = +req.user.id;
 
-    const id: number | void = await postService.register(postDto);
+    const id: number | void = await postService.registerPost(postDto);
     if (!id) {
         res.status(403).send();
     }
