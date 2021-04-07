@@ -8,7 +8,6 @@ export default class PostService {
 
     async getPostList(request: PostListRequest)  {
         const postList = await postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
-        const totalCount = await postRepository.countByTitleLikeOrContentLike(request.keyword);
         const postDtoList = postList.map((post: Post) => {
             return {
                 id: post.id,
@@ -19,7 +18,9 @@ export default class PostService {
             } as PostDto
         });
 
-        const isExistNextPage = totalCount / request.size > request.pageNo;
+        const totalCount = await postRepository.countByTitleLikeOrContentLike(request.keyword);
+        const totalPage = totalCount / request.size;
+        const isExistNextPage = totalPage > request.pageNo;
 
         return {
             postList: postDtoList,
@@ -27,8 +28,8 @@ export default class PostService {
         }
     }
 
-    registerPost(postDto: PostForm): Promise<number | void> {
-        return postRepository.save(postDto);
+    async registerPost(postDto: PostForm): Promise<number | void> {
+        return await postRepository.save(postDto);
     }
 
     async updatePost(postId: number, postDto: PostForm) {

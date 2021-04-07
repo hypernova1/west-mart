@@ -5,7 +5,7 @@ const commentRepository = new CommentRepository();
 
 export default class CommentService {
 
-    async registerComment(commentForm: CommentForm) {
-        return await commentRepository.create(commentForm);
+    registerComment(commentForm: CommentForm) {
+        return commentRepository.create(commentForm);
     }
 }

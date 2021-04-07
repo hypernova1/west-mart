@@ -36,7 +36,7 @@ export default class UserRepository {
         })
     }
 
-    async existsByEmail(email: string): Promise<boolean> {
+    existsByEmail(email: string): Promise<boolean> {
         return User.findOne({
             where: {
                 email: email,
