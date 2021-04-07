@@ -7,8 +7,9 @@ const postRepository = new PostRepository();
 export default class PostService {
 
     async getPostList(request: PostListRequest)  {
-        const page = await postRepository.getList(request.pageNo, request.size, request.keyword);
-        const postDtoList = page.rows.map((post: Post) => {
+        const postList = await postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
+        const totalCount = await postRepository.countByTitleLikeOrContentLike(request.keyword);
+        const postDtoList = postList.map((post: Post) => {
             return {
                 id: post.id,
                 title: post.title,
@@ -18,9 +19,11 @@ export default class PostService {
             } as PostDto
         });
 
+        const isExistNextPage = totalCount / request.size > request.pageNo;
+
         return {
             postList: postDtoList,
-            count: page.count,
+            isExistNextPage: isExistNextPage,
         }
     }
 

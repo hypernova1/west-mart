@@ -4,8 +4,8 @@ import { PostForm } from '../payload/post_dto';
 
 export default class PostRepository {
 
-    getList(pageNo: number, size: number, keyword: string) {
-        return Post.findAndCountAll({
+    getListByTitleLikeOrContentLike(pageNo: number, size: number, keyword: string): Promise<Array<Post>> {
+        return Post.findAll({
             where: {
                 [Op.or]: [
                     {
@@ -25,6 +25,8 @@ export default class PostRepository {
             order: [
                 ['createdAt', 'ASC']
             ]
+        }).then((postList) => {
+            return postList;
         });
     }
 
@@ -51,7 +53,7 @@ export default class PostRepository {
         });
     }
 
-    async deleteById(id: number) {
+    deleteById(id: number) {
         return Post.update({
             isActive: false,
         }, {
@@ -66,7 +68,7 @@ export default class PostRepository {
         });
     }
 
-    async getById(id: number) {
+    getById(id: number) {
         return Post.findOne({
             where: {
                 id: id,
@@ -77,5 +79,26 @@ export default class PostRepository {
             console.log(err);
             return Promise.reject();
         })
+    }
+
+    countByTitleLikeOrContentLike(keyword: string): Promise<number> {
+        return Post.count({
+            where: {
+                [Op.or]: [
+                    {
+                        title: {
+                            [Op.like]: '%' + keyword + '%'
+                        }
+                    },
+                    {
+                        content: {
+                            [Op.like]: '%' + keyword + '%'
+                        }
+                    }
+                ],
+            },
+        }).then((count) => {
+            return count;
+        });
     }
 }

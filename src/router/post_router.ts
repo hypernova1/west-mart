@@ -6,7 +6,6 @@ const router = Router();
 const postService = new PostService();
 
 router.get('/', async (req, res, next) => {
-
     const request: PostListRequest = {};
     request.pageNo = +req.query.pageNo || 1;
     request.size = +req.query.size || 10;
