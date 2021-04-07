@@ -37,6 +37,11 @@ export default class Comment extends Model {
   @Column(DataType.INTEGER.UNSIGNED)
   postId: number;
 
+  @Default(true)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  isActive: boolean;
+
   @Default(NOW)
   @AllowNull(false)
   @Column(DataType.DATE)

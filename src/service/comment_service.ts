@@ -8,4 +8,10 @@ export default class CommentService {
     registerComment(commentForm: CommentForm) {
         return commentRepository.create(commentForm);
     }
+
+    async deleteComment(id: number): Promise<boolean> {
+        const deleteCount = await commentRepository.deleteById(id);
+
+        return deleteCount === 1;
+    }
 }

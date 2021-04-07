@@ -43,6 +43,11 @@ export default class User extends Model {
   @HasMany(() => Comment)
   comments: Comment[];
 
+  @Default(true)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  isActive: boolean;
+
   @Default(NOW)
   @AllowNull(false)
   @Column(DataType.DATE)

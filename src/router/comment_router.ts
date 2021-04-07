@@ -12,6 +12,17 @@ router.post('/', async (req, res, next) => {
 
     res.setHeader('Location', `${req.get('host')}/comment/${id}`);
     return res.status(201).send();
+})
+
+router.delete('/:id', async (req, res, next) => {
+    const id = +req.params.id;
+
+    const isDeleted = await commentService.deleteComment(id);
+    if (!isDeleted) {
+        return res.status(400).send();
+    }
+
+    return res.status(204).send();
 });
 
 export default router;

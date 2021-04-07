@@ -9,4 +9,16 @@ export default class PostRepository {
                 return comment.id;
             });
     }
+
+    deleteById(id: number): Promise<number> {
+        return Comment.update({
+            isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
+        }).then((result) => {
+            return result[0];
+        });
+    }
 }
