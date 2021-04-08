@@ -21,4 +21,24 @@ export default class PostRepository {
             return result[0];
         });
     }
+
+    async existsByIdAndUserId(id: number, userId: number): Promise<boolean> {
+        return Comment.findOne({
+            where: {
+                id: id,
+                userId: userId,
+            }
+        }).then((comment) => {
+            if (!comment) return false;
+            return true;
+        })
+    }
+
+    async update(id: number, content: string) {
+        await Comment.update({content: content}, {
+            where: {
+                id: id
+            }
+        });
+    }
 }

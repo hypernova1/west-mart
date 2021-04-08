@@ -25,4 +25,19 @@ router.delete('/:id', async (req, res, next) => {
     return res.status(204).send();
 });
 
+router.put('/:id', async (req, res, next) => {
+    try {
+        const userId: number = req.user.id;
+        const id: number = +req.params.id;
+        const content: string = req.body.content;
+
+        await commentService.updateComment(id, content, userId);
+
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(400).send();
+    }
+
+})
+
 export default router;

@@ -14,4 +14,13 @@ export default class CommentService {
 
         return deleteCount === 1;
     }
+
+    async updateComment(id: number, content: string, userId: number) {
+        const isExist = await commentRepository.existsByIdAndUserId(id, userId);
+        if (!isExist) {
+            return Promise.reject();
+        }
+
+        await commentRepository.update(id, content);
+    }
 }
