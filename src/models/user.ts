@@ -8,10 +8,11 @@ import {
   AllowNull,
   Default,
   CreatedAt,
-  UpdatedAt, HasMany, Table
+  UpdatedAt, HasMany, Table, BelongsToMany
 } from 'sequelize-typescript';
 import Post from './post';
 import Comment from './comment';
+import FavoritePost from './favorite-post';
 
 @Table({
   tableName: 'user',
@@ -42,6 +43,9 @@ export default class User extends Model {
 
   @HasMany(() => Comment)
   comments: Comment[];
+
+  @BelongsToMany(() => Post, () => FavoritePost)
+  favoritePost: Array<Post>
 
   @Default(true)
   @AllowNull(false)

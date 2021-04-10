@@ -4,6 +4,7 @@ import config from '../../config/config';
 import User from './user';
 import Post from './post';
 import Comment from "./comment";
+import FavoritePost from "./favorite-post";
 
 const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
 
@@ -16,7 +17,8 @@ const sequelize = new Sequelize(database, username, password, {
 sequelize.addModels([
     User,
     Post,
-    Comment
+    Comment,
+    FavoritePost,
 ])
 
 export { sequelize }
