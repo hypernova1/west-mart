@@ -4,7 +4,7 @@ import { isLoggedIn, isNotLoggedIn } from '../middleware';
 
 import User from "../models/user";
 import UserService from '../service/user_service';
-import { UserDto } from '../payload/user_dto';
+import { UserJoinForm } from '../payload/user_dto';
 
 const router = express.Router();
 const userService = new UserService();
@@ -42,7 +42,8 @@ router.post('/logout', isLoggedIn, (req, res) => {
 
 router.post('/join', async (req, res, next) => {
     try {
-        const userDto = req.body as UserDto;
+        const userDto = req.body as UserJoinForm;
+
         const userId = await userService.join(userDto);
 
         res.setHeader('Location', `${req.get('host')}/user/${userId}`);

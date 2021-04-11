@@ -2,7 +2,7 @@ import * as express from 'express';
 import User from '../models/user';
 import { isLoggedIn } from '../middleware';
 import UserService from '../service/user_service';
-import { UserDto } from '../payload/user_dto';
+import { UserJoinForm } from '../payload/user_dto';
 
 const router = express.Router();
 const userService = new UserService();
@@ -27,11 +27,11 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.put('/:id', async (req, res, next) => {
-    const userDto = req.body as UserDto;
-    userDto.id = req.user.id;
-    const result = await userService.updateUser(userDto);
+    const userDto = req.body as UserJoinForm;
+    const userId = req.user.id;
+    const result = await userService.updateUser(userId, userDto);
     if (!result) {
-        return res.status(404).send('존재하지 않는 회원입니다.');
+        return res.status(400).send('잘못된 요청입니다.');
     }
     return res.status(200).send('success');
 });
