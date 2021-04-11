@@ -47,6 +47,16 @@ router.delete('/:id', async (req, res, next) => {
     const id = +req.params.id;
 
     await postService.deletePost(id);
+
+    return res.status(204).send();
+});
+
+router.patch('/:id/favorite', async (req, res, next) => {
+    const userId = req.user.id;
+    const id = +req.params.id;
+
+    await postService.toggleFavorite(id, userId);
+
     return res.status(204).send();
 });
 

@@ -31,12 +31,18 @@ export default class UserService {
     }
 
     async updateUser(userDto: UserDto): Promise<boolean> {
-        const user = await userRepository.findById(userDto.id);
-        if (!user) {
+        const isExist = await userRepository.existById(userDto.id);
+        if (!isExist) {
             return false;
         }
 
-        return await userRepository.update(userDto);
+        const hashedPassword = await bcrypt.hash(userDto.password, 12);
+        const user = {
+            nickname: userDto.nickname,
+            password: hashedPassword,
+        } as User;
+
+        return await userRepository.update(user);
     }
 
     async existsByEmail(email: string): Promise<boolean> {

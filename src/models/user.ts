@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import Post from './post';
 import Comment from './comment';
-import FavoritePost from './favorite-post';
+import FavoritePost from './favorite_post';
 
 @Table({
   tableName: 'user',

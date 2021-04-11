@@ -1,5 +1,4 @@
 import User from "../models/user";
-import { UserDto } from '../payload/user_dto';
 
 export default class UserRepository {
 
@@ -23,10 +22,10 @@ export default class UserRepository {
         });
     }
 
-    update(userDto: UserDto): Promise<boolean> {
-        return User.update(userDto, {
+    update(user: User): Promise<boolean> {
+        return User.update(user, {
             where: {
-                id: userDto.id
+                id: user.id
             }
         }).then(() => {
             return true;
@@ -46,6 +45,19 @@ export default class UserRepository {
         }).catch((err) => {
             console.log(err);
             return false;
-        })
+        });
+    }
+
+    async existById(id: number) {
+        return User.findOne({
+            where: {
+                id: id,
+            }
+        }).then((user) => {
+            return !!user;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
     }
 }

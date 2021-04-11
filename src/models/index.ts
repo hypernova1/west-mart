@@ -4,7 +4,7 @@ import config from '../../config/config';
 import User from './user';
 import Post from './post';
 import Comment from "./comment";
-import FavoritePost from "./favorite-post";
+import FavoritePost from "./favorite_post";
 
 const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
 

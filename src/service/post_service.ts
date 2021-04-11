@@ -1,8 +1,10 @@
 import PostRepository from '../repository/post_repository';
+import UserRepository from '../repository/user_repository';
 import Post from '../models/post';
 import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post_dto';
 
 const postRepository = new PostRepository();
+const userRepository = new UserRepository();
 
 export default class PostService {
 
@@ -50,5 +52,21 @@ export default class PostService {
             writerId: post.writer.id,
             writerName: post.writer.nickname,
         } as PostDetail;
+    }
+
+    async toggleFavorite(id: number, userId: number) {
+        const post = await postRepository.getById(id);
+        const user = await userRepository.findById(id);
+        const isExist: boolean = post.favorites.some((favorite) => favorite.id === userId);
+        if (isExist) {
+            const existUserIndex = post.favorites.indexOf(user);
+            post.favorites.splice(existUserIndex, 1);
+            post.favorite--;
+        } else {
+            post.favorites.push(user);
+            post.favorite++;
+
+        }
+        await userRepository.update(user);
     }
 }

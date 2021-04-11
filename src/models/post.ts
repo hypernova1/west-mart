@@ -10,11 +10,11 @@ import {
     Default,
     UpdatedAt,
     CreatedAt,
-    ForeignKey, HasMany, HasOne, BelongsTo, BelongsToMany
+    ForeignKey, HasMany, BelongsTo, BelongsToMany
 } from 'sequelize-typescript'
 import User from "./user";
 import Comment from './comment';
-import FavoritePost from './favorite-post';
+import FavoritePost from './favorite_post';
 
 @Table({
     tableName: 'post',
@@ -45,6 +45,11 @@ export default class Post extends Model {
 
     @HasMany(() => Comment)
     comments: Comment[];
+
+    @Default(0)
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    favorite: number;
 
     @BelongsToMany(() => User, () => FavoritePost)
     favorites: Array<User>;
