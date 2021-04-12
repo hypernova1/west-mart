@@ -2,6 +2,13 @@ import User from "../models/user";
 
 export default class UserRepository {
 
+    save(user: User): Promise<number> {
+        return User.create(user)
+            .then((user) => {
+                return user.id;
+            })
+    }
+
     findById(id: number): Promise<User> {
         return User.findOne({
             where: {
