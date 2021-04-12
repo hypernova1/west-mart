@@ -1,5 +1,5 @@
 import CommentRepository from '../repository/comment_repository';
-import {CommentForm} from '../payload/comment_dto';
+import {CommentForm} from '../payload/comment';
 
 const commentRepository = new CommentRepository();
 

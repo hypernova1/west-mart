@@ -1,6 +1,6 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
-import { PostForm } from '../payload/post_dto';
+import { PostForm } from '../payload/post';
 
 export default class PostRepository {
 

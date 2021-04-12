@@ -1,7 +1,7 @@
 import PostRepository from '../repository/post_repository';
 import UserRepository from '../repository/user_repository';
 import Post from '../models/post';
-import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post_dto';
+import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post';
 
 const postRepository = new PostRepository();
 const userRepository = new UserRepository();

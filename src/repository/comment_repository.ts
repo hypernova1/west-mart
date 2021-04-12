@@ -1,5 +1,5 @@
 import Comment from '../models/comment';
-import { CommentForm } from '../payload/comment_dto';
+import { CommentForm } from '../payload/comment';
 
 export default class PostRepository {
 

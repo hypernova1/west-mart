@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import PostService from '../service/post_service';
-import { PostListRequest, PostForm } from '../payload/post_dto';
+import { PostListRequest, PostForm } from '../payload/post';
 
 const router = Router();
 const postService = new PostService();

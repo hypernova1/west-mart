@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import CommentService from '../service/comment_service';
-import { CommentForm } from '../payload/comment_dto';
+import { CommentForm } from '../payload/comment';
 
 const router = Router();
 const commentService = new CommentService();

@@ -4,7 +4,7 @@ import { isLoggedIn, isNotLoggedIn } from '../middleware';
 
 import User from "../models/user";
 import UserService from '../service/user_service';
-import { UserJoinForm } from '../payload/user_dto';
+import { UserJoinForm } from '../payload/user';
 
 const router = express.Router();
 const userService = new UserService();
