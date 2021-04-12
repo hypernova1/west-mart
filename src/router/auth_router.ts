@@ -1,37 +1,21 @@
 import * as express from 'express';
 import * as passport from "passport";
+import { checkJwt } from '../middleware/jwt';
 import { isLoggedIn, isNotLoggedIn } from '../middleware';
 
 import User from "../models/user";
-import UserService from '../service/user_service';
+import AuthService from '../service/auth_service';
 import { UserJoinForm } from '../payload/user';
 
 const router = express.Router();
-const userService = new UserService();
+const authService = new AuthService();
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
-    passport.authenticate('local', (err: Error, user: User, info: { message: string }) => {
-        if (err) {
-            console.log(err);
-            return next(err);
-        }
-        if (info) {
-            return res.status(401).send(info.message);
-        }
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
+    const { email, password } = req.body;
 
-        return req.login(user, async (loginErr: Error) => {
-            try {
-                if (loginErr) {
-                    return next(loginErr);
-                }
-                const fullUser = await userService.getUserById(user.id);
-                return res.json(fullUser);
-            } catch (err) {
-                console.log(err);
-                next(err);
-            }
-        });
-    });
+    const token = await authService.login(email, password);
+
+    return res.send(token);
 });
 
 router.post('/logout', isLoggedIn, (req, res) => {
@@ -41,16 +25,7 @@ router.post('/logout', isLoggedIn, (req, res) => {
 });
 
 router.post('/join', async (req, res, next) => {
-    try {
-        const userDto = req.body as UserJoinForm;
 
-        const userId = await userService.join(userDto);
-
-        res.setHeader('Location', `${req.get('host')}/user/${userId}`);
-        return res.status(201).send();
-    } catch (error) {
-        return res.status(409).send();
-    }
 });
 
 export default router;

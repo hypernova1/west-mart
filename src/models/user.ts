@@ -1,3 +1,4 @@
+import * as bcrypt from "bcryptjs";
 import { NOW } from 'sequelize';
 import {
   Model,
@@ -47,6 +48,10 @@ export default class User extends Model {
   @BelongsToMany(() => Post, () => FavoritePost)
   favoritePost: Array<Post>
 
+  @AllowNull(false)
+  @Column(DataType.CHAR)
+  role: string;
+
   @Default(true)
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
@@ -63,4 +68,13 @@ export default class User extends Model {
   @Column(DataType.DATE)
   @UpdatedAt
   readonly updatedAt: Date;
+
+  hashPassword() {
+    this.password = bcrypt.hashSync(this.password, 8);
+  }
+
+  checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+    return bcrypt.compareSync(unencryptedPassword, this.password);
+  }
+
 }

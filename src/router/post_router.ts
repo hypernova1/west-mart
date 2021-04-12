@@ -1,6 +1,8 @@
-import { Router } from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 import PostService from '../service/post_service';
 import { PostListRequest, PostForm } from '../payload/post';
+import {checkRole} from '../middleware/check-role';
+import {checkJwt} from '../middleware/jwt';
 
 const router = Router();
 const postService = new PostService();
@@ -22,7 +24,7 @@ router.get('/:id', async (req, res, next) => {
     return res.status(200).json(postDetail);
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', [checkJwt, checkRole(["USER"])], async (req: Request, res: Response, next: NextFunction) => {
     const postDto = req.body as PostForm;
     postDto.userId = +req.user.id;
 

@@ -51,4 +51,5 @@ export default class UserService {
     async existsByEmail(email: string): Promise<boolean> {
         return await userRepository.existsByEmail(email);
     }
+
 }
