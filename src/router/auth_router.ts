@@ -7,11 +7,16 @@ const router = express.Router();
 const authService = new AuthService();
 
 router.post('/login', async (req, res, next) => {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    const token = await authService.login(email, password);
+        const token = await authService.login(email, password);
 
-    return res.send(token);
+        return res.send({ token: token });
+
+    } catch (err) {
+        return res.status(401).send();
+    }
 });
 
 router.post('/logout', (req, res) => {
@@ -26,6 +31,7 @@ router.post('/join', async (req, res, next) => {
     const userId = await authService.join(joinForm);
 
     res.setHeader('Location', `${req.get('host')}/user/${userId}`);
+    res.send();
 });
 
 export default router;

@@ -16,8 +16,7 @@ export default class AuthService {
             return Promise.reject();
         }
 
-        const hashedPassword: string = bcrypt.hashSync(password, 8);
-        const isEqual = bcrypt.compareSync(hashedPassword, user.password);
+        const isEqual = bcrypt.compareSync(password, user.password);
 
         if (!isEqual) {
             return Promise.reject();
@@ -41,5 +40,6 @@ export default class AuthService {
         } as User;
 
         const userId = await userRepository.save(user);
+        return userId;
     }
 }

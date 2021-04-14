@@ -19,7 +19,7 @@ const prod: boolean = process.env.NODE_ENV === 'production';
 
 app.set('port', prod ? process.env.PORT : 3000);
 
-sequelize.sync({ force: true })
+sequelize.sync({ force: false })
     .then(() => {
         console.log('database connection,');
     }).catch((err: Error) => {
