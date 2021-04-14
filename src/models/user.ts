@@ -69,12 +69,4 @@ export default class User extends Model {
   @UpdatedAt
   readonly updatedAt: Date;
 
-  hashPassword() {
-    this.password = bcrypt.hashSync(this.password, 8);
-  }
-
-  checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
-    return bcrypt.compareSync(unencryptedPassword, this.password);
-  }
-
 }

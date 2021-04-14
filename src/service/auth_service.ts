@@ -23,7 +23,8 @@ export default class AuthService {
         }
 
         return jwt.sign({
-            userId: user.id,
+            id: user.id,
+            email: user.email,
             nickname: user.nickname,
         }, 'secret', {
             expiresIn: '1h',

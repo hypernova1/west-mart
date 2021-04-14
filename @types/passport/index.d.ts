@@ -1,7 +1,7 @@
-import UserModel from '../../src/models/user';
+import { UserSummary } from '../../src/payload/user';
 
 declare global {
     namespace Express {
-        export interface User extends UserModel {}
+        export interface User extends UserSummary {}
     }
 }

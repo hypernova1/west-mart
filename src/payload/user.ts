@@ -20,3 +20,9 @@ export interface LoginDto {
     email: string,
     password: string,
 }
+
+export interface UserSummary {
+    id: number,
+    email: string,
+    nickname: string,
+}

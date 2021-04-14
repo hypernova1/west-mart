@@ -7,7 +7,8 @@ import {checkJwt} from '../middleware/jwt';
 const router = Router();
 const postService = new PostService();
 
-router.get('/', async (req, res, next) => {
+router.get('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+    console.log(req.user);
     const request: PostListRequest = {};
     request.pageNo = +req.query.pageNo || 1;
     request.size = +req.query.size || 10;
@@ -17,14 +18,14 @@ router.get('/', async (req, res, next) => {
     res.status(200).json(result);
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
     const postId = +req.params.id;
     const postDetail = await postService.getPostDetail(postId);
 
     return res.status(200).json(postDetail);
 })
 
-router.post('/', [checkJwt, checkRole(["USER"])], async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
     const postDto = req.body as PostForm;
     postDto.userId = +req.user.id;
 

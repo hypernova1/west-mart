@@ -13,7 +13,6 @@ router.post('/login', async (req, res, next) => {
         const token = await authService.login(email, password);
 
         return res.send({ token: token });
-
     } catch (err) {
         return res.status(401).send();
     }

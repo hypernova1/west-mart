@@ -7,12 +7,6 @@ import { UserJoinForm } from '../payload/user';
 const router = express.Router();
 const userService = new UserService();
 
-router.get('/', isLoggedIn, (req, res, next) => {
-    const user: User = req.user.toJSON() as User;
-    delete user.password;
-    return res.json(user);
-});
-
 router.get('/:id', async (req, res, next) => {
     try {
         const user = await userService.getUserById(Number(req.params.id));
