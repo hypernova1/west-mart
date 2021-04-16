@@ -1,6 +1,4 @@
 import * as express from 'express';
-import User from '../models/user';
-import { isLoggedIn } from '../middleware';
 import UserService from '../service/user_service';
 import { UserJoinForm } from '../payload/user';
 

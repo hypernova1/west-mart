@@ -8,7 +8,6 @@ const router = Router();
 const postService = new PostService();
 
 router.get('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
-    console.log(req.user);
     const request: PostListRequest = {};
     request.pageNo = +req.query.pageNo || 1;
     request.size = +req.query.size || 10;

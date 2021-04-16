@@ -9,6 +9,7 @@ const authService = new AuthService();
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(req.body);
 
         const token = await authService.login(email, password);
 
@@ -16,12 +17,6 @@ router.post('/login', async (req, res, next) => {
     } catch (err) {
         return res.status(401).send();
     }
-});
-
-router.post('/logout', (req, res) => {
-    req.logout();
-    req.session!.destroy(() => console.log('로그아웃 성공'));
-    return res.send('로그아웃 성공');
 });
 
 router.post('/join', async (req, res, next) => {
