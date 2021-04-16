@@ -26,6 +26,7 @@ export default class AuthService {
             id: user.id,
             email: user.email,
             nickname: user.nickname,
+            role: user.role,
         }, 'secret', {
             expiresIn: '1h',
         });

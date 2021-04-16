@@ -71,4 +71,11 @@ export default class Post extends Model {
     @CreatedAt
     createdAt!: Date;
 
+    increaseFavorite() {
+        this.favorite++;
+    }
+
+    decreaseFavorite() {
+        this.favorite--;
+    }
 }

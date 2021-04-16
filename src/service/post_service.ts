@@ -2,9 +2,11 @@ import PostRepository from '../repository/post_repository';
 import UserRepository from '../repository/user_repository';
 import Post from '../models/post';
 import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post';
+import User from '../models/user';
+import FavoritePostRepository from '../repository/favorite_post_repository';
 
 const postRepository = new PostRepository();
-const userRepository = new UserRepository();
+const favoritePostRepository = new FavoritePostRepository();
 
 export default class PostService {
 
@@ -35,13 +37,17 @@ export default class PostService {
     }
 
     async updatePost(postId: number, postForm: PostForm) {
-        const isExist = await postRepository.existsById(postId);
+        const post = await postRepository.getById(postId);
 
-        if (!isExist) {
+        if (!post) {
             return Promise.reject();
         }
 
-        await postRepository.update(postId, postForm);
+        post.id = postId;
+        post.title = postForm.title;
+        post.content = postForm.content
+
+        await postRepository.update(post);
     }
 
     async deletePost(id: number) {
@@ -62,19 +68,21 @@ export default class PostService {
         } as PostDetail;
     }
 
-    async toggleFavorite(id: number, userId: number) {
+    async toggleFavorite(id: number, user: User) {
         const post = await postRepository.getById(id);
-        const user = await userRepository.findById(id);
-        const isExist: boolean = post.favorites.some((favorite) => favorite.id === userId);
-        if (isExist) {
-            const existUserIndex = post.favorites.indexOf(user);
-            post.favorites.splice(existUserIndex, 1);
-            post.favorite--;
-        } else {
-            post.favorites.push(user);
-            post.favorite++;
-
+        if (!post) {
+            return Promise.reject();
         }
-        await userRepository.update(user);
+
+        const favoritePost = await favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
+
+        if (favoritePost) {
+            await post.$remove('favorites', user);
+            await postRepository.decreaseFavoriteCount(post.id);
+        } else {
+            await post.$add('favorites', user);
+            await postRepository.increaseFavoriteCount(post.id);
+            post.increaseFavorite();
+        }
     }
 }

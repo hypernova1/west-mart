@@ -46,7 +46,7 @@ export default class User extends Model {
   comments: Comment[];
 
   @BelongsToMany(() => Post, () => FavoritePost)
-  favoritePost: Array<Post>
+  favoritePost: Array<Post>;
 
   @AllowNull(false)
   @Column(DataType.CHAR)

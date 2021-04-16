@@ -15,7 +15,7 @@ export interface PostListRequest {
 export interface PostForm {
     title: string,
     content: string,
-    userId?: number,
+    userId: number,
 }
 
 export interface PostDetail {

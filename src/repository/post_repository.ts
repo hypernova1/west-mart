@@ -1,6 +1,8 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
 import { PostForm } from '../payload/post';
+import User from '../models/user';
+import Comment from '../models/comment';
 
 export default class PostRepository {
 
@@ -47,10 +49,10 @@ export default class PostRepository {
             });
     }
 
-    update(id: number, postDto: PostForm) {
-        return Post.update(postDto, {
+    update(post: Post) {
+        return Post.update(post, {
             where: {
-                id: id
+                id: post.id
             }
         }).then(() => {
             return Promise.resolve();
@@ -75,12 +77,22 @@ export default class PostRepository {
         });
     }
 
-    getById(id: number) {
+    getById(id: number): Promise<Post> {
         return Post.findOne({
             where: {
                 id: id,
                 isActive: true,
-            }
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'favorites',
+                    through: {
+                        attributes: [],
+                    },
+                    required: false,
+                },
+            ],
         }).then((post) => {
             return post;
         }).catch((err) => {
@@ -125,6 +137,30 @@ export default class PostRepository {
         }).catch((err: Error) => {
             console.log(err);
             return Promise.reject();
+        });
+    }
+
+    increaseFavoriteCount(id: number) {
+        Post.increment({
+            favorite: +1
+        }, {
+            where: {
+                id: id,
+            }
+        }).then(() => {
+            return Promise.resolve();
+        });
+    }
+
+    decreaseFavoriteCount(id: number) {
+        Post.increment({
+            favorite: -1
+        }, {
+            where: {
+                id: id,
+            }
+        }).then(() => {
+            return Promise.resolve();
         });
     }
 }

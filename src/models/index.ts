@@ -19,7 +19,7 @@ sequelize.addModels([
     Post,
     Comment,
     FavoritePost,
-])
+]);
 
 export { sequelize }
 export default sequelize;

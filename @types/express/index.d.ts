@@ -1,9 +1,9 @@
-import { UserSummary } from '../../src/payload/user';
+import User from '../../src/models/user';
 
 declare global {
     namespace Express {
         interface Request {
-            user?: UserSummary;
+            user?: User;
         }
     }
 }

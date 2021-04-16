@@ -57,13 +57,18 @@ router.delete('/:id', async (req, res, next) => {
     return res.status(204).send();
 });
 
-router.patch('/:id/favorite', async (req, res, next) => {
-    const userId = req.user.id;
-    const id = +req.params.id;
+router.patch('/:id/favorite', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+    try {
+        const user = req.user;
+        const id = +req.params.id;
 
-    await postService.toggleFavorite(id, userId);
+        await postService.toggleFavorite(id, user);
 
-    return res.status(204).send();
+        return res.status(204).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(404).send();
+    }
 });
 
 export default router;
