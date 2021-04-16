@@ -23,21 +23,21 @@ export default class PostRepository {
     }
 
     async existsByIdAndUserId(id: number, userId: number): Promise<boolean> {
-        return Comment.findOne({
+        return Comment.count({
             where: {
                 id: id,
                 userId: userId,
+                isActive: true,
             }
-        }).then((comment) => {
-            if (!comment) return false;
-            return true;
+        }).then((count) => {
+            return !!count;
         })
     }
 
     async update(id: number, content: string) {
         await Comment.update({content: content}, {
             where: {
-                id: id
+                id: id,
             }
         });
     }

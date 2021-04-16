@@ -34,8 +34,14 @@ export default class PostService {
         return await postRepository.save(postDto);
     }
 
-    async updatePost(postId: number, postDto: PostForm) {
-        await postRepository.update(postId, postDto);
+    async updatePost(postId: number, postForm: PostForm) {
+        const isExist = await postRepository.existsById(postId);
+
+        if (!isExist) {
+            return Promise.reject();
+        }
+
+        await postRepository.update(postId, postForm);
     }
 
     async deletePost(id: number) {
@@ -44,7 +50,9 @@ export default class PostService {
 
     async getPostDetail(postId: number): Promise<PostDetail> {
         const post = await postRepository.getById(postId);
-
+        if (!post) {
+            return Promise.reject();
+        }
         return {
             id: post.id,
             title: post.title,

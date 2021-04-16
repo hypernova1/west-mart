@@ -18,10 +18,14 @@ router.get('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
 });
 
 router.get('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
-    const postId = +req.params.id;
-    const postDetail = await postService.getPostDetail(postId);
+    try {
+        const postId = +req.params.id;
+        const postDetail = await postService.getPostDetail(postId);
+        return res.status(200).json(postDetail);
+    } catch (err) {
+        return res.status(404).send();
+    }
 
-    return res.status(200).json(postDetail);
 })
 
 router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
@@ -39,8 +43,8 @@ router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
     const postId  = +req.params.id;
-    const postDto = req.body as PostForm;
-    await postService.updatePost(postId, postDto);
+    const postForm = req.body as PostForm;
+    await postService.updatePost(postId, postForm);
 
     return res.status(200).send();
 });

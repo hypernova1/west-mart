@@ -19,6 +19,7 @@ export default class PostRepository {
                         }
                     }
                 ],
+                isActive: true,
             },
             offset: pageNo,
             limit: size,
@@ -72,6 +73,7 @@ export default class PostRepository {
         return Post.findOne({
             where: {
                 id: id,
+                isActive: true,
             }
         }).then((post) => {
             return post;
@@ -96,9 +98,22 @@ export default class PostRepository {
                         }
                     }
                 ],
+                isActive: true,
             },
         }).then((count) => {
             return count;
         });
+    }
+
+    async existsById(id: number) {
+        return Post.count({
+            where: {
+                id: id,
+                isActive: true,
+            }
+        }).then((count) => {
+            return !!count;
+
+        })
     }
 }

@@ -13,6 +13,7 @@ export default class UserRepository {
         return User.findOne({
             where: {
                 id: id,
+                isActive: true,
             }
         }).then((user: User) => {
             return user;
@@ -23,6 +24,7 @@ export default class UserRepository {
         return User.findOne({
             where: {
                 email: email,
+                isActive: true,
             }
         }).then((user: User) => {
             return user;
@@ -43,12 +45,13 @@ export default class UserRepository {
     }
 
     existsByEmail(email: string): Promise<boolean> {
-        return User.findOne({
+        return User.count({
             where: {
                 email: email,
+                isActive: true,
             }
-        }).then((user) => {
-            return !!user;
+        }).then((count) => {
+            return !!count;
         }).catch((err) => {
             console.log(err);
             return false;
@@ -56,12 +59,13 @@ export default class UserRepository {
     }
 
     async existById(id: number) {
-        return User.findOne({
+        return User.count({
             where: {
                 id: id,
+                isActive: true,
             }
-        }).then((user) => {
-            return !!user;
+        }).then((count) => {
+            return !!count;
         }).catch((err) => {
             console.log(err);
             return false;
