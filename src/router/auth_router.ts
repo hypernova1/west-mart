@@ -9,8 +9,6 @@ const authService = new AuthService();
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        console.log(req.body);
-
         const token = await authService.login(email, password);
 
         return res.send({ token: token });

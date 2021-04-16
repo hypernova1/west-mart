@@ -28,6 +28,9 @@ export default class PostRepository {
             ]
         }).then((postList) => {
             return postList;
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 
@@ -36,6 +39,9 @@ export default class PostRepository {
             .then((post) => {
                 return post.id;
             }).catch((err) => {
+                console.log(err);
+                return Promise.reject();
+            }).catch((err: Error) => {
                 console.log(err);
                 return Promise.reject();
             });
@@ -102,10 +108,13 @@ export default class PostRepository {
             },
         }).then((count) => {
             return count;
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 
-    async existsById(id: number) {
+    existsById(id: number) {
         return Post.count({
             where: {
                 id: id,
@@ -113,7 +122,9 @@ export default class PostRepository {
             }
         }).then((count) => {
             return !!count;
-
-        })
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
+        });
     }
 }

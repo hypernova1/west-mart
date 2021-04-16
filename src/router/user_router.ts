@@ -1,11 +1,18 @@
 import * as express from 'express';
 import UserService from '../service/user_service';
 import { UserJoinForm } from '../payload/user';
+import { checkJwt } from '../middleware/jwt';
+import { checkRole } from '../middleware/check-role';
 
 const router = express.Router();
 const userService = new UserService();
 
-router.get('/:id', async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+    const userList = await userService.getUserList();
+    return res.status(200).json(userList);
+})
+
+router.get('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
     try {
         const user = await userService.getUserById(Number(req.params.id));
         if (!user) {
@@ -18,14 +25,17 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-router.put('/:id', async (req, res, next) => {
-    const userDto = req.body as UserJoinForm;
-    const userId = req.user.id;
-    const result = await userService.updateUser(userId, userDto);
-    if (!result) {
+router.put('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+    try {
+        const userDto = req.body as UserJoinForm;
+        const userId = req.user.id;
+
+        await userService.updateUser(userId, userDto);
+
+        return res.status(200).send('success');
+    } catch (err) {
         return res.status(400).send('잘못된 요청입니다.');
     }
-    return res.status(200).send('success');
 });
 
 router.get('/email/:email', async (req, res, next) => {

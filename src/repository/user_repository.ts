@@ -2,11 +2,27 @@ import User from "../models/user";
 
 export default class UserRepository {
 
+    async findAll(): Promise<Array<User>> {
+        return User.findAll({
+            where: {
+                isActive: true,
+            }
+        }).then((users) => {
+            return users;
+        }).catch((err) => {
+            console.log(err);
+            return Promise.reject();
+        });
+    }
+
     save(user: User): Promise<number> {
         return User.create(user)
             .then((user) => {
                 return user.id;
-            })
+            }).catch((err: Error) => {
+                console.log(err);
+                return Promise.reject();
+            });
     }
 
     findById(id: number): Promise<User> {
@@ -17,6 +33,9 @@ export default class UserRepository {
             }
         }).then((user: User) => {
             return user;
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 
@@ -28,6 +47,9 @@ export default class UserRepository {
             }
         }).then((user: User) => {
             return user;
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 
@@ -40,8 +62,8 @@ export default class UserRepository {
             return true;
         }).catch((err: Error) => {
             console.log(err);
-            return false;
-        })
+            return Promise.reject();
+        });
     }
 
     existsByEmail(email: string): Promise<boolean> {
@@ -54,11 +76,11 @@ export default class UserRepository {
             return !!count;
         }).catch((err) => {
             console.log(err);
-            return false;
+            return Promise.reject();
         });
     }
 
-    async existById(id: number) {
+    existById(id: number) {
         return User.count({
             where: {
                 id: id,
@@ -68,7 +90,8 @@ export default class UserRepository {
             return !!count;
         }).catch((err) => {
             console.log(err);
-            return false;
+            return Promise.reject();
         });
     }
+
 }

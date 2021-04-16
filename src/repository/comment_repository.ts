@@ -7,6 +7,9 @@ export default class PostRepository {
         return Comment.create(commentForm)
             .then((comment) => {
                 return comment.id;
+            }).catch((err: Error) => {
+                console.log(err);
+                return Promise.reject();
             });
     }
 
@@ -19,10 +22,13 @@ export default class PostRepository {
             }
         }).then((result) => {
             return result[0];
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 
-    async existsByIdAndUserId(id: number, userId: number): Promise<boolean> {
+    existsByIdAndUserId(id: number, userId: number): Promise<boolean> {
         return Comment.count({
             where: {
                 id: id,
@@ -31,14 +37,24 @@ export default class PostRepository {
             }
         }).then((count) => {
             return !!count;
-        })
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
+        });
     }
 
-    async update(id: number, content: string) {
-        await Comment.update({content: content}, {
+    update(id: number, content: string) {
+        Comment.update({
+            content: content
+        }, {
             where: {
                 id: id,
             }
+        }).then(() => {
+            return Promise.resolve();
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
         });
     }
 }

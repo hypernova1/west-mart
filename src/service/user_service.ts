@@ -33,10 +33,10 @@ export default class UserService {
         return newUser.id;
     }
 
-    async updateUser(userId: number, updateForm: UserUpdateForm): Promise<boolean> {
+    async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
         const isExist = await userRepository.existById(userId);
         if (!isExist) {
-            return false;
+            return Promise.resolve();
         }
 
         const hashedPassword = await bcrypt.hash(updateForm.password, 12);
@@ -45,11 +45,14 @@ export default class UserService {
             password: hashedPassword,
         } as User;
 
-        return await userRepository.update(user);
+        await userRepository.update(user);
     }
 
     async existsByEmail(email: string): Promise<boolean> {
         return await userRepository.existsByEmail(email);
     }
 
+    async getUserList() {
+        return await userRepository.findAll();
+    }
 }
