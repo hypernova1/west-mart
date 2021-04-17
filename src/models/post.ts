@@ -69,7 +69,7 @@ export default class Post extends Model {
     @AllowNull(false)
     @Column(DataType.DATE)
     @CreatedAt
-    createdAt!: Date;
+    readonly createdAt!: Date;
 
     async increaseFavorite() {
         await this.increment({ favorite: 1 });

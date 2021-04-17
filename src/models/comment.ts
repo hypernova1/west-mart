@@ -52,6 +52,6 @@ export default class Comment extends Model {
   @AllowNull(false)
   @Column(DataType.DATE)
   @UpdatedAt
-  readonly updatedAt!: Date;
+  updatedAt!: Date;
 
 }

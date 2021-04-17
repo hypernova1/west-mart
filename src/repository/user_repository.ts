@@ -53,19 +53,6 @@ export default class UserRepository {
         });
     }
 
-    update(user: User): Promise<boolean> {
-        return User.update(user, {
-            where: {
-                id: user.id
-            }
-        }).then(() => {
-            return true;
-        }).catch((err: Error) => {
-            console.log(err);
-            return Promise.reject();
-        });
-    }
-
     existsByEmail(email: string): Promise<boolean> {
         return User.count({
             where: {
@@ -80,14 +67,14 @@ export default class UserRepository {
         });
     }
 
-    existById(id: number) {
-        return User.count({
+    getById(id: number): Promise<User> {
+        return User.findOne({
             where: {
                 id: id,
                 isActive: true,
             }
-        }).then((count) => {
-            return !!count;
+        }).then((user) => {
+            return user;
         }).catch((err) => {
             console.log(err);
             return Promise.reject();

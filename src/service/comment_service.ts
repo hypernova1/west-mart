@@ -1,5 +1,5 @@
 import CommentRepository from '../repository/comment_repository';
-import {CommentForm} from '../payload/comment';
+import { CommentForm } from '../payload/comment';
 
 const commentRepository = new CommentRepository();
 
@@ -16,11 +16,13 @@ export default class CommentService {
     }
 
     async updateComment(id: number, content: string, userId: number) {
-        const isExist = await commentRepository.existsByIdAndUserId(id, userId);
-        if (!isExist) {
+        const comment = await commentRepository.findByIdAndUserId(id, userId);
+        if (!comment) {
             return Promise.reject();
         }
 
-        await commentRepository.update(id, content);
+        await comment.update({
+            content: content,
+        });
     }
 }

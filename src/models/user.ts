@@ -1,4 +1,3 @@
-import * as bcrypt from "bcryptjs";
 import { NOW } from 'sequelize';
 import {
   Model,
@@ -67,6 +66,6 @@ export default class User extends Model {
   @AllowNull(false)
   @Column(DataType.DATE)
   @UpdatedAt
-  readonly updatedAt: Date;
+  updatedAt: Date;
 
 }

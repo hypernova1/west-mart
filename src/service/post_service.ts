@@ -43,11 +43,11 @@ export default class PostService {
             return Promise.reject();
         }
 
-        post.id = postId;
-        post.title = postForm.title;
-        post.content = postForm.content
-
-        await postRepository.update(post);
+        await post.update({
+            id: postId,
+            title: postForm.title,
+            content: postForm.content,
+        });
     }
 
     async deletePost(id: number) {
@@ -85,7 +85,6 @@ export default class PostService {
                 await post.$add('favorites', user);
                 await post.increaseFavorite();
             }
-            await postRepository.update(post);
 
             await t.commit();
         });

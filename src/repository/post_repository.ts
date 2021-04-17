@@ -1,8 +1,6 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
 import { PostForm } from '../payload/post';
-import User from '../models/user';
-import Comment from '../models/comment';
 
 export default class PostRepository {
 
@@ -49,19 +47,6 @@ export default class PostRepository {
             });
     }
 
-    update(post: Post) {
-        return Post.update(post, {
-            where: {
-                id: post.id
-            }
-        }).then(() => {
-            return Promise.resolve();
-        }).catch((err) => {
-            console.log(err);
-            return Promise.reject();
-        });
-    }
-
     deleteById(id: number) {
         return Post.update({
             isActive: false,
@@ -83,16 +68,6 @@ export default class PostRepository {
                 id: id,
                 isActive: true,
             },
-            include: [
-                {
-                    model: User,
-                    as: 'favorites',
-                    through: {
-                        attributes: [],
-                    },
-                    required: false,
-                },
-            ],
         }).then((post) => {
             return post;
         }).catch((err) => {
@@ -126,41 +101,4 @@ export default class PostRepository {
         });
     }
 
-    existsById(id: number) {
-        return Post.count({
-            where: {
-                id: id,
-                isActive: true,
-            }
-        }).then((count) => {
-            return !!count;
-        }).catch((err: Error) => {
-            console.log(err);
-            return Promise.reject();
-        });
-    }
-
-    increaseFavoriteCount(id: number) {
-        Post.increment({
-            favorite: +1
-        }, {
-            where: {
-                id: id,
-            }
-        }).then(() => {
-            return Promise.resolve();
-        });
-    }
-
-    decreaseFavoriteCount(id: number) {
-        Post.increment({
-            favorite: -1
-        }, {
-            where: {
-                id: id,
-            }
-        }).then(() => {
-            return Promise.resolve();
-        });
-    }
 }

@@ -28,30 +28,15 @@ export default class PostRepository {
         });
     }
 
-    existsByIdAndUserId(id: number, userId: number): Promise<boolean> {
-        return Comment.count({
+    async findByIdAndUserId(id: number, userId: number): Promise<Comment> {
+        return Comment.findOne({
             where: {
                 id: id,
                 userId: userId,
                 isActive: true,
             }
-        }).then((count) => {
-            return !!count;
-        }).catch((err: Error) => {
-            console.log(err);
-            return Promise.reject();
-        });
-    }
-
-    update(id: number, content: string) {
-        Comment.update({
-            content: content
-        }, {
-            where: {
-                id: id,
-            }
-        }).then(() => {
-            return Promise.resolve();
+        }).then((comment) => {
+            return comment;
         }).catch((err: Error) => {
             console.log(err);
             return Promise.reject();

@@ -1,5 +1,5 @@
 import User from '../models/user';
-import { UserDetail, UserJoinForm, UserUpdateForm } from '../payload/user';
+import { UserDetail, UserUpdateForm } from '../payload/user';
 import UserRepository from '../repository/user_repository';
 import * as bcrypt from 'bcrypt';
 
@@ -16,36 +16,18 @@ export default class UserService {
         } as UserDetail;
     }
 
-    async join(joinForm: UserJoinForm): Promise<number> {
-        const isExist = await userRepository.findByEmail(joinForm.email);
-
-        if (isExist) {
-            return Promise.reject();
-        }
-
-        const hashedPassword = await bcrypt.hash(joinForm.password, 12);
-        const newUser = await User.create({
-            email: joinForm.email,
-            nickname: joinForm.nickname,
-            password: hashedPassword,
-        });
-
-        return newUser.id;
-    }
-
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const isExist = await userRepository.existById(userId);
-        if (!isExist) {
+        const user = await userRepository.getById(userId);
+        if (!user) {
             return Promise.resolve();
         }
 
         const hashedPassword = await bcrypt.hash(updateForm.password, 12);
-        const user = {
+
+        await user.update({
             nickname: updateForm.nickname,
             password: hashedPassword,
-        } as User;
-
-        await userRepository.update(user);
+        });
     }
 
     async existsByEmail(email: string): Promise<boolean> {
