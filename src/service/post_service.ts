@@ -1,5 +1,5 @@
+import sequelize from '../models';
 import PostRepository from '../repository/post_repository';
-import UserRepository from '../repository/user_repository';
 import Post from '../models/post';
 import { PostDto, PostListRequest, PostForm, PostDetail } from '../payload/post';
 import User from '../models/user';
@@ -68,21 +68,26 @@ export default class PostService {
         } as PostDetail;
     }
 
-    async toggleFavorite(id: number, user: User) {
-        const post = await postRepository.getById(id);
-        if (!post) {
-            return Promise.reject();
-        }
+    toggleFavorite(id: number, user: User) {
+        sequelize.transaction().then(async (t) => {
+            const post = await postRepository.getById(id);
+            if (!post) {
+                return Promise.reject();
+            }
 
-        const favoritePost = await favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
+            const favoritePost = await favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
 
-        if (favoritePost) {
-            await post.$remove('favorites', user);
-            await postRepository.decreaseFavoriteCount(post.id);
-        } else {
-            await post.$add('favorites', user);
-            await postRepository.increaseFavoriteCount(post.id);
-            post.increaseFavorite();
-        }
+            if (favoritePost) {
+                await post.$remove('favorites', user);
+                await post.decreaseFavorite();
+
+            } else {
+                await post.$add('favorites', user);
+                await post.increaseFavorite();
+            }
+            await postRepository.update(post);
+
+            await t.commit();
+        });
     }
 }

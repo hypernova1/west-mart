@@ -71,11 +71,11 @@ export default class Post extends Model {
     @CreatedAt
     createdAt!: Date;
 
-    increaseFavorite() {
-        this.favorite++;
+    async increaseFavorite() {
+        await this.increment({ favorite: 1 });
     }
 
-    decreaseFavorite() {
-        this.favorite--;
+    async decreaseFavorite() {
+        await this.decrement({ favorite: 1 });
     }
 }
