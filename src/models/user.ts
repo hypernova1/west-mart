@@ -56,6 +56,11 @@ export default class User extends Model {
   @Column(DataType.BOOLEAN)
   isActive: boolean;
 
+  @Default(false)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  isApprove: boolean;
+
   @Default(NOW)
   @AllowNull(false)
   @Column(DataType.DATE)

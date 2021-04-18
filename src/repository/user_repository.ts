@@ -6,6 +6,7 @@ export default class UserRepository {
         return User.findAll({
             where: {
                 isActive: true,
+                isApprove: true,
             }
         }).then((users) => {
             return users;
@@ -57,7 +58,6 @@ export default class UserRepository {
         return User.count({
             where: {
                 email: email,
-                isActive: true,
             }
         }).then((count) => {
             return !!count;
@@ -72,6 +72,7 @@ export default class UserRepository {
             where: {
                 id: id,
                 isActive: true,
+                isApprove: true,
             }
         }).then((user) => {
             return user;
