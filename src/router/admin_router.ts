@@ -20,3 +20,5 @@ router.patch('/user/:userId/approve', checkJwt, checkRole(["ADMIN"]), async (req
     }
 
 });
+
+export default router;

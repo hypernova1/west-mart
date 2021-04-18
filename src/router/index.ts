@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, Application, Router } from 'express';
+import adminRouter from './admin_router';
 import userRouter from './user_router';
 import authRouter from './auth_router';
 import postRouter from './post_router';
@@ -11,6 +12,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
 });
 
 const setRouter = (express: Application) => {
+    express.use('/admin', adminRouter);
     express.use('/auth', authRouter);
     express.use('/comment', commentRouter);
     express.use('/post', postRouter);

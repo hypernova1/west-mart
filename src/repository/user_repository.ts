@@ -82,4 +82,15 @@ export default class UserRepository {
         });
     }
 
+    deleteById(id: number): Promise<number> {
+        return User.update({
+            isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
+        }).then((result) => {
+            return result[0];
+        });
+    }
 }

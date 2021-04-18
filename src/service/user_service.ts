@@ -37,4 +37,13 @@ export default class UserService {
     async getUserList() {
         return await userRepository.findAll();
     }
+
+    async deleteUser(id: number) {
+        const user = await userRepository.findById(id);
+        if (!user.isActive) {
+            return Promise.reject();
+        }
+
+        await userRepository.deleteById(id);
+    }
 }
