@@ -1,7 +1,6 @@
-export interface PostDto {
+export interface PostSummary {
     id: number;
     title: string,
-    content: string,
     writer: string,
     regDate: Date
 }
@@ -24,4 +23,9 @@ export interface PostDetail {
     content: string,
     writerId: number,
     writerName: string,
+}
+
+export interface PostListDto {
+    postList: Array<PostSummary>,
+    isExistNextPage: boolean,
 }

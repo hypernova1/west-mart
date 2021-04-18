@@ -34,14 +34,11 @@ export default class PostRepository {
         });
     }
 
-    save(postDto: PostForm): Promise<number | void> {
+    save(postDto: PostForm): Promise<number> {
         return Post.create(postDto)
             .then((post) => {
-                return post.id;
+                return Promise.resolve(post.id);
             }).catch((err) => {
-                console.log(err);
-                return Promise.reject();
-            }).catch((err: Error) => {
                 console.log(err);
                 return Promise.reject();
             });

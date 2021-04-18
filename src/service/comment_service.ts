@@ -5,7 +5,7 @@ const commentRepository = new CommentRepository();
 
 export default class CommentService {
 
-    registerComment(commentForm: CommentForm) {
+    registerComment(commentForm: CommentForm): Promise<number> {
         return commentRepository.create(commentForm);
     }
 
@@ -15,7 +15,7 @@ export default class CommentService {
         return deleteCount === 1;
     }
 
-    async updateComment(id: number, content: string, userId: number) {
+    async updateComment(id: number, content: string, userId: number): Promise<void> {
         const comment = await commentRepository.findByIdAndUserId(id, userId);
         if (!comment) {
             return Promise.reject();

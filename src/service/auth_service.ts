@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 
 import User from '../models/user';
 import UserRepository from '../repository/user_repository';
-import { UserJoinForm } from '../payload/user';
+import {UserJoinForm} from '../payload/user';
 
 const userRepository = new UserRepository();
 
@@ -32,7 +32,7 @@ export default class AuthService {
         });
     }
 
-    async join(joinForm: UserJoinForm) {
+    async join(joinForm: UserJoinForm): Promise<number> {
         const hashedPassword: string = bcrypt.hashSync(joinForm.password, 8);
         const user = {
             email: joinForm.email,
@@ -41,7 +41,6 @@ export default class AuthService {
             role: 'USER',
         } as User;
 
-        const userId = await userRepository.save(user);
-        return userId;
+        return await userRepository.save(user);
     }
 }

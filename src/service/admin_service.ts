@@ -4,7 +4,7 @@ const userRepository = new UserRepository();
 
 export default class AdminService {
 
-    async approveUser(userId: number) {
+    async approveUser(userId: number): Promise<void> {
         const user = await userRepository.findById(userId);
         if (user.isApprove) {
             return Promise.reject();
