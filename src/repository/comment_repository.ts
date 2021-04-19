@@ -1,10 +1,9 @@
 import Comment from '../models/comment';
-import { CommentForm } from '../payload/comment';
 
 export default class PostRepository {
 
-    create(commentForm: CommentForm): Promise<number> {
-        return Comment.create(commentForm)
+    save(comment: Comment): Promise<number> {
+        return Comment.create(comment)
             .then((comment) => {
                 return comment.id;
             }).catch((err: Error) => {

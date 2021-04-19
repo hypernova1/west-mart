@@ -1,31 +1,32 @@
 import { Router } from 'express';
 import CommentService from '../service/comment_service';
 import { CommentForm } from '../payload/comment';
+import {checkJwt} from '../middleware/jwt';
+import {checkRole} from '../middleware/check-role';
 
 const router = Router();
 const commentService = new CommentService();
 
-router.post('/', async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+    const userId = req.user.id;
     const commentForm = req.body as CommentForm;
 
-    const id = await commentService.registerComment(commentForm);
+    const id = await commentService.registerComment(commentForm, userId);
 
     res.setHeader('Location', `${req.get('host')}/comment/${id}`);
     return res.status(201).send();
 })
 
-router.delete('/:id', async (req, res, next) => {
-    const id = +req.params.id;
+router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+    const userId = req.user.id;
+    const commentId = +req.params.id;
 
-    const isDeleted = await commentService.deleteComment(id);
-    if (!isDeleted) {
-        return res.status(400).send();
-    }
+    await commentService.deleteComment(commentId, userId);
 
     return res.status(204).send();
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     try {
         const userId: number = req.user.id;
         const id: number = +req.params.id;
