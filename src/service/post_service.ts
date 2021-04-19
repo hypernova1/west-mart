@@ -31,14 +31,19 @@ export default class PostService {
         } as PostListDto
     }
 
-    async registerPost(postDto: PostForm): Promise<number> {
-        return await postRepository.save(postDto);
+    async registerPost(postForm: PostForm, userId: number): Promise<number> {
+        const post = {
+            title: postForm.title,
+            content: postForm.content,
+            userId: userId,
+        } as Post;
+        return await postRepository.save(post);
     }
 
-    async updatePost(postId: number, postForm: PostForm): Promise<void> {
-        const post = await postRepository.getById(postId);
+    async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
+        const post = await postRepository.findById(postId);
 
-        if (!post) {
+        if (!post || post.userId !== userId) {
             return Promise.reject();
         }
 
@@ -49,12 +54,20 @@ export default class PostService {
         });
     }
 
-    async deletePost(id: number): Promise<void> {
-        await postRepository.deleteById(id);
+    async deletePost(id: number, userId: number): Promise<void> {
+        const post = await postRepository.findById(id);
+
+        if (!post || post.userId !== userId) {
+            return Promise.reject();
+        }
+
+        await post.update({
+            isActive: false,
+        })
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
-        const post = await postRepository.getById(postId);
+        const post = await postRepository.findById(postId);
         if (!post) {
             return Promise.reject();
         }
@@ -69,7 +82,7 @@ export default class PostService {
 
     toggleFavorite(id: number, user: User) {
         sequelize.transaction().then(async (t) => {
-            const post = await postRepository.getById(id);
+            const post = await postRepository.findById(id);
             if (!post) {
                 return Promise.reject();
             }

@@ -25,14 +25,13 @@ router.get('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
     } catch (err) {
         return res.status(404).send();
     }
-
-})
+});
 
 router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
     const postDto = req.body as PostForm;
-    postDto.userId = +req.user.id;
+    const userId = +req.user.id;
 
-    const id: number | void = await postService.registerPost(postDto);
+    const id: number | void = await postService.registerPost(postDto, userId);
     if (!id) {
         res.status(403).send();
     }
@@ -42,17 +41,26 @@ router.post('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
 })
 
 router.put('/:id', async (req, res, next) => {
-    const postId  = +req.params.id;
-    const postForm = req.body as PostForm;
-    await postService.updatePost(postId, postForm);
+    try {
+        const userId = req.user.id;
+        const postId  = +req.params.id;
+        const postForm = req.body as PostForm;
 
-    return res.status(200).send();
+        await postService.updatePost(postForm, postId, userId);
+
+        return res.status(200).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(403).send();
+    }
+
 });
 
 router.delete('/:id', async (req, res, next) => {
-    const id = +req.params.id;
+    const userId = req.user.id;
+    const postId = +req.params.id;
 
-    await postService.deletePost(id);
+    await postService.deletePost(postId, userId);
 
     return res.status(204).send();
 });

@@ -1,6 +1,5 @@
 import Post from '../models/post';
 import { Op } from 'sequelize';
-import { PostForm } from '../payload/post';
 
 export default class PostRepository {
 
@@ -34,8 +33,8 @@ export default class PostRepository {
         });
     }
 
-    save(postDto: PostForm): Promise<number> {
-        return Post.create(postDto)
+    save(post: Post): Promise<number> {
+        return Post.create(post)
             .then((post) => {
                 return Promise.resolve(post.id);
             }).catch((err) => {
@@ -44,22 +43,7 @@ export default class PostRepository {
             });
     }
 
-    deleteById(id: number) {
-        return Post.update({
-            isActive: false,
-        }, {
-            where: {
-                id: id,
-            }
-        }).then(() => {
-            return Promise.resolve();
-        }).catch((err) => {
-            console.log(err);
-            return Promise.reject();
-        });
-    }
-
-    getById(id: number): Promise<Post> {
+    findById(id: number): Promise<Post> {
         return Post.findOne({
             where: {
                 id: id,

@@ -18,12 +18,17 @@ router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
 })
 
 router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
-    const userId = req.user.id;
-    const commentId = +req.params.id;
+    try {
+        const userId = req.user.id;
+        const commentId = +req.params.id;
 
-    await commentService.deleteComment(commentId, userId);
+        await commentService.deleteComment(commentId, userId);
 
-    return res.status(204).send();
+        return res.status(204).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(403).send();
+    }
 });
 
 router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
