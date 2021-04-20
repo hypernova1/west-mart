@@ -1,16 +1,19 @@
 import sequelize from '../models';
 import PostRepository from '../repository/post_repository';
+import FavoritePostRepository from '../repository/favorite_post_repository';
+import CategoryRepository from '../repository/category_repository';
 import Post from '../models/post';
 import { PostSummary, PostListRequest, PostForm, PostDetail, PostListDto } from '../payload/post';
 import User from '../models/user';
-import FavoritePostRepository from '../repository/favorite_post_repository';
 
 const postRepository = new PostRepository();
 const favoritePostRepository = new FavoritePostRepository();
+const categoryRepository = new CategoryRepository();
 
 export default class PostService {
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
+
         const postList = await postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
         const postDtoList = postList.map((post: Post) => {
             return {
@@ -31,19 +34,28 @@ export default class PostService {
         } as PostListDto
     }
 
-    async registerPost(postForm: PostForm, userId: number): Promise<number> {
+    async registerPost(postForm: PostForm, user: User): Promise<number> {
+
+        const category = await categoryRepository.findById(postForm.categoryId);
+
+        if (!category || category.manager !== user) {
+            return Promise.reject();
+        }
+
         const post = {
             title: postForm.title,
             content: postForm.content,
-            userId: userId,
+            writer: user,
+            category: category,
         } as Post;
+
         return await postRepository.save(post);
     }
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
         const post = await postRepository.findById(postId);
 
-        if (!post || post.userId !== userId) {
+        if (!post || post.writer.id !== userId) {
             return Promise.reject();
         }
 
@@ -57,7 +69,7 @@ export default class PostService {
     async deletePost(id: number, userId: number): Promise<void> {
         const post = await postRepository.findById(id);
 
-        if (!post || post.userId !== userId) {
+        if (!post || post.writer.id !== userId) {
             return Promise.reject();
         }
 

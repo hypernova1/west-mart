@@ -10,6 +10,7 @@ import {
     PrimaryKey, Table,
     UpdatedAt
 } from 'sequelize-typescript';
+import User from './user';
 
 @Table({
     tableName: 'category',
@@ -27,9 +28,9 @@ export default class Category extends Model {
     @Column(DataType.CHAR)
     name!: string;
 
-    @AllowNull(false)
-    @Column(DataType.CHAR)
-    manager!: string;
+    @ForeignKey(() => User)
+    @Column(DataType.INTEGER.UNSIGNED)
+    manager!: User;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)

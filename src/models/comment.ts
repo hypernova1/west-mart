@@ -31,11 +31,11 @@ export default class Comment extends Model {
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER.UNSIGNED)
-  userId: number;
+  writer!: User;
 
   @ForeignKey(() => Post)
   @Column(DataType.INTEGER.UNSIGNED)
-  postId: number;
+  post!: Post;
 
   @Default(true)
   @AllowNull(false)

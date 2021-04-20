@@ -15,6 +15,7 @@ import {
 import User from "./user";
 import Comment from './comment';
 import FavoritePost from './favorite_post';
+import Category from './category';
 
 @Table({
     tableName: 'post',
@@ -36,12 +37,12 @@ export default class Post extends Model {
     @Column(DataType.TEXT)
     content!: string;
 
+    @ForeignKey(() => Category)
+    @Column(DataType.INTEGER.UNSIGNED)
+    category: Category;
+
     @BelongsTo(() => User)
     writer: User;
-
-    @ForeignKey(() => User)
-    @Column(DataType.INTEGER.UNSIGNED)
-    userId: number;
 
     @HasMany(() => Comment)
     comments: Comment[];

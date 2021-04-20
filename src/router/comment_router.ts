@@ -8,10 +8,10 @@ const router = Router();
 const commentService = new CommentService();
 
 router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
-    const userId = req.user.id;
+    const user = req.user;
     const commentForm = req.body as CommentForm;
 
-    const id = await commentService.registerComment(commentForm, userId);
+    const id = await commentService.registerComment(commentForm, user);
 
     res.setHeader('Location', `${req.get('host')}/comment/${id}`);
     return res.status(201).send();

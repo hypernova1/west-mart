@@ -7,7 +7,7 @@ import {checkJwt} from '../middleware/jwt';
 const router = Router();
 const postService = new PostService();
 
-router.get('/', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+router.get('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     const request: PostListRequest = {};
     request.pageNo = +req.query.pageNo || 1;
     request.size = +req.query.size || 10;
@@ -28,25 +28,30 @@ router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next
 });
 
 router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
-    const postDto = req.body as PostForm;
-    const userId = +req.user.id;
+    try {
+        const postDto = req.body as PostForm;
+        const user = req.user;
 
-    const id: number | void = await postService.registerPost(postDto, userId);
-    if (!id) {
-        res.status(403).send();
+        const id: number | void = await postService.registerPost(postDto, user);
+        if (!id) {
+            res.status(403).send();
+        }
+
+        res.setHeader('Location', `${req.get('host')}/post/${id}`);
+        return res.status(201).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(403).send();
     }
-
-    res.setHeader('Location', `${req.get('host')}/post/${id}`);
-    return res.status(201).send();
 })
 
 router.put('/:id', async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const user = req.user;
         const postId  = +req.params.id;
         const postForm = req.body as PostForm;
 
-        await postService.updatePost(postForm, postId, userId);
+        await postService.updatePost(postForm, postId, user.id);
 
         return res.status(200).send();
     } catch (err) {
