@@ -14,6 +14,7 @@ export interface PostListRequest {
 export interface PostForm {
     title: string,
     content: string,
+    categoryId: number,
 }
 
 export interface PostDetail {

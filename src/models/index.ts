@@ -4,6 +4,7 @@ import config from '../../config/config';
 import User from './user';
 import Post from './post';
 import Comment from "./comment";
+import Category from './category';
 import FavoritePost from "./favorite_post";
 
 const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
@@ -18,6 +19,7 @@ sequelize.addModels([
     User,
     Post,
     Comment,
+    Category,
     FavoritePost,
 ]);
 
