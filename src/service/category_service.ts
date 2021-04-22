@@ -36,4 +36,21 @@ export default class CategoryService {
         return await categoryRepository.save(category);
 
     }
+
+    async updateCategory(id: number, categoryForm: CategoryForm) {
+        const category = await categoryRepository.findById(id);
+        if (!category) {
+            return Promise.reject();
+        }
+
+        const user = userRepository.findById(categoryForm.managerId);
+        if (!user) {
+            return Promise.reject();
+        }
+
+        await category.update({
+            name: categoryForm.name,
+            manager: user,
+        });
+    }
 }

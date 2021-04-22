@@ -25,6 +25,21 @@ router.post('/',  checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
         console.log(err);
         return res.status(400).send();
     }
-});
+})
+
+router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+    try {
+        const categoryId = +req.params.id;
+        const categoryForm = req.body as CategoryForm;
+
+        await categoryService.updateCategory(categoryId, categoryForm);
+
+        return res.status(204).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send();
+    }
+
+})
 
 export default router;
