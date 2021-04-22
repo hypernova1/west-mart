@@ -53,4 +53,15 @@ export default class CategoryService {
             manager: user,
         });
     }
+
+    async deleteCategory(id: number) {
+        const category = await categoryRepository.findById(id);
+        if (!category) {
+            return Promise.reject();
+        }
+
+        await category.update({
+            isActive: false,
+        })
+    }
 }

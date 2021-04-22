@@ -40,6 +40,22 @@ router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
         return res.status(400).send();
     }
 
-})
+});
+
+router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+    try {
+        const categoryId = +req.params.id;
+
+        await categoryService.deleteCategory(categoryId);
+
+        return res.status(204).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send();
+    }
+
+
+
+});
 
 export default router;
