@@ -38,4 +38,10 @@ export default class CategoryRepository {
         });
     }
 
+    save(category: Category): Promise<number> {
+        return Category.create(category)
+            .then((category) => {
+                return Promise.resolve(category.id);
+            });
+    }
 }

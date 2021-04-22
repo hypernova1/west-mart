@@ -1,7 +1,10 @@
 import CategoryRepository from '../repository/category_repository';
-import { CategoryDto } from '../payload/category';
+import UserRepository from '../repository/user_repository';
+import Category from '../models/category';
+import { CategoryDto, CategoryForm } from '../payload/category';
 
 const categoryRepository = new CategoryRepository();
+const userRepository = new UserRepository();
 
 export default class CategoryService {
 
@@ -16,5 +19,21 @@ export default class CategoryService {
                 managerId: category.manager.id,
             } as CategoryDto;
         });
+    }
+
+    async registerCategory(categoryForm: CategoryForm): Promise<number> {
+        const user = await userRepository.findById(categoryForm.managerId);
+
+        if (!user) {
+            return Promise.reject();
+        }
+
+        const category = {
+            name: categoryForm.name,
+            manager: user,
+        } as Category;
+
+        return await categoryRepository.save(category);
+
     }
 }
