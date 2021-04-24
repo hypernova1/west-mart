@@ -16,6 +16,7 @@ import User from "./user";
 import Comment from './comment';
 import FavoritePost from './favorite_post';
 import Category from './category';
+import Tag from './tag';
 
 @Table({
     tableName: 'post',
@@ -54,6 +55,9 @@ export default class Post extends Model {
 
     @BelongsToMany(() => User, () => FavoritePost)
     favorites: Array<User>;
+
+    @HasMany(() => Tag)
+    tags: Array<Tag>;
 
     @Default(true)
     @AllowNull(false)

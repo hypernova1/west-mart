@@ -6,6 +6,7 @@ import Post from './post';
 import Comment from "./comment";
 import Category from './category';
 import FavoritePost from "./favorite_post";
+import Tag from './tag';
 
 const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
 
@@ -21,6 +22,7 @@ sequelize.addModels([
     Comment,
     Category,
     FavoritePost,
+    Tag,
 ]);
 
 export { sequelize }
