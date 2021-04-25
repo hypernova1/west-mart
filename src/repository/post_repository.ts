@@ -33,10 +33,10 @@ export default class PostRepository {
         });
     }
 
-    save(post: Post): Promise<number> {
+    save(post: Post): Promise<Post> {
         return Post.create(post)
             .then((post) => {
-                return Promise.resolve(post.id);
+                return Promise.resolve(post);
             }).catch((err) => {
                 console.log(err);
                 return Promise.reject();

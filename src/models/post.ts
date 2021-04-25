@@ -45,6 +45,10 @@ export default class Post extends Model {
     @BelongsTo(() => User)
     writer: User;
 
+    @ForeignKey(() => User)
+    @Column(DataType.INTEGER.UNSIGNED)
+    userId: number;
+
     @HasMany(() => Comment)
     comments: Comment[];
 

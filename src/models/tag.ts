@@ -3,6 +3,7 @@ import {
     AutoIncrement,
     Column,
     DataType,
+    ForeignKey,
     Model,
     Default,
     AllowNull,
@@ -12,6 +13,7 @@ import {
     UpdatedAt,
     Unique,
 } from 'sequelize-typescript';
+import Post from './post';
 
 @Table({
     tableName: 'tag',
@@ -26,9 +28,13 @@ export default class Tag extends Model {
     id!: number;
 
     @AllowNull(false)
-    @Column(DataType.CHAR)
     @Unique
+    @Column(DataType.CHAR)
     name!: string;
+
+    @ForeignKey(() => Post)
+    @Column(DataType.INTEGER.UNSIGNED)
+    postId: number;
 
     @Default(NOW)
     @AllowNull(false)

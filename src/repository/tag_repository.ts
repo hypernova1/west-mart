@@ -19,4 +19,20 @@ export default class TagRepository {
         });
     }
 
+    findAllByNameIn(tagNames: Array<string>): Promise<Array<Tag>> {
+        return Tag.findAll({
+            where: {
+                name: tagNames,
+            }
+        }).then((tags) => {
+            return tags;
+        })
+    }
+
+    saveAll(tags: Array<string>): Promise<Array<Tag>> {
+        return Tag.bulkCreate(tags)
+            .then((tags) => {
+                return tags;
+            });
+    }
 }

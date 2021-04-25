@@ -2,13 +2,16 @@ import sequelize from '../models';
 import PostRepository from '../repository/post_repository';
 import FavoritePostRepository from '../repository/favorite_post_repository';
 import CategoryRepository from '../repository/category_repository';
+import TagService from '../service/tag_service';
 import Post from '../models/post';
 import { PostSummary, PostListRequest, PostForm, PostDetail, PostListDto } from '../payload/post';
 import User from '../models/user';
+import Tag from '../models/tag';
 
 const postRepository = new PostRepository();
 const favoritePostRepository = new FavoritePostRepository();
 const categoryRepository = new CategoryRepository();
+const tagService = new TagService();
 
 export default class PostService {
 
@@ -42,14 +45,19 @@ export default class PostService {
             return Promise.reject();
         }
 
+        const tags = await tagService.getListOrCreate(postForm.tags);
+
         const post = {
             title: postForm.title,
             content: postForm.content,
             writer: user,
+            tags: tags,
             category: category,
         } as Post;
 
-        return await postRepository.save(post);
+        const savedPost = await postRepository.save(post);
+
+        return savedPost.id;
     }
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
@@ -59,9 +67,12 @@ export default class PostService {
             return Promise.reject();
         }
 
+        const tags = await tagService.getListOrCreate(postForm.tags);
+
         await post.update({
             id: postId,
             title: postForm.title,
+            tags: tags,
             content: postForm.content,
         });
     }
@@ -83,11 +94,15 @@ export default class PostService {
         if (!post) {
             return Promise.reject();
         }
+
+        const tagNames = post.tags.map((tag) => tag.name);
+
         return {
             id: post.id,
             title: post.title,
             content: post.content,
             writerId: post.writer.id,
+            tags: tagNames,
             writerName: post.writer.nickname,
         } as PostDetail;
     }
