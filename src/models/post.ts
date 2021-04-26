@@ -60,6 +60,11 @@ export default class Post extends Model {
     @BelongsToMany(() => User, () => FavoritePost)
     favorites: Array<User>;
 
+    @Default(0)
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    hits: number;
+
     @HasMany(() => Tag)
     tags: Array<Tag>;
 

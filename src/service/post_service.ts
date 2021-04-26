@@ -128,4 +128,9 @@ export default class PostService {
             await t.commit();
         });
     }
+
+    async increasePostHits(id: number) {
+        const post = await postRepository.findById(id);
+        await post.increment({ hits: 1 });
+    }
 }

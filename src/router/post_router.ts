@@ -20,6 +20,17 @@ router.get('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) =
 router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
         const postId = +req.params.id;
+        const cookie = req.cookies.post;
+
+        if (cookie) {
+            if (cookie.indexOf(postId) === -1) {
+                req.cookies.post += ',' + postId;
+                await postService.increasePostHits(postId);
+            }
+        } else {
+            req.cookies.post = postId;
+        }
+
         const postDetail = await postService.getPostDetail(postId);
         return res.status(200).json(postDetail);
     } catch (err) {
