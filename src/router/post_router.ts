@@ -56,7 +56,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) 
     }
 })
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
         const user = req.user;
         const postId  = +req.params.id;
@@ -72,7 +72,7 @@ router.put('/:id', async (req, res, next) => {
 
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     const userId = req.user.id;
     const postId = +req.params.id;
 
