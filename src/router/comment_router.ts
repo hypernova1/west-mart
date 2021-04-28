@@ -3,11 +3,12 @@ import CommentService from '../service/comment_service';
 import { CommentForm } from '../payload/comment';
 import {checkJwt} from '../middleware/jwt';
 import {checkRole} from '../middleware/check-role';
+import User from "../models/user";
 
 const router = Router();
 const commentService = new CommentService();
 
-router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     const user = req.user;
     const commentForm = req.body as CommentForm;
 
@@ -17,12 +18,12 @@ router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     return res.status(201).send();
 })
 
-router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const user = req.user as User;
         const commentId = +req.params.id;
 
-        await commentService.deleteComment(commentId, userId);
+        await commentService.deleteComment(commentId, user.id);
 
         return res.status(204).send();
     } catch (err) {
@@ -31,7 +32,7 @@ router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => 
     }
 });
 
-router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
         const userId: number = req.user.id;
         const id: number = +req.params.id;
