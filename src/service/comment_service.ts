@@ -24,7 +24,7 @@ export default class CommentService {
     async deleteComment(id: number, userId: number): Promise<boolean> {
         const comment = await commentRepository.findByIdAndUserId(id, userId);
 
-        if (!comment) {
+        if (!comment || (comment.writer.id !== userId && userId !== 0)) {
             return Promise.reject();
         }
 

@@ -79,7 +79,7 @@ export default class PostService {
     async deletePost(id: number, userId: number): Promise<void> {
         const post = await postRepository.findById(id);
 
-        if (!post || post.writer.id !== userId) {
+        if (!post || (post.writer.id !== userId && userId !== 0)) {
             return Promise.reject();
         }
 
@@ -126,5 +126,10 @@ export default class PostService {
 
             await t.commit();
         });
+    }
+
+    async increasePostHits(id: number) {
+        const post = await postRepository.findById(id);
+        await post.increment({ hits: 1 });
     }
 }

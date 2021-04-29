@@ -20,6 +20,17 @@ router.get('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) =
 router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
         const postId = +req.params.id;
+        const cookie = req.cookies.post;
+
+        if (cookie) {
+            if (cookie.indexOf(postId) === -1) {
+                req.cookies.post += ',' + postId;
+                await postService.increasePostHits(postId);
+            }
+        } else {
+            req.cookies.post = postId;
+        }
+
         const postDetail = await postService.getPostDetail(postId);
         return res.status(200).json(postDetail);
     } catch (err) {
@@ -45,7 +56,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) 
     }
 })
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     try {
         const user = req.user;
         const postId  = +req.params.id;
@@ -61,7 +72,7 @@ router.put('/:id', async (req, res, next) => {
 
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
     const userId = req.user.id;
     const postId = +req.params.id;
 
