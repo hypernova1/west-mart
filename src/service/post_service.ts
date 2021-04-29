@@ -5,7 +5,9 @@ import CategoryRepository from '@repository/category_repository';
 import TagService from '@service/tag_service';
 import Post from '@model/post';
 import User from '@model/user';
-import { PostSummary, PostListRequest, PostForm, PostDetail, PostListDto } from '@payload/post';
+import {PostDetail, PostForm, PostListDto, PostListRequest, PostSummary} from '@payload/post';
+import ResponseEntity from '@payload/response_entity';
+import HttpStatus from '@constant/http_status';
 
 const postRepository = new PostRepository();
 const favoritePostRepository = new FavoritePostRepository();
@@ -15,7 +17,6 @@ const tagService = new TagService();
 export default class PostService {
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
-
         const postList = await postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
         const postDtoList = postList.map((post: Post) => {
             return {
@@ -40,8 +41,16 @@ export default class PostService {
 
         const category = await categoryRepository.findById(postForm.categoryId);
 
-        if (!category || category.manager !== user) {
-            return Promise.reject();
+        if (!category) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '카테고리가 존재하지 않습니다.')
+            );
+        }
+
+        if (category.manager !== user) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.FORBIDDEN, '작성 권한이 없습니다.')
+            )
         }
 
         const tags = await tagService.getListOrCreate(postForm.tags);
@@ -62,8 +71,16 @@ export default class PostService {
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
         const post = await postRepository.findById(postId);
 
-        if (!post || post.writer.id !== userId) {
-            return Promise.reject();
+        if (!post) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+            );
+        }
+
+        if (post.writer.id !== userId) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.FORBIDDEN, '수정 권한이 없습니다.')
+            );
         }
 
         const tags = await tagService.getListOrCreate(postForm.tags);
@@ -79,8 +96,16 @@ export default class PostService {
     async deletePost(id: number, userId: number): Promise<void> {
         const post = await postRepository.findById(id);
 
-        if (!post || (post.writer.id !== userId && userId !== 0)) {
-            return Promise.reject();
+        if (!post) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+            );
+        }
+
+        if (post.writer.id !== userId && userId !== 0) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.FORBIDDEN, '삭제 권한이 없습니다.')
+            );
         }
 
         await post.update({
@@ -91,7 +116,9 @@ export default class PostService {
     async getPostDetail(postId: number): Promise<PostDetail> {
         const post = await postRepository.findById(postId);
         if (!post) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+            );
         }
 
         const tagNames = post.tags.map((tag) => tag.name);
@@ -110,7 +137,9 @@ export default class PostService {
         sequelize.transaction().then(async (t) => {
             const post = await postRepository.findById(id);
             if (!post) {
-                return Promise.reject();
+                return Promise.reject(
+                    ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+                );
             }
 
             const favoritePost = await favoritePostRepository.getByUserIdAndPostId(user.id, post.id);

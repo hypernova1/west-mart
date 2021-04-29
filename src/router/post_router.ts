@@ -5,6 +5,7 @@ import validate from '@validate/index';
 import postValidator from '@validate/post';
 import PostService from '@service/post_service';
 import { PostListRequest, PostForm } from '@payload/post';
+import errorHandler from '@util/error_handler';
 
 const router = Router();
 const postService = new PostService();
@@ -36,7 +37,7 @@ router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next
         const postDetail = await postService.getPostDetail(postId);
         return res.status(200).json(postDetail);
     } catch (err) {
-        return res.status(404).send();
+        return errorHandler(res, err);
     }
 });
 
@@ -53,8 +54,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator[
         res.setHeader('Location', `${req.get('host')}/post/${id}`);
         return res.status(201).send();
     } catch (err) {
-        console.log(err);
-        return res.status(403).send();
+        return errorHandler(res, err);
     }
 })
 
@@ -68,8 +68,7 @@ router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidato
 
         return res.status(200).send();
     } catch (err) {
-        console.log(err);
-        return res.status(403).send();
+        return errorHandler(res, err);
     }
 
 });
@@ -92,8 +91,7 @@ router.patch('/:id/favorite', checkJwt, checkRole(["ADMIN", "USER"]), async (req
 
         return res.status(204).send();
     } catch (err) {
-        console.log(err);
-        return res.status(404).send();
+        return errorHandler(res, err);
     }
 });
 

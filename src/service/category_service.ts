@@ -1,3 +1,5 @@
+import ResponseEntity from '@payload/response_entity';
+import HttpStatus from '@constant/http_status';
 import CategoryRepository from '@repository/category_repository';
 import UserRepository from '@repository/user_repository';
 import Category from '@model/category';
@@ -25,7 +27,9 @@ export default class CategoryService {
         const user = await userRepository.findById(categoryForm.managerId);
 
         if (!user) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.BAD_REQUEST, '존재하지 않는 사용자입니다.')
+            );
         }
 
         const category = {
@@ -40,12 +44,16 @@ export default class CategoryService {
     async updateCategory(id: number, categoryForm: CategoryForm) {
         const category = await categoryRepository.findById(id);
         if (!category) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 카테고리입니다.')
+            );
         }
 
         const user = userRepository.findById(categoryForm.managerId);
         if (!user) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.BAD_REQUEST, '존재하지 않는 사용자입니다.')
+            );
         }
 
         await category.update({
@@ -57,7 +65,9 @@ export default class CategoryService {
     async deleteCategory(id: number) {
         const category = await categoryRepository.findById(id);
         if (!category) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 카테고리입니다.')
+            );
         }
 
         await category.update({

@@ -3,15 +3,15 @@ import { checkJwt } from '@middleware/jwt';
 import { checkRole } from '@middleware/check-role';
 import validate from '@validate/index';
 import commentValidator from '@validate/comment';
+import errorHandler from '@util/error_handler';
 import User from '@model/user';
 import CommentService from '@service/comment_service';
 import { CommentForm } from '@payload/comment';
-import categoryValidator from '@validate/category';
 
 const router = Router();
 const commentService = new CommentService();
 
-router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(categoryValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(commentValidator['register']), async (req, res, next) => {
     const user = req.user;
     const commentForm = req.body as CommentForm;
 
@@ -30,12 +30,11 @@ router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, n
 
         return res.status(204).send();
     } catch (err) {
-        console.log(err);
-        return res.status(403).send();
+        return errorHandler(res, err);
     }
 });
 
-router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(categoryValidator['update']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(commentValidator['update']), async (req, res, next) => {
     try {
         const userId: number = req.user.id;
         const id: number = +req.params.id;
@@ -45,7 +44,7 @@ router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(categoryVali
 
         return res.status(204).send();
     } catch (err) {
-        return res.status(400).send();
+        return errorHandler(res, err);
     }
 
 })

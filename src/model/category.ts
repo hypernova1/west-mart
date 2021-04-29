@@ -7,7 +7,7 @@ import {
     DataType,
     Default, ForeignKey,
     Model,
-    PrimaryKey, Table,
+    PrimaryKey, Table, Unique,
     UpdatedAt
 } from 'sequelize-typescript';
 import User from '@model/user';
@@ -24,6 +24,7 @@ export default class Category extends Model {
     @Column(DataType.INTEGER.UNSIGNED)
     readonly id!: number;
 
+    @Unique
     @AllowNull(false)
     @Column(DataType.CHAR)
     name!: string;

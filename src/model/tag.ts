@@ -27,8 +27,8 @@ export default class Tag extends Model {
     @Column(DataType.INTEGER.UNSIGNED)
     id!: number;
 
-    @AllowNull(false)
     @Unique
+    @AllowNull(false)
     @Column(DataType.CHAR)
     name!: string;
 

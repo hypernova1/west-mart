@@ -4,6 +4,7 @@ import { checkRole } from '@middleware/check-role';
 import validate from '@validate/index';
 import userValidator from '@validate/user';
 import UserService from '@service/user_service';
+import errorHandler from '@util/error_handler';
 import { UserJoinForm } from '@payload/user';
 
 const router = express.Router();
@@ -17,13 +18,9 @@ router.get('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
 router.get('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     try {
         const user = await userService.getUserById(Number(req.params.id));
-        if (!user) {
-            return res.status(404).send('존재하지 않는 회원입니다.');
-        }
-
         return res.json(user);
     } catch (err) {
-        return res.status(404).send();
+        return errorHandler(res, err);
     }
 });
 
@@ -36,7 +33,7 @@ router.put('/:id', checkJwt, checkRole(["USER"]), validate(userValidator['update
 
         return res.status(200).send('success');
     } catch (err) {
-        return res.status(400).send('잘못된 요청입니다.');
+        return errorHandler(res, err);
     }
 });
 
@@ -62,8 +59,7 @@ router.delete('/:id', checkJwt, checkRole(["USER", "ADMIN"]), async (req, res, n
 
         return res.status(204).send();
     } catch (err) {
-        console.log(err);
-        return res.status(400).send('존재하지 않는 유저입니다.');
+        return errorHandler(res, err);
     }
 })
 

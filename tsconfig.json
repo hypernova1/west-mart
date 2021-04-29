@@ -20,6 +20,8 @@
       "@payload/*": ["payload/*"],
       "@middleware/*": ["middleware/*"],
       "@validate/*": ["validate/*"],
+      "@constant/*": ["constant/*"],
+      "@util/*": ["util/*"]
     },
     "typeRoots": [
       "./@types"

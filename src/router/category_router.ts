@@ -4,6 +4,7 @@ import { checkRole } from '@middleware/check-role';
 import { validate } from '@validate/index';
 import categoryValidator from '@validate/category';
 import CategoryService from '@service/category_service';
+import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
 
 const router = Router();
@@ -24,8 +25,7 @@ router.post('/', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['reg
         res.setHeader('Location', `${req.get('host')}/category/${id}`);
         return res.status(201).send();
     } catch (err) {
-        console.log(err);
-        return res.status(400).send();
+        return errorHandler(res, err);
     }
 })
 
@@ -38,8 +38,7 @@ router.put('/:id', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['r
 
         return res.status(204).send();
     } catch (err) {
-        console.log(err);
-        return res.status(400).send();
+        return errorHandler(res, err);
     }
 
 });
@@ -52,12 +51,8 @@ router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => 
 
         return res.status(204).send();
     } catch (err) {
-        console.log(err);
-        return res.status(400).send();
+        errorHandler(res, err);
     }
-
-
-
 });
 
 export default router;

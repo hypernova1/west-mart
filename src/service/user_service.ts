@@ -1,6 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import UserRepository from '@repository/user_repository';
-import { UserDetail, UserSummary, UserUpdateForm } from '@payload/user';
+import {UserDetail, UserSummary, UserUpdateForm} from '@payload/user';
+import ResponseEntity from '@payload/response_entity';
+import HttpStatus from '@constant/http_status';
 
 const userRepository = new UserRepository();
 
@@ -8,6 +10,11 @@ export default class UserService {
 
     async getUserById(userId: number): Promise<UserDetail> {
         const user = await userRepository.findById(userId);
+        if (!user) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+            );
+        }
 
         return {
             id: user.id,
@@ -19,7 +26,9 @@ export default class UserService {
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
         const user = await userRepository.getById(userId);
         if (!user) {
-            return Promise.resolve();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+            );
         }
 
         const hashedPassword = await bcrypt.hash(updateForm.password, 12);
@@ -47,8 +56,10 @@ export default class UserService {
 
     async deleteUser(id: number): Promise<void> {
         const user = await userRepository.findById(id);
-        if (!user.isActive) {
-            return Promise.reject();
+        if (!user) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+            );
         }
 
         await userRepository.deleteById(id);

@@ -3,7 +3,9 @@ import * as jwt from 'jsonwebtoken';
 
 import User from '@model/user';
 import UserRepository from '@repository/user_repository';
-import { UserJoinForm } from '@payload/user';
+import {UserJoinForm} from '@payload/user';
+import HttpStatus from '@constant/http_status';
+import ResponseEntity from '@payload/response_entity';
 
 const userRepository = new UserRepository();
 
@@ -13,13 +15,17 @@ export default class AuthService {
         const user: User = await userRepository.findByEmail(email);
 
         if (!user) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.BAD_REQUEST, '잘못된 정보입니다.')
+            );
         }
 
         const isEqual = bcrypt.compareSync(password, user.password);
 
         if (!isEqual) {
-            return Promise.reject();
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.BAD_REQUEST, '잘못된 정보입니다.')
+            );
         }
 
         return jwt.sign({
@@ -41,6 +47,12 @@ export default class AuthService {
             role: 'USER',
         } as User;
 
-        return await userRepository.save(user);
+        try {
+            return await userRepository.save(user);
+        } catch (err) {
+            return Promise.reject(
+                ResponseEntity.create(HttpStatus.CONFLICT, '이미 존재하는 이메일입니다.')
+            );
+        }
     }
 }

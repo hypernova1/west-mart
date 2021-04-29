@@ -4,6 +4,7 @@ import AuthService from '@service/auth_service';
 import { UserJoinForm } from '@payload/user';
 import validate from '@validate/index';
 import authValidator from '@validate/auth';
+import errorHandler from '@util/error_handler';
 
 const router = express.Router();
 const authService = new AuthService();
@@ -15,16 +16,21 @@ router.post('/login', validate(authValidator['login']), async (req, res, next) =
 
         return res.send({ token: token });
     } catch (err) {
-        return res.status(401).send();
+        return errorHandler(res, err);
     }
 });
 
 router.post('/join', validate(authValidator['join']), async (req, res, next) => {
-    const joinForm = req.body as UserJoinForm;
+    try {
+        const joinForm = req.body as UserJoinForm;
 
-    const userId = await authService.join(joinForm);
-    res.setHeader('Location', `${req.get('host')}/user/${userId}`);
-    res.send();
+        const userId = await authService.join(joinForm);
+
+        res.setHeader('Location', `${req.get('host')}/user/${userId}`);
+        res.status(201).send();
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 export default router;

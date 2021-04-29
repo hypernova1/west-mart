@@ -4,6 +4,7 @@ import { checkRole } from '@middleware/check-role';
 import AdminService from '@service/admin_service';
 import PostService from '@service/post_service';
 import CommentService from "@service/comment_service";
+import errorHandler from '@util/error_handler';
 
 const router = Router();
 const adminService = new AdminService();
@@ -18,8 +19,7 @@ router.patch('/user/:userId/approve', checkJwt, checkRole(["ADMIN"]), async (req
 
         return res.status(200).send();
     } catch (err) {
-        console.log(err);
-        return res.status(400).send();
+        return errorHandler(res, err);
     }
 
 });
