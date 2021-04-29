@@ -1,13 +1,15 @@
 import * as express from 'express';
-import UserService from '@service/user_service';
-import { UserJoinForm } from '@payload/user';
 import { checkJwt } from '@middleware/jwt';
 import { checkRole } from '@middleware/check-role';
+import validate from '@validate/index';
+import userValidator from '@validate/user';
+import UserService from '@service/user_service';
+import { UserJoinForm } from '@payload/user';
 
 const router = express.Router();
 const userService = new UserService();
 
-router.post('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.get('/', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     const userList = await userService.getUserList();
     return res.status(200).json(userList);
 })
@@ -25,7 +27,7 @@ router.get('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     }
 });
 
-router.put('/:id', checkJwt, checkRole(["USER"]), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["USER"]), validate(userValidator['update']), async (req, res, next) => {
     try {
         const userDto = req.body as UserJoinForm;
         const userId = req.user.id;

@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import PostService from '../service/post_service';
-import { PostListRequest, PostForm } from '@payload/post';
 import { checkRole } from '@middleware/check-role';
 import { checkJwt } from '@middleware/jwt';
+import validate from '@validate/index';
+import postValidator from '@validate/post';
+import PostService from '@service/post_service';
+import { PostListRequest, PostForm } from '@payload/post';
 
 const router = Router();
 const postService = new PostService();
@@ -38,7 +40,7 @@ router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next
     }
 });
 
-router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator['register']), async (req, res, next) => {
     try {
         const postDto = req.body as PostForm;
         const user = req.user;
@@ -56,7 +58,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) 
     }
 })
 
-router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator['register']), async (req, res, next) => {
     try {
         const user = req.user;
         const postId  = +req.params.id;

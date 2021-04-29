@@ -8,7 +8,7 @@ import {
   AllowNull,
   Default,
   CreatedAt,
-  UpdatedAt, HasMany, Table, BelongsToMany
+  UpdatedAt, HasMany, Table, BelongsToMany, Unique
 } from 'sequelize-typescript';
 import Post from '@model/post';
 import Comment from '@model/comment';
@@ -30,6 +30,7 @@ export default class User extends Model {
   @Column(DataType.CHAR)
   nickname!: string;
 
+  @Unique
   @AllowNull(false)
   @Column(DataType.CHAR)
   email!: string;

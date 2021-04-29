@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import CategoryService from '@service/category_service';
-import {CategoryForm} from '@payload/category';
 import { checkJwt } from '@middleware/jwt';
 import { checkRole } from '@middleware/check-role';
+import { validate } from '@validate/index';
+import categoryValidator from '@validate/category';
+import CategoryService from '@service/category_service';
+import { CategoryForm } from '@payload/category';
 
 const router = Router();
 const categoryService = new CategoryService()
@@ -13,7 +15,7 @@ router.get('/', async (req, res, next) => {
     return res.status(200).json(categories);
 });
 
-router.post('/',  checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.post('/', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['register']), async (req, res, next) => {
     try {
         const categoryForm = req.body as CategoryForm;
 
@@ -27,7 +29,7 @@ router.post('/',  checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
     }
 })
 
-router.put('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['register']), async (req, res, next) => {
     try {
         const categoryId = +req.params.id;
         const categoryForm = req.body as CategoryForm;

@@ -20,7 +20,7 @@ export default class Application {
     }
 
     setSequelize() {
-        sequelize.sync({ force: true })
+        sequelize.sync({ force: false })
             .then(() => {
                 console.log('database connection,');
             }).catch((err: Error) => {
@@ -57,6 +57,7 @@ export default class Application {
     }
 
 }
+
 
 
 

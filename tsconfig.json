@@ -18,7 +18,8 @@
       "@repository/*": ["repository/*"],
       "@model/*": ["model/*"],
       "@payload/*": ["payload/*"],
-      "@middleware/*": ["middleware/*"]
+      "@middleware/*": ["middleware/*"],
+      "@validate/*": ["validate/*"],
     },
     "typeRoots": [
       "./@types"
