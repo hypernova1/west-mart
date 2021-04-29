@@ -1,7 +1,7 @@
-import CategoryRepository from '../repository/category_repository';
-import UserRepository from '../repository/user_repository';
-import Category from '../models/category';
-import { CategoryDto, CategoryForm } from '../payload/category';
+import CategoryRepository from '@repository/category_repository';
+import UserRepository from '@repository/user_repository';
+import Category from '@model/category';
+import { CategoryDto, CategoryForm } from '@payload/category';
 
 const categoryRepository = new CategoryRepository();
 const userRepository = new UserRepository();

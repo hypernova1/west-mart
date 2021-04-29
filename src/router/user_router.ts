@@ -1,8 +1,8 @@
 import * as express from 'express';
-import UserService from '../service/user_service';
-import { UserJoinForm } from '../payload/user';
-import { checkJwt } from '../middleware/jwt';
-import { checkRole } from '../middleware/check-role';
+import UserService from '@service/user_service';
+import { UserJoinForm } from '@payload/user';
+import { checkJwt } from '@middleware/jwt';
+import { checkRole } from '@middleware/check-role';
 
 const router = express.Router();
 const userService = new UserService();

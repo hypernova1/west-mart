@@ -1,19 +1,19 @@
 import { Sequelize } from 'sequelize-typescript';
 import config from '../../config/config';
 
-import User from './user';
-import Post from './post';
-import Comment from "./comment";
-import Category from './category';
-import FavoritePost from "./favorite_post";
-import Tag from './tag';
+import User from '@model/user';
+import Post from '@model/post';
+import Comment from "@model/comment";
+import Category from '@model/category';
+import FavoritePost from "@model/favorite_post";
+import Tag from '@model/tag';
 
 const env = process.env.NODE_ENV as ('production' | 'test' | 'development') || 'development';
 
 const { database, username, password } = config[env];
 const sequelize = new Sequelize(database, username, password, {
     dialect: "mysql",
-    models: ['/src/models/*.ts'],
+    models: ['/src/model/*.ts'],
 });
 
 sequelize.addModels([

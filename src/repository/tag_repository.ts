@@ -1,4 +1,4 @@
-import Tag from '../models/tag';
+import Tag from '@model/tag';
 
 export default class TagRepository {
 

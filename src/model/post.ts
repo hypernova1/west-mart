@@ -12,11 +12,11 @@ import {
     CreatedAt,
     ForeignKey, HasMany, BelongsTo, BelongsToMany
 } from 'sequelize-typescript'
-import User from "./user";
-import Comment from './comment';
-import FavoritePost from './favorite_post';
-import Category from './category';
-import Tag from './tag';
+import User from "@model/user";
+import Comment from '@model/comment';
+import FavoritePost from '@model/favorite_post';
+import Category from '@model/category';
+import Tag from '@model/tag';
 
 @Table({
     tableName: 'post',

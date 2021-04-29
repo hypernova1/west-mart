@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import AdminService from '../service/admin_service';
-import {checkJwt} from '../middleware/jwt';
-import {checkRole} from '../middleware/check-role';
+import AdminService from '@service/admin_service';
+import { checkJwt } from '@middleware/jwt';
+import { checkRole } from '@middleware/check-role';
 
 const router = Router();
 const adminService = new AdminService();

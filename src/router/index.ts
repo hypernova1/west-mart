@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction, Application, Router } from 'express';
-import adminRouter from './admin_router';
-import userRouter from './user_router';
-import authRouter from './auth_router';
-import postRouter from './post_router';
-import commentRouter from './comment_router';
-import categoryRouter from './category_router';
+import adminRouter from '@router/admin_router';
+import userRouter from '@router/user_router';
+import authRouter from '@router/auth_router';
+import postRouter from '@router/post_router';
+import commentRouter from '@router/comment_router';
+import categoryRouter from '@router/category_router';
 
 const router = Router();
 

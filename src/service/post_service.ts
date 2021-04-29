@@ -1,12 +1,11 @@
-import sequelize from '../models';
-import PostRepository from '../repository/post_repository';
-import FavoritePostRepository from '../repository/favorite_post_repository';
-import CategoryRepository from '../repository/category_repository';
-import TagService from '../service/tag_service';
-import Post from '../models/post';
-import { PostSummary, PostListRequest, PostForm, PostDetail, PostListDto } from '../payload/post';
-import User from '../models/user';
-import Tag from '../models/tag';
+import sequelize from '@model/index';
+import PostRepository from '@repository/post_repository';
+import FavoritePostRepository from '@repository/favorite_post_repository';
+import CategoryRepository from '@repository/category_repository';
+import TagService from '@service/tag_service';
+import Post from '@model/post';
+import User from '@model/user';
+import { PostSummary, PostListRequest, PostForm, PostDetail, PostListDto } from '@payload/post';
 
 const postRepository = new PostRepository();
 const favoritePostRepository = new FavoritePostRepository();

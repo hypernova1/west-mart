@@ -10,8 +10,8 @@ import {
   PrimaryKey, Table,
   UpdatedAt
 } from 'sequelize-typescript';
-import Post from "./post";
-import User from "./user";
+import Post from "@model/post";
+import User from "@model/user";
 
 @Table({
   tableName: 'comment',

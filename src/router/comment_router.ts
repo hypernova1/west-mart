@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import CommentService from '../service/comment_service';
-import { CommentForm } from '../payload/comment';
-import {checkJwt} from '../middleware/jwt';
-import {checkRole} from '../middleware/check-role';
+import CommentService from '@service/comment_service';
+import { CommentForm } from '@payload/comment';
+import {checkJwt} from '@middleware/jwt';
+import {checkRole} from '@middleware/check-role';
 
 const router = Router();
 const commentService = new CommentService();

@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-import User from '../models/user';
-import UserRepository from '../repository/user_repository';
-import {UserJoinForm} from '../payload/user';
+import User from '@model/user';
+import UserRepository from '@repository/user_repository';
+import { UserJoinForm } from '@payload/user';
 
 const userRepository = new UserRepository();
 

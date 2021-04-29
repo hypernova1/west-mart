@@ -10,7 +10,7 @@ import {
     PrimaryKey, Table,
     UpdatedAt
 } from 'sequelize-typescript';
-import User from './user';
+import User from '@model/user';
 
 @Table({
     tableName: 'category',

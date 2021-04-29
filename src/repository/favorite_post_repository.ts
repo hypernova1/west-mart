@@ -1,4 +1,4 @@
-import FavoritePost from '../models/favorite_post';
+import FavoritePost from '@model/favorite_post';
 
 export default class FavoritePostRepository {
 

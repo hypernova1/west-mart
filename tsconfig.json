@@ -12,6 +12,14 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+    "paths": {
+      "@router/*": ["./router/*"],
+      "@service/*": ["./service/*"],
+      "@repository/*": ["./repository/*"],
+      "@model/*": ["./model/*"],
+      "@payload/*": ["./payload/*"],
+      "@middleware/*": ["./middleware/*"]
+    },
     "typeRoots": [
       "./@types"
     ],

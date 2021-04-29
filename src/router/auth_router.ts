@@ -1,7 +1,7 @@
 import * as express from 'express';
 
-import AuthService from '../service/auth_service';
-import { UserJoinForm } from '../payload/user';
+import AuthService from '@service/auth_service';
+import { UserJoinForm } from '@payload/user';
 
 const router = express.Router();
 const authService = new AuthService();

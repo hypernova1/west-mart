@@ -10,9 +10,9 @@ import {
   CreatedAt,
   UpdatedAt, HasMany, Table, BelongsToMany
 } from 'sequelize-typescript';
-import Post from './post';
-import Comment from './comment';
-import FavoritePost from './favorite_post';
+import Post from '@model/post';
+import Comment from '@model/comment';
+import FavoritePost from '@model/favorite_post';
 
 @Table({
   tableName: 'user',

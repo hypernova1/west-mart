@@ -1,8 +1,8 @@
-import {NextFunction, Request, Response, Router} from 'express';
+import { Router } from 'express';
 import PostService from '../service/post_service';
-import { PostListRequest, PostForm } from '../payload/post';
-import {checkRole} from '../middleware/check-role';
-import {checkJwt} from '../middleware/jwt';
+import { PostListRequest, PostForm } from '@payload/post';
+import { checkRole } from '@middleware/check-role';
+import { checkJwt } from '@middleware/jwt';
 
 const router = Router();
 const postService = new PostService();

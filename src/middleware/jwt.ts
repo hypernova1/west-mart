@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
-import {NextFunction, Request, Response} from 'express';
-import UserRepository from '../repository/user_repository';
+import { NextFunction, Request, Response } from 'express';
+import UserRepository from '@repository/user_repository';
 
 const userRepository = new UserRepository();
 

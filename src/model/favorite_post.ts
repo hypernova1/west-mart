@@ -5,8 +5,8 @@ import {
     Model,
     Table,
 } from 'sequelize-typescript';
-import Post from "./post";
-import User from "./user";
+import Post from "@model/post";
+import User from "@model/user";
 
 @Table({
     tableName: 'favorite-post',

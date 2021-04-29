@@ -1,4 +1,4 @@
-import Category from '../models/category';
+import Category from '@model/category';
 
 export default class CategoryRepository {
 

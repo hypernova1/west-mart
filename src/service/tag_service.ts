@@ -1,5 +1,5 @@
-import Tag from '../models/tag';
-import TagRepository from '../repository/tag_repository';
+import Tag from '@model/tag';
+import TagRepository from '@repository/tag_repository';
 
 const tagRepository = new TagRepository();
 

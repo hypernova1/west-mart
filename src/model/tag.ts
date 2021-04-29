@@ -13,7 +13,7 @@ import {
     UpdatedAt,
     Unique,
 } from 'sequelize-typescript';
-import Post from './post';
+import Post from '@model/post';
 
 @Table({
     tableName: 'tag',

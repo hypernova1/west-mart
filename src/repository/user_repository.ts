@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User from "@model/user";
 
 export default class UserRepository {
 

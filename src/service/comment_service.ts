@@ -1,8 +1,8 @@
-import CommentRepository from '../repository/comment_repository';
-import PostRepository from '../repository/post_repository';
-import { CommentForm } from '../payload/comment';
-import Comment from '../models/comment';
-import User from '../models/user';
+import CommentRepository from '@repository/comment_repository';
+import PostRepository from '@repository/post_repository';
+import { CommentForm } from '@payload/comment';
+import Comment from '../model/comment';
+import User from '../model/user';
 
 const commentRepository = new CommentRepository();
 const postRepository = new PostRepository();

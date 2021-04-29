@@ -1,4 +1,4 @@
-import Post from '../models/post';
+import Post from '@model/post';
 import { Op } from 'sequelize';
 
 export default class PostRepository {

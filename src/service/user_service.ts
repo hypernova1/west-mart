@@ -1,6 +1,6 @@
-import {UserDetail, UserSummary, UserUpdateForm} from '../payload/user';
-import UserRepository from '../repository/user_repository';
 import * as bcrypt from 'bcrypt';
+import UserRepository from '@repository/user_repository';
+import { UserDetail, UserSummary, UserUpdateForm } from '@payload/user';
 
 const userRepository = new UserRepository();
 
