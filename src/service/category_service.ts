@@ -28,7 +28,7 @@ export default class CategoryService {
 
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.BAD_REQUEST, '존재하지 않는 사용자입니다.')
+                ResponseEntity.badRequest({ message: '존재하지 않는 사용자입니다.' })
             );
         }
 
@@ -45,14 +45,14 @@ export default class CategoryService {
         const category = await categoryRepository.findById(id);
         if (!category) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 카테고리입니다.')
+                ResponseEntity.notFound({ message: '존재하지 않는 카테고리입니다.' })
             );
         }
 
         const user = userRepository.findById(categoryForm.managerId);
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.BAD_REQUEST, '존재하지 않는 사용자입니다.')
+                ResponseEntity.badRequest({ message: '존재하지 않는 사용자입니다.' })
             );
         }
 
@@ -66,7 +66,7 @@ export default class CategoryService {
         const category = await categoryRepository.findById(id);
         if (!category) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 카테고리입니다.')
+                ResponseEntity.notFound({ message: '존재하지 않는 카테고리입니다.' })
             );
         }
 

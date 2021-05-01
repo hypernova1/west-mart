@@ -12,7 +12,7 @@ export default class UserService {
         const user = await userRepository.findById(userId);
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+                ResponseEntity.notFound({ message: '존재하지 않는 사용자입니다.'})
             );
         }
 
@@ -27,7 +27,7 @@ export default class UserService {
         const user = await userRepository.getById(userId);
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+                ResponseEntity.notFound({ message: '존재하지 않는 사용자입니다.' })
             );
         }
 
@@ -58,7 +58,7 @@ export default class UserService {
         const user = await userRepository.findById(id);
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.')
+                ResponseEntity.notFound({ massage: '존재하지 않는 사용자입니다.'})
             );
         }
 

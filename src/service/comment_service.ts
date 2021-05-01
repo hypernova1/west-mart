@@ -28,13 +28,13 @@ export default class CommentService {
 
         if (!comment) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '댓글이 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '댓글이 존재하지 않습니다.' })
             );
         }
 
         if (comment.writer.id !== userId && userId !== 0) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.FORBIDDEN, '삭제 권한이 없습니다.')
+                ResponseEntity.forbidden({ message: '삭제 권한이 없습니다.' })
             )
         }
         await commentRepository.deleteById(id);
@@ -45,12 +45,12 @@ export default class CommentService {
 
         if (!comment) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '댓글이 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '댓글이 존재하지 않습니다.' })
             );
         }
 
         if (comment.writer.id !== userId) {
-            ResponseEntity.create(HttpStatus.FORBIDDEN, '삭제 권한이 없습니다.')
+            ResponseEntity.forbidden({ message: '삭제 권한이 없습니다.'})
         }
 
         await comment.update({

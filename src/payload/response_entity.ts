@@ -28,4 +28,12 @@ export default class ResponseEntity {
         return { status: HttpStatus.FORBIDDEN, body } as ResponseEntity;
     }
 
+    static notFound(body: object) {
+        return { status: HttpStatus.NOT_FOUND, body } as ResponseEntity;
+    }
+
+    static conflict(body: object) {
+        return { status: HttpStatus.CONFLICT, body } as ResponseEntity;
+    }
+
 }

@@ -16,7 +16,7 @@ export default class AuthService {
 
         if (!user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.BAD_REQUEST, '잘못된 정보입니다.')
+                ResponseEntity.badRequest({ message: '잘못된 정보입니다.' })
             );
         }
 
@@ -24,7 +24,7 @@ export default class AuthService {
 
         if (!isEqual) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.BAD_REQUEST, '잘못된 정보입니다.')
+                ResponseEntity.badRequest({ message: '잘못된 정보입니다.' })
             );
         }
 
@@ -51,7 +51,7 @@ export default class AuthService {
             return await userRepository.save(user);
         } catch (err) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.CONFLICT, '이미 존재하는 이메일입니다.')
+                ResponseEntity.conflict({ message: '이미 존재하는 이메일입니다.' })
             );
         }
     }

@@ -10,7 +10,7 @@ export default class AdminService {
         const user = await userRepository.findById(userId);
         if (user.isApprove) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.BAD_REQUEST, '이미 승인된 사용자입니다.')
+                ResponseEntity.badRequest({ message: '이미 승인된 사용자입니다.' })
             );
         }
 

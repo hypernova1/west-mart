@@ -43,13 +43,13 @@ export default class PostService {
 
         if (!category) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '카테고리가 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '카테고리가 존재하지 않습니다.' })
             );
         }
 
         if (category.manager !== user) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.FORBIDDEN, '작성 권한이 없습니다.')
+                ResponseEntity.forbidden({ message: '작성 권한이 없습니다.' })
             )
         }
 
@@ -73,14 +73,14 @@ export default class PostService {
 
         if (!post) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '글이 존재하지 않습니다.' })
             );
         }
 
         if (post.writer.id !== userId) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.FORBIDDEN, '수정 권한이 없습니다.')
-            );
+                ResponseEntity.forbidden({ message:  '수정 권한이 없습니다.' })
+            )
         }
 
         const tags = await tagService.getListOrCreate(postForm.tags);
@@ -98,13 +98,13 @@ export default class PostService {
 
         if (!post) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '글이 존재하지 않습니다.' })
             );
         }
 
         if (post.writer.id !== userId && userId !== 0) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.FORBIDDEN, '삭제 권한이 없습니다.')
+                ResponseEntity.forbidden({ message: '삭제 권한이 없습니다.' })
             );
         }
 
@@ -117,7 +117,7 @@ export default class PostService {
         const post = await postRepository.findById(postId);
         if (!post) {
             return Promise.reject(
-                ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+                ResponseEntity.notFound({ message: '글이 존재하지 않습니다.'})
             );
         }
 
@@ -138,7 +138,7 @@ export default class PostService {
             const post = await postRepository.findById(id);
             if (!post) {
                 return Promise.reject(
-                    ResponseEntity.create(HttpStatus.NOT_FOUND, '글이 존재하지 않습니다.')
+                    ResponseEntity.notFound({ message: '글이 존재하지 않습니다.' })
                 );
             }
 
