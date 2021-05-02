@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import ResponseEntity from '@payload/response_entity';
+import RequestError from '../error/request_error';
 
-export default function errorHandler(res: Response, responseEntity: ResponseEntity) {
-    return res.status(responseEntity.status).json({ message: responseEntity.body })
+export default function errorHandler(res: Response, error: RequestError) {
+    return res.status(error.status).json({ message: error.message });
 }

@@ -1,10 +1,10 @@
 import CommentRepository from '@repository/comment_repository';
 import PostRepository from '@repository/post_repository';
-import {CommentForm} from '@payload/comment';
+import NotFoundError from '../error/not_found_error';
+import ForbiddenError from '../error/forbidden_error';
 import Comment from '@model/comment';
 import User from '@model/user';
-import ResponseEntity from '@payload/response_entity';
-import HttpStatus from '@constant/http_status';
+import { CommentForm } from '@payload/comment';
 
 const commentRepository = new CommentRepository();
 const postRepository = new PostRepository();
@@ -23,19 +23,15 @@ export default class CommentService {
         return commentRepository.save(comment);
     }
 
-    async deleteComment(id: number, userId: number): Promise<boolean> {
+    async deleteComment(id: number, userId: number): Promise<void> {
         const comment = await commentRepository.findByIdAndUserId(id, userId);
 
         if (!comment) {
-            return Promise.reject(
-                ResponseEntity.notFound({ message: '댓글이 존재하지 않습니다.' })
-            );
+            throw new NotFoundError('댓글이 존재하지 않습니다.');
         }
 
         if (comment.writer.id !== userId && userId !== 0) {
-            return Promise.reject(
-                ResponseEntity.forbidden({ message: '삭제 권한이 없습니다.' })
-            )
+            throw new ForbiddenError('삭제 권한이 없습니다.');
         }
         await commentRepository.deleteById(id);
     }
@@ -44,13 +40,11 @@ export default class CommentService {
         const comment = await commentRepository.findByIdAndUserId(id, userId);
 
         if (!comment) {
-            return Promise.reject(
-                ResponseEntity.notFound({ message: '댓글이 존재하지 않습니다.' })
-            );
+            throw new NotFoundError('댓글이 존재하지 않습니다.');
         }
 
         if (comment.writer.id !== userId) {
-            ResponseEntity.forbidden({ message: '삭제 권한이 없습니다.'})
+            throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
         await comment.update({
