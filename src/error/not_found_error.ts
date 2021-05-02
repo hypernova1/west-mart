@@ -5,7 +5,5 @@ export default class NotFoundError extends RequestError {
 
     constructor(message: string) {
         super(HttpStatus.NOT_FOUND, message);
-        super.status = HttpStatus.NOT_FOUND;
-        super.message = message;
     }
 }

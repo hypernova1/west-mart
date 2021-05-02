@@ -5,7 +5,5 @@ export default class ConflictError extends RequestError {
 
     constructor(message: string) {
         super(HttpStatus.CONFLICT, message);
-        super.status = HttpStatus.BAD_REQUEST;
-        super.message = message;
     }
 }

@@ -5,7 +5,5 @@ export default class ForbiddenError extends RequestError {
 
     constructor(message: string) {
         super(HttpStatus.FORBIDDEN, message);
-        super.status = HttpStatus.FORBIDDEN;
-        super.message = message;
     }
 }
