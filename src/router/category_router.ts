@@ -6,6 +6,7 @@ import categoryValidator from '@validate/category';
 import CategoryService from '@service/category_service';
 import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
+import Role from '@constant/role';
 
 const router = Router();
 const categoryService = new CategoryService()
@@ -16,7 +17,7 @@ router.get('/', async (req, res, next) => {
     return res.status(200).json(categories);
 });
 
-router.post('/', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {
     try {
         const categoryForm = req.body as CategoryForm;
 
@@ -29,7 +30,7 @@ router.post('/', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['reg
     }
 })
 
-router.put('/:id', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['register']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {
     try {
         const categoryId = +req.params.id;
         const categoryForm = req.body as CategoryForm;
@@ -43,7 +44,7 @@ router.put('/:id', checkJwt, checkRole(["ADMIN"]), validate(categoryValidator['r
 
 });
 
-router.delete('/:id', checkJwt, checkRole(["ADMIN"]), async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
     try {
         const categoryId = +req.params.id;
 

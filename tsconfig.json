@@ -21,7 +21,8 @@
       "@middleware/*": ["middleware/*"],
       "@validate/*": ["validate/*"],
       "@constant/*": ["constant/*"],
-      "@util/*": ["util/*"]
+      "@util/*": ["util/*"],
+      "@error/*": ["error/*"]
     },
     "typeRoots": [
       "./@types"

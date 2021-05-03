@@ -13,6 +13,7 @@ import {
 import Post from '@model/post';
 import Comment from '@model/comment';
 import FavoritePost from '@model/favorite_post';
+import Role from '@constant/role';
 
 @Table({
   tableName: 'user',
@@ -50,7 +51,7 @@ export default class User extends Model {
 
   @AllowNull(false)
   @Column(DataType.CHAR)
-  role: string;
+  role: Role;
 
   @Default(true)
   @AllowNull(false)

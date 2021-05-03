@@ -6,12 +6,13 @@ import commentValidator from '@validate/comment';
 import errorHandler from '@util/error_handler';
 import User from '@model/user';
 import CommentService from '@service/comment_service';
+import Role from '@constant/role';
 import { CommentForm } from '@payload/comment';
 
 const router = Router();
 const commentService = new CommentService();
 
-router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(commentValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
     const user = req.user;
     const commentForm = req.body as CommentForm;
 
@@ -21,7 +22,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(commentValidat
     return res.status(201).send();
 })
 
-router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.ADMIN]), async (req, res, next) => {
     try {
         const user = req.user as User;
         const commentId = +req.params.id;
@@ -34,7 +35,7 @@ router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, n
     }
 });
 
-router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(commentValidator['update']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['update']), async (req, res, next) => {
     try {
         const userId: number = req.user.id;
         const id: number = +req.params.id;

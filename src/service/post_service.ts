@@ -7,7 +7,8 @@ import Post from '@model/post';
 import User from '@model/user';
 import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
-import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
+import {PostDetail, PostForm, PostListDto, PostListRequest, PostSummary} from '@payload/post';
+import Role from '@constant/role';
 
 const postRepository = new PostRepository();
 const favoritePostRepository = new FavoritePostRepository();
@@ -85,14 +86,14 @@ export default class PostService {
         });
     }
 
-    async deletePost(id: number, userId: number): Promise<void> {
+    async deletePost(id: number, user: User): Promise<void> {
         const post = await postRepository.findById(id);
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
         }
 
-        if (post.writer.id !== userId && userId !== 0) {
+        if (post.writer !== user && user.role !== Role.ADMIN) {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 

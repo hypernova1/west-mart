@@ -4,13 +4,14 @@ import { checkJwt } from '@middleware/jwt';
 import validate from '@validate/index';
 import postValidator from '@validate/post';
 import PostService from '@service/post_service';
-import { PostListRequest, PostForm } from '@payload/post';
 import errorHandler from '@util/error_handler';
+import Role from '@constant/role';
+import { PostListRequest, PostForm } from '@payload/post';
 
 const router = Router();
 const postService = new PostService();
 
-router.get('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     const request: PostListRequest = {};
     request.pageNo = +req.query.pageNo || 1;
     request.size = +req.query.size || 10;
@@ -20,7 +21,7 @@ router.get('/', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) =
     res.status(200).json(result);
 });
 
-router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     try {
         const postId = +req.params.id;
         const cookie = req.cookies.post;
@@ -41,7 +42,7 @@ router.get('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next
     }
 });
 
-router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['register']), async (req, res, next) => {
     try {
         const postDto = req.body as PostForm;
         const user = req.user;
@@ -58,7 +59,7 @@ router.post('/', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator[
     }
 })
 
-router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidator['register']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['register']), async (req, res, next) => {
     try {
         const user = req.user;
         const postId  = +req.params.id;
@@ -73,16 +74,16 @@ router.put('/:id', checkJwt, checkRole(["ADMIN", "USER"]), validate(postValidato
 
 });
 
-router.delete('/:id', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
-    const userId = req.user.id;
+router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+    const user = req.user;
     const postId = +req.params.id;
 
-    await postService.deletePost(postId, userId);
+    await postService.deletePost(postId, user);
 
     return res.status(204).send();
 });
 
-router.patch('/:id/favorite', checkJwt, checkRole(["ADMIN", "USER"]), async (req, res, next) => {
+router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     try {
         const user = req.user;
         const id = +req.params.id;

@@ -5,6 +5,7 @@ import User from '@model/user';
 import UserRepository from '@repository/user_repository';
 import BadRequestError from '../error/bad_request_error';
 import ConflictError from '../error/confict_error';
+import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 
 const userRepository = new UserRepository();
@@ -40,7 +41,7 @@ export default class AuthService {
             email: joinForm.email,
             password: hashedPassword,
             nickname: joinForm.nickname,
-            role: 'USER',
+            role: Role.USER,
         } as User;
 
         try {
