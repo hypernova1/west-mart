@@ -13,7 +13,8 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         jwtPayload = <any>jwt.verify(token, 'secret');
         res.locals.jwtPayload = jwtPayload;
     } catch (err) {
-        res.status(401).send();
+        console.log(err);
+        res.status(401).json(err);
         return;
     }
 

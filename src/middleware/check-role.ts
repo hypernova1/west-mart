@@ -4,7 +4,6 @@ import Role from '@constant/role';
 export const checkRole = (roles: Array<Role>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         const role = res.locals.jwtPayload.role;
-
         if (roles.indexOf(role) > -1) {
             next();
         }

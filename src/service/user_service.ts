@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import UserRepository from '@repository/user_repository';
 import {UserDetail, UserSummary, UserUpdateForm} from '@payload/user';
 import NotFoundError from '../error/not_found_error';
