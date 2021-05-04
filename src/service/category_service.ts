@@ -29,13 +29,15 @@ export default class CategoryService {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
         }
 
+        const lastSequence = await categoryRepository.getLastSequence();
+
         const category = {
             name: categoryForm.name,
-            manager: user,
+            managerId: user.id,
+            sequence: lastSequence + 1,
         } as Category;
 
         return await categoryRepository.save(category);
-
     }
 
     async updateCategory(id: number, categoryForm: CategoryForm) {

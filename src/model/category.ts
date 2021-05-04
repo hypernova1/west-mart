@@ -1,7 +1,7 @@
 import { NOW } from 'sequelize';
 import {
     AllowNull,
-    AutoIncrement,
+    AutoIncrement, BelongsTo,
     Column,
     CreatedAt,
     DataType,
@@ -31,6 +31,9 @@ export default class Category extends Model {
 
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
+    managerId: number;
+
+    @BelongsTo(() => User)
     manager!: User;
 
     @AllowNull(false)

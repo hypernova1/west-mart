@@ -7,6 +7,7 @@ import CategoryService from '@service/category_service';
 import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
 import Role from '@constant/role';
+import HttpStatus from "@constant/http_status";
 
 const router = Router();
 const categoryService = new CategoryService()
@@ -14,7 +15,7 @@ const categoryService = new CategoryService()
 router.get('/', async (req, res, next) => {
     const categories = await categoryService.getCategories();
 
-    return res.status(200).json(categories);
+    return res.status(HttpStatus.OK).json(categories);
 });
 
 router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {
@@ -24,7 +25,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['
         const id = await categoryService.registerCategory(categoryForm);
 
         res.setHeader('Location', `${req.get('host')}/category/${id}`);
-        return res.status(201).send();
+        return res.status(HttpStatus.CREATED).send();
     } catch (err) {
         return errorHandler(res, err);
     }
@@ -37,7 +38,7 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator
 
         await categoryService.updateCategory(categoryId, categoryForm);
 
-        return res.status(204).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         return errorHandler(res, err);
     }
@@ -50,7 +51,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) 
 
         await categoryService.deleteCategory(categoryId);
 
-        return res.status(204).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         errorHandler(res, err);
     }

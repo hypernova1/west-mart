@@ -46,7 +46,7 @@ export default class PostService {
             throw new NotFoundError('카테고리가 존재하지 않습니다.');
         }
 
-        if (category.manager !== user) {
+        if (category.manager.id !== user.id) {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
 
@@ -55,9 +55,9 @@ export default class PostService {
         const post = {
             title: postForm.title,
             content: postForm.content,
-            writer: user,
-            tags: tags,
-            category: category,
+            writerId: user.id,
+            // tags: tags,
+            categoryId: category.id,
         } as Post;
 
         const savedPost = await postRepository.save(post);

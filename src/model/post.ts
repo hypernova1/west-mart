@@ -38,16 +38,19 @@ export default class Post extends Model {
     @Column(DataType.TEXT)
     content!: string;
 
+    @BelongsTo(() => Category)
+    category: Category;
+
     @ForeignKey(() => Category)
     @Column(DataType.INTEGER.UNSIGNED)
-    category: Category;
+    categoryId: number;
 
     @BelongsTo(() => User)
     writer: User;
 
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
-    userId: number;
+    writerId: number;
 
     @HasMany(() => Comment)
     comments: Comment[];

@@ -42,6 +42,21 @@ export default class CategoryRepository {
         return Category.create(category)
             .then((category) => {
                 return Promise.resolve(category.id);
+            }).catch((err) => {
+                console.log(err);
+                return Promise.reject();
             });
+    }
+
+    async getLastSequence(): Promise<number> {
+        return Category.findOne({
+            order: [
+                ['sequence', 'DESC'],
+            ],
+            limit: 1,
+        }).then((category) => {
+            if (!category) return 0;
+            return category.sequence;
+        })
     }
 }
