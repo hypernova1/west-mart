@@ -12,6 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+    "module": "commonjs",
     "paths": {
       "@router/*": ["router/*"],
       "@service/*": ["service/*"],
@@ -34,5 +35,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

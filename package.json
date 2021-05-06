@@ -8,7 +8,7 @@
     "start": "node --trace-deprecation dist/src/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "build": "tsc -p .",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test": "yarn mocha test/**/*.ts -r ts-node/register"
   },
   "keywords": [],
   "author": "",
@@ -46,8 +46,10 @@
     "ts-node-dev": "^1.1.6"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.17",
     "@types/chai-http": "^4.2.0",
     "@types/mocha": "^8.2.2",
+    "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "mocha": "^8.3.2",
     "nodemon": "^2.0.7",
