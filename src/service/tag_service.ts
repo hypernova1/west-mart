@@ -1,22 +1,27 @@
 import Tag from '@model/tag';
 import TagRepository from '@repository/tag_repository';
 
-const tagRepository = new TagRepository();
-
 export default class TagService {
-    
+
+    private tagRepository: TagRepository;
+
+    constructor() {
+        this.tagRepository = new TagRepository();
+    }
+
+
     async getOrCreate(name: string) {
-        let tag = await tagRepository.findByName(name);
+        let tag = await this.tagRepository.findByName(name);
 
         if (!tag) {
-            tag = await tagRepository.save({ name: name } as Tag);
+            tag = await this.tagRepository.save({ name: name } as Tag);
         }
 
         return tag.id;
     }
 
     async getListOrCreate(tagNames: Array<string>): Promise<Array<Tag>> {
-        const tags = await tagRepository.findAllByNameIn(tagNames);
+        const tags = await this.tagRepository.findAllByNameIn(tagNames);
 
         const names = tags.map((tag) => {
             return tag.name;
@@ -24,7 +29,7 @@ export default class TagService {
 
         const unregisterTags = tagNames.filter((name) => !names.includes(name));
 
-        const newTags = await tagRepository.saveAll(unregisterTags);
+        const newTags = await this.tagRepository.saveAll(unregisterTags);
 
         return tags.concat(newTags);
     }

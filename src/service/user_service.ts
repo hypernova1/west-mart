@@ -3,12 +3,16 @@ import UserRepository from '@repository/user_repository';
 import {UserDetail, UserSummary, UserUpdateForm} from '@payload/user';
 import NotFoundError from '../error/not_found_error';
 
-const userRepository = new UserRepository();
-
 export default class UserService {
 
+    private userRepository: UserRepository;
+
+    constructor() {
+        this.userRepository = new UserRepository();
+    }
+
     async getUserById(userId: number): Promise<UserDetail> {
-        const user = await userRepository.findById(userId);
+        const user = await this.userRepository.findById(userId);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -21,7 +25,7 @@ export default class UserService {
     }
 
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const user = await userRepository.getById(userId);
+        const user = await this.userRepository.getById(userId);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -35,11 +39,11 @@ export default class UserService {
     }
 
     async existsByEmail(email: string): Promise<boolean> {
-        return await userRepository.existsByEmail(email);
+        return await this.userRepository.existsByEmail(email);
     }
 
     async getUserList(): Promise<Array<UserSummary>> {
-        const userList = await userRepository.findAll();
+        const userList = await this.userRepository.findAll();
         return userList.map((user) => {
             return {
                 id: user.id,
@@ -50,11 +54,11 @@ export default class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const user = await userRepository.findById(id);
+        const user = await this.userRepository.findById(id);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
 
-        await userRepository.deleteById(id);
+        await this.userRepository.deleteById(id);
     }
 }

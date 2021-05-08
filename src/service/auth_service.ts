@@ -8,12 +8,18 @@ import ConflictError from '../error/confict_error';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 
-const userRepository = new UserRepository();
-
 export default class AuthService {
 
+    private userRepository: UserRepository;
+
+    constructor() {
+        this.userRepository = new UserRepository();
+
+    }
+
+
     async login(email: string, password: string): Promise<string> {
-        const user: User = await userRepository.findByEmail(email);
+        const user: User = await this.userRepository.findByEmail(email);
 
         if (!user) {
             throw new BadRequestError('잘못된 정보입니다.');
@@ -45,7 +51,7 @@ export default class AuthService {
         } as User;
 
         try {
-            return await userRepository.save(user);
+            return await this.userRepository.save(user);
         } catch (err) {
             throw new ConflictError('이미 존재하는 이메일 입니다.');
         }

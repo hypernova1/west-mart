@@ -10,15 +10,23 @@ import ForbiddenError from '../error/forbidden_error';
 import {PostDetail, PostForm, PostListDto, PostListRequest, PostSummary} from '@payload/post';
 import Role from '@constant/role';
 
-const postRepository = new PostRepository();
-const favoritePostRepository = new FavoritePostRepository();
-const categoryRepository = new CategoryRepository();
-const tagService = new TagService();
-
 export default class PostService {
 
+    private postRepository: PostRepository;
+    private favoritePostRepository: FavoritePostRepository;
+    private categoryRepository: CategoryRepository;
+    private tagService: TagService;
+
+    constructor() {
+        this.postRepository = new PostRepository();
+        this.favoritePostRepository = new FavoritePostRepository();
+        this.categoryRepository = new CategoryRepository();
+        this.tagService = new TagService();
+    }
+
+
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
-        const postList = await postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
+        const postList = await this.postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
         const postDtoList = postList.map((post: Post) => {
             return {
                 id: post.id,
@@ -28,7 +36,7 @@ export default class PostService {
             } as PostSummary;
         });
 
-        const totalCount = await postRepository.countByTitleLikeOrContentLike(request.keyword);
+        const totalCount = await this.postRepository.countByTitleLikeOrContentLike(request.keyword);
         const totalPage = totalCount / request.size;
         const isExistNextPage = totalPage > request.pageNo;
 
@@ -40,7 +48,7 @@ export default class PostService {
 
     async registerPost(postForm: PostForm, user: User): Promise<number> {
 
-        const category = await categoryRepository.findById(postForm.categoryId);
+        const category = await this.categoryRepository.findById(postForm.categoryId);
 
         if (!category) {
             throw new NotFoundError('카테고리가 존재하지 않습니다.');
@@ -50,23 +58,23 @@ export default class PostService {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
 
-        const tags = await tagService.getListOrCreate(postForm.tags);
+        const tags = await this.tagService.getListOrCreate(postForm.tags);
 
         const post = {
             title: postForm.title,
             content: postForm.content,
             writerId: user.id,
-            // tags: tags,
+            tags: tags,
             categoryId: category.id,
         } as Post;
 
-        const savedPost = await postRepository.save(post);
+        const savedPost = await this.postRepository.save(post);
 
         return savedPost.id;
     }
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
-        const post = await postRepository.findById(postId);
+        const post = await this.postRepository.findById(postId);
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -76,7 +84,7 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        const tags = await tagService.getListOrCreate(postForm.tags);
+        const tags = await this.tagService.getListOrCreate(postForm.tags);
 
         await post.update({
             id: postId,
@@ -87,7 +95,7 @@ export default class PostService {
     }
 
     async deletePost(id: number, user: User): Promise<void> {
-        const post = await postRepository.findById(id);
+        const post = await this.postRepository.findById(id);
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -103,7 +111,7 @@ export default class PostService {
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
-        const post = await postRepository.findById(postId);
+        const post = await this.postRepository.findById(postId);
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
         }
@@ -122,12 +130,12 @@ export default class PostService {
 
     toggleFavorite(id: number, user: User) {
         sequelize.transaction().then(async (t) => {
-            const post = await postRepository.findById(id);
+            const post = await this.postRepository.findById(id);
             if (!post) {
                 new NotFoundError('글이 존재하지 않습니다.');
             }
 
-            const favoritePost = await favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
+            const favoritePost = await this.favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
 
             if (favoritePost) {
                 await post.$remove('favorites', user);
@@ -143,7 +151,7 @@ export default class PostService {
     }
 
     async increasePostHits(id: number) {
-        const post = await postRepository.findById(id);
+        const post = await this.postRepository.findById(id);
         await post.increment({ hits: 1 });
     }
 }
