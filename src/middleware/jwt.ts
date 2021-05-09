@@ -5,7 +5,7 @@ import UserRepository from '@repository/user_repository';
 const userRepository = new UserRepository();
 
 export const checkJwt = async (req: Request, res: Response, next: NextFunction) => {
-    const token = <string>req.headers['authorization'];
+    const token = <string>req.headers['authorization'].split(' ')[1];
 
     let jwtPayload;
 

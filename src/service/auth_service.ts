@@ -14,7 +14,6 @@ export default class AuthService {
 
     constructor() {
         this.userRepository = new UserRepository();
-
     }
 
 
