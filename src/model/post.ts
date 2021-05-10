@@ -50,7 +50,7 @@ export default class Post extends Model {
 
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
-    writerId: number;
+    userId: number;
 
     @HasMany(() => Comment)
     comments: Comment[];

@@ -5,10 +5,10 @@ import CategoryRepository from '@repository/category_repository';
 import TagService from '@service/tag_service';
 import Post from '@model/post';
 import User from '@model/user';
+import Role from '@constant/role';
 import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
-import {PostDetail, PostForm, PostListDto, PostListRequest, PostSummary} from '@payload/post';
-import Role from '@constant/role';
+import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
 
 export default class PostService {
 
@@ -63,7 +63,7 @@ export default class PostService {
         const post = {
             title: postForm.title,
             content: postForm.content,
-            writerId: user.id,
+            userId: user.id,
             tags: tags,
             categoryId: category.id,
         } as Post;
@@ -116,7 +116,7 @@ export default class PostService {
             throw new NotFoundError('글이 존재하지 않습니다.');
         }
 
-        const tagNames = post.tags.map((tag) => tag.name);
+        const tagNames = await post.tags.map((tag) => tag.name);
 
         return {
             id: post.id,

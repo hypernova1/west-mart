@@ -1,5 +1,7 @@
 import Post from '@model/post';
 import { Op } from 'sequelize';
+import Tag from '@model/tag';
+import User from '@model/user';
 
 export default class PostRepository {
 
@@ -20,10 +22,16 @@ export default class PostRepository {
                 ],
                 isActive: true,
             },
-            offset: pageNo,
-            limit: size,
+            offset: pageNo - 1,
+            limit: pageNo * size,
             order: [
                 ['createdAt', 'ASC']
+            ],
+            include: [
+                {
+                    model: User,
+                    as: 'writer',
+                }
             ]
         }).then((postList) => {
             return postList;
@@ -49,6 +57,16 @@ export default class PostRepository {
                 id: id,
                 isActive: true,
             },
+            include: [
+                {
+                    model: Tag,
+                    as: 'tags',
+                },
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
         }).then((post) => {
             return post;
         }).catch((err) => {
