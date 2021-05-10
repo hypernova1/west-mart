@@ -1,4 +1,5 @@
 import Comment from '@model/comment';
+import User from '@model/user';
 
 export default class PostRepository {
 
@@ -36,6 +37,26 @@ export default class PostRepository {
             }
         }).then((comment) => {
             return comment;
+        }).catch((err: Error) => {
+            console.log(err);
+            return Promise.reject();
+        });
+    }
+
+    getCommentListByPostId(postId: number) {
+        return Comment.findAll({
+            where: {
+                postId: postId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
+        }).then((comments) => {
+            return comments;
         }).catch((err: Error) => {
             console.log(err);
             return Promise.reject();

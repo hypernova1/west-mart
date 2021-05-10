@@ -1,7 +1,7 @@
 import { NOW } from 'sequelize';
 import {
   AllowNull,
-  AutoIncrement,
+  AutoIncrement, BelongsTo,
   Column,
   CreatedAt,
   DataType,
@@ -29,13 +29,19 @@ export default class Comment extends Model {
   @Column(DataType.TEXT)
   content!: string;
 
+  @BelongsTo(() => User)
+  writer!: User;
+
   @ForeignKey(() => User)
   @Column(DataType.INTEGER.UNSIGNED)
-  writer!: User;
+  userId: number;
+
+  @BelongsTo(() => Post)
+  post!: Post;
 
   @ForeignKey(() => Post)
   @Column(DataType.INTEGER.UNSIGNED)
-  post!: Post;
+  postId: number;
 
   @Default(true)
   @AllowNull(false)

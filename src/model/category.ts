@@ -29,12 +29,12 @@ export default class Category extends Model {
     @Column(DataType.CHAR)
     name!: string;
 
-    @ForeignKey(() => User)
-    @Column(DataType.INTEGER.UNSIGNED)
-    managerId: number;
-
     @BelongsTo(() => User)
     manager!: User;
+
+    @ForeignKey(() => User)
+    @Column(DataType.INTEGER.UNSIGNED)
+    userId: number;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)

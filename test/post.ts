@@ -4,7 +4,7 @@ import chaiHttp = require('chai-http');
 import * as chai from 'chai';
 import { getToken } from "./util/auth";
 import PostService from '../src/service/post_service';
-import { PostListRequest, PostSummary } from '../src/payload/post';
+import { PostListRequest } from '../src/payload/post';
 
 chai.use(chaiHttp);
 const expect = chai.expect;

@@ -4,7 +4,8 @@ import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
 import Comment from '@model/comment';
 import User from '@model/user';
-import { CommentForm } from '@payload/comment';
+import { CommentDetail, CommentForm, CommentResponse } from '@payload/comment';
+import { dateToString } from '@util/common';
 
 export default class CommentService {
 
@@ -55,5 +56,23 @@ export default class CommentService {
         await comment.update({
             content: content,
         });
+    }
+
+    async getCommentList(postId: number): Promise<CommentResponse> {
+        const commentList = await this.commentRepository.getCommentListByPostId(postId);
+
+        const commentDtoList = commentList.map((comment) => {
+            return {
+                id: comment.id,
+                content: comment.content,
+                writer: comment.writer.nickname,
+                createdAt: dateToString(comment.createdAt),
+            } as CommentDetail;
+        });
+
+        return {
+            commentList: commentDtoList,
+            totalCount: commentList.length,
+        } as CommentResponse;
     }
 }

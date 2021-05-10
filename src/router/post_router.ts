@@ -4,12 +4,14 @@ import { checkJwt } from '@middleware/jwt';
 import validate from '@validate/index';
 import postValidator from '@validate/post';
 import PostService from '@service/post_service';
+import CommentService from '@service/comment_service';
 import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
 
 const router = Router();
 const postService = new PostService();
+const commentService = new CommentService();
 
 router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     const request: PostListRequest = {};
@@ -95,5 +97,12 @@ router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), asyn
         return errorHandler(res, err);
     }
 });
+
+router.get('/:id/comment', async (req, res, next) => {
+    const postId = +req.params.id;
+    const commentList = commentService.getCommentList(postId);
+
+    return res.status(200).json(commentList);
+})
 
 export default router;

@@ -39,7 +39,7 @@ export default class CategoryService {
 
         const category = {
             name: categoryForm.name,
-            managerId: user.id,
+            userId: user.id,
             sequence: lastSequence + 1,
         } as Category;
 

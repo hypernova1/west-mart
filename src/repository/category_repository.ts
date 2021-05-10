@@ -1,4 +1,5 @@
 import Category from '@model/category';
+import User from '@model/user';
 
 export default class CategoryRepository {
 
@@ -7,7 +8,7 @@ export default class CategoryRepository {
             where: {
                 id: id,
                 isActive: true,
-            }
+            },
         }).then((category) => {
             return category;
         })
@@ -20,6 +21,12 @@ export default class CategoryRepository {
             },
             order: [
                 ['sequence', 'ASC']
+            ],
+            include: [
+                {
+                    model: User,
+                    as: 'manager',
+                }
             ]
         }).then((categories) => {
             return categories;
