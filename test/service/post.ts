@@ -1,32 +1,11 @@
-import 'mocha';
 import 'tsconfig-paths/register';
-import chaiHttp = require('chai-http');
+import 'mocha';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import { getToken } from "../util/auth";
 import PostService from '../../src/service/post_service';
 import { PostDetail, PostListDto, PostListRequest } from '../../src/payload/post';
 
-chai.use(chaiHttp);
 const expect = chai.expect;
-
-describe('post API Request', () => {
-    let token: string;
-    before(async () => {
-        token = await getToken();
-    })
-    it('should return response on call', () => {
-        return chai.request('http://localhost:3000')
-            .get('/post')
-            .set({
-                'Authorization': `Bearer ${token}`,
-            })
-            .then((res) => {
-                console.log(res.body)
-                expect(res.status).to.eq(200);
-            })
-    });
-});
 
 describe('postService method test', () => {
     const postService = sinon.createStubInstance(PostService);
