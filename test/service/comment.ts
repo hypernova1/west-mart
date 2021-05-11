@@ -2,9 +2,9 @@ import 'mocha';
 import 'tsconfig-paths/register';
 import chaiHttp = require('chai-http');
 import * as chai from 'chai';
-import { getToken } from "./util/auth";
-import CommentService from '../src/service/comment_service';
-import '@model/index';
+import { getToken } from "../util/auth";
+import CommentService from '../../src/service/comment_service';
+import '../../src/model';
 
 chai.use(chaiHttp);
 

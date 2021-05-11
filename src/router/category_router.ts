@@ -8,9 +8,10 @@ import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
 import Role from '@constant/role';
 import HttpStatus from "@constant/http_status";
+import {Container} from 'typedi';
 
 const router = Router();
-const categoryService = new CategoryService()
+const categoryService = Container.get(CategoryService);
 
 router.get('/', async (req, res, next) => {
     const categories = await categoryService.getCategories();

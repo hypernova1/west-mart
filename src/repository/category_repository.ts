@@ -1,6 +1,8 @@
 import Category from '@model/category';
 import User from '@model/user';
+import { Service } from 'typedi';
 
+@Service()
 export default class CategoryRepository {
 
     findById(id: number): Promise<Category> {

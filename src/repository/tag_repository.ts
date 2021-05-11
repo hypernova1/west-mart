@@ -1,5 +1,7 @@
 import Tag from '@model/tag';
+import {Service} from 'typedi';
 
+@Service()
 export default class TagRepository {
 
     findByName(name: string) {

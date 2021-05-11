@@ -5,9 +5,10 @@ import { UserJoinForm } from '@payload/user';
 import validate from '@validate/index';
 import authValidator from '@validate/auth';
 import errorHandler from '@util/error_handler';
+import { Container } from 'typedi';
 
 const router = express.Router();
-const authService = new AuthService();
+const authService = Container.get(AuthService);
 
 router.post('/login', validate(authValidator['login']), async (req, res, next) => {
     try {

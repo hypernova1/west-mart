@@ -1,5 +1,7 @@
 import FavoritePost from '@model/favorite_post';
+import {Service} from 'typedi';
 
+@Service()
 export default class FavoritePostRepository {
 
     getByUserIdAndPostId(userId: number, postId: number): Promise<FavoritePost | null> {

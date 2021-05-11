@@ -1,5 +1,7 @@
 import User from "@model/user";
+import {Service} from 'typedi';
 
+@Service()
 export default class UserRepository {
 
     async findAll(): Promise<Array<User>> {

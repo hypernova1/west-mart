@@ -1,6 +1,8 @@
 import Comment from '@model/comment';
 import User from '@model/user';
+import { Service } from 'typedi';
 
+@Service()
 export default class PostRepository {
 
     save(comment: Comment): Promise<number> {

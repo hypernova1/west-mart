@@ -7,15 +7,12 @@ import BadRequestError from '../error/bad_request_error';
 import ConflictError from '../error/confict_error';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
+import { Service } from 'typedi';
 
+@Service()
 export default class AuthService {
 
-    private userRepository: UserRepository;
-
-    constructor() {
-        this.userRepository = new UserRepository();
-    }
-
+    constructor(private userRepository: UserRepository) {}
 
     async login(email: string, password: string): Promise<string> {
         const user: User = await this.userRepository.findByEmail(email);

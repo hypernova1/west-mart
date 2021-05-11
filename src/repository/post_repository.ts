@@ -2,7 +2,9 @@ import Post from '@model/post';
 import { Op } from 'sequelize';
 import Tag from '@model/tag';
 import User from '@model/user';
+import { Service } from 'typedi';
 
+@Service()
 export default class PostRepository {
 
     getListByTitleLikeOrContentLike(pageNo: number, size: number, keyword: string): Promise<Array<Post>> {

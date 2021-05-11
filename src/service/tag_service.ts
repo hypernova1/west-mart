@@ -1,13 +1,11 @@
 import Tag from '@model/tag';
 import TagRepository from '@repository/tag_repository';
+import {Service} from 'typedi';
 
+@Service()
 export default class TagService {
 
-    private tagRepository: TagRepository;
-
-    constructor() {
-        this.tagRepository = new TagRepository();
-    }
+    constructor(private tagRepository: TagRepository) {}
 
 
     async getOrCreate(name: string) {

@@ -6,11 +6,12 @@ import commentValidator from '@validate/comment';
 import errorHandler from '@util/error_handler';
 import User from '@model/user';
 import CommentService from '@service/comment_service';
+import { Container } from 'typedi';
 import Role from '@constant/role';
 import { CommentForm } from '@payload/comment';
 
 const router = Router();
-const commentService = new CommentService();
+const commentService = Container.get(CommentService);
 
 router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
     const user = req.user;

@@ -6,15 +6,13 @@ import Comment from '@model/comment';
 import User from '@model/user';
 import { CommentDetail, CommentForm, CommentResponse } from '@payload/comment';
 import { dateToString } from '@util/common';
+import { Service } from 'typedi';
 
+@Service()
 export default class CommentService {
 
-    private commentRepository: CommentRepository;
-    private postRepository: PostRepository;
-
-    constructor() {
-        this.commentRepository = new CommentRepository();
-        this.postRepository = new PostRepository();
+    constructor(private commentRepository: CommentRepository,
+                private postRepository: PostRepository) {
     }
 
     async registerComment(commentForm: CommentForm, user: User): Promise<number> {

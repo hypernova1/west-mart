@@ -9,21 +9,15 @@ import Role from '@constant/role';
 import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
 import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
+import { Service } from 'typedi';
 
+@Service()
 export default class PostService {
 
-    private postRepository: PostRepository;
-    private favoritePostRepository: FavoritePostRepository;
-    private categoryRepository: CategoryRepository;
-    private tagService: TagService;
-
-    constructor() {
-        this.postRepository = new PostRepository();
-        this.favoritePostRepository = new FavoritePostRepository();
-        this.categoryRepository = new CategoryRepository();
-        this.tagService = new TagService();
-    }
-
+    constructor(private postRepository: PostRepository,
+                private favoritePostRepository: FavoritePostRepository,
+                private categoryRepository: CategoryRepository,
+                private tagService: TagService) {}
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
         const postList = await this.postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);

@@ -8,10 +8,11 @@ import CommentService from '@service/comment_service';
 import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
+import {Container} from 'typedi';
 
 const router = Router();
-const postService = new PostService();
-const commentService = new CommentService();
+const postService = Container.get(PostService);
+const commentService = Container.get(CommentService);
 
 router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     const request: PostListRequest = {};

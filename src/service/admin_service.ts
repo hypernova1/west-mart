@@ -1,13 +1,11 @@
 import UserRepository from '@repository/user_repository';
 import BadRequestError from '../error/bad_request_error';
+import { Service } from 'typedi';
 
+@Service()
 export default class AdminService {
 
-    private userRepository: UserRepository;
-
-    constructor() {
-        this.userRepository = new UserRepository();
-    }
+    constructor(private userRepository: UserRepository) {}
 
     async approveUser(userId: number): Promise<void> {
         const user = await this.userRepository.findById(userId);

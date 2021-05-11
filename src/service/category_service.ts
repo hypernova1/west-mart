@@ -3,17 +3,14 @@ import UserRepository from '@repository/user_repository';
 import Category from '@model/category';
 import BadRequestError from '../error/bad_request_error';
 import { CategoryDto, CategoryForm } from '@payload/category';
+import {Service} from 'typedi';
 
+@Service()
 export default class CategoryService {
 
-    private categoryRepository: CategoryRepository;
-    private userRepository: UserRepository;
-
-    constructor() {
-        this.categoryRepository = new CategoryRepository();
-        this.userRepository = new UserRepository();
+    constructor(private categoryRepository: CategoryRepository,
+                private userRepository: UserRepository) {
     }
-
 
     async getCategories(): Promise<Array<CategoryDto>> {
         const categories = await this.categoryRepository.findAll();
