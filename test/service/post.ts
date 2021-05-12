@@ -4,41 +4,38 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import PostService from '../../src/service/post_service';
 import { PostDetail, PostListDto, PostListRequest } from '../../src/payload/post';
+import PostRepository from '../../src/repository/post_repository';
+import FavoritePostRepository from '../../src/repository/favorite_post_repository';
+import CategoryRepository from '../../src/repository/category_repository';
+import TagService from '../../src/service/tag_service';
+import TagRepository from '../../src/repository/tag_repository';
+import NotFoundError from '../../src/error/not_found_error';
+import Post from '../../src/model/post';
 
 const expect = chai.expect;
 
-describe('postService method test', () => {
-    const postService = sinon.createStubInstance(PostService);
+describe('test getPostDetail', () => {
+    const postRepository = new PostRepository();
+    const favoritePostRepository = new FavoritePostRepository();
+    const categoryRepository = new CategoryRepository();
+    const tagService = new TagService(new TagRepository());
 
-    before(() => {
-        postService.getPostDetail.resolves({
-            id: 1,
-            writerName: 'sam',
-            tags: [],
-            title: 'test',
-            content: 'test',
-            writerId: 1,
-        } as PostDetail);
+    const postService = new PostService(postRepository, favoritePostRepository, categoryRepository, tagService);
 
-        postService.getPostList.resolves({
-            postList: [],
-            isExistNextPage: false,
-        } as PostListDto);
-    })
-
-    it('test getPostDetail ', async () => {
-        const post = await postService.getPostDetail(1);
-        expect(post.writerName).to.eq('sam');
-    });
-
-    it('test getPostList', async () => {
-        const postRequest = {
-            pageNo: 1,
-            size: 10,
-            keyword: ''
-        } as PostListRequest;
-
-        const result = await postService.getPostList(postRequest);
-        expect(result.postList).to.be.instanceof(Array);
-    });
 });
+
+describe('test', () => {
+    const postRepository = new PostRepository();
+    const favoritePostRepository = new FavoritePostRepository();
+    const categoryRepository = new CategoryRepository();
+    const tagService = new TagService(new TagRepository());
+
+    const postService = new PostService(postRepository, favoritePostRepository, categoryRepository, tagService);
+    const findById = sinon.spy(PostRepository.prototype, 'findById');
+
+    it('test', () => {
+        postService.getPostDetail(1);
+        sinon.assert.calledWith(findById, 1);
+        expect(findById.callCount).to.be.eq(1);
+    })
+})
