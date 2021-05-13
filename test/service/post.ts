@@ -18,23 +18,21 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe('test getPostDetail', () => {
-    const postRepository = new PostRepository();
+    const sandbox = sinon.createSandbox();
+    const stubPostRepository = sinon.createStubInstance(PostRepository);
+
     const favoritePostRepository = new FavoritePostRepository();
     const categoryRepository = new CategoryRepository();
     const tagService = new TagService(new TagRepository());
 
-    const postService = new PostService(postRepository, favoritePostRepository, categoryRepository, tagService);
+    const postService = new PostService(stubPostRepository, favoritePostRepository, categoryRepository, tagService);
 
-    let sinonStub: sinon.SinonStub<[id: number], Promise<Post>>
-    beforeEach(() => {
-        sinonStub = sinon.stub(postRepository, 'findById');
-    })
     afterEach(() => {
-        sinonStub.restore();
+        sandbox.restore();
     });
 
     it('found post', async () => {
-        sinonStub.returns(Promise.resolve({
+        stubPostRepository.findById.returns(Promise.resolve({
             id: 1,
             title: 'title',
             content: 'content',
@@ -49,9 +47,9 @@ describe('test getPostDetail', () => {
         await expect(post).to.be.ok;
     });
 
-
     it('not found post', async () => {
-        sinonStub.returns(Promise.resolve(null));
+        stubPostRepository.findById.returns(Promise.resolve(null));
+
         await expect(postService.getPostDetail(1)).to.rejectedWith(NotFoundError);
     });
 });
