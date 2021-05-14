@@ -30,18 +30,18 @@ export default class Comment extends Model {
   content!: string;
 
   @BelongsTo(() => User)
-  writer!: User;
+  writer: User;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER.UNSIGNED)
-  userId: number;
+  userId!: number;
 
   @BelongsTo(() => Post)
-  post!: Post;
+  post: Post;
 
   @ForeignKey(() => Post)
   @Column(DataType.INTEGER.UNSIGNED)
-  postId: number;
+  postId!: number;
 
   @Default(true)
   @AllowNull(false)

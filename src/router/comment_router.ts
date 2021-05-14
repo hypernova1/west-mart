@@ -13,17 +13,7 @@ import { CommentForm } from '@payload/comment';
 const router = Router();
 const commentService = Container.get(CommentService);
 
-router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
-    const user = req.user;
-    const commentForm = req.body as CommentForm;
-
-    const id = await commentService.registerComment(commentForm, user);
-
-    res.setHeader('Location', `${req.get('host')}/comment/${id}`);
-    return res.status(201).send();
-})
-
-router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.ADMIN]), async (req, res, next) => {
+router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
     try {
         const user = req.user as User;
         const commentId = +req.params.id;

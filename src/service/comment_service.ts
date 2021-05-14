@@ -18,10 +18,14 @@ export default class CommentService {
     async registerComment(commentForm: CommentForm, user: User): Promise<number> {
         const post = await this.postRepository.findById(commentForm.postId);
 
+        if (!post) {
+            throw new NotFoundError('글이 존재하지 않습니다.');
+        }
+
         const comment = {
             content: commentForm.content,
-            post: post,
-            writer: user,
+            userId: user.id,
+            postId: post.id,
         } as Comment;
 
         return this.commentRepository.save(comment);
@@ -51,6 +55,8 @@ export default class CommentService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
+        console.log(1);
+
         await comment.update({
             content: content,
         });
@@ -63,7 +69,10 @@ export default class CommentService {
             return {
                 id: comment.id,
                 content: comment.content,
-                writer: comment.writer.nickname,
+                writer: {
+                    id: comment.writer.id,
+                    nickname: comment.writer.nickname,
+                },
                 createdAt: dateToString(comment.createdAt),
             } as CommentDetail;
         });

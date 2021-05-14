@@ -9,6 +9,8 @@ import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
 import {Container} from 'typedi';
+import commentValidator from '@validate/comment';
+import {CommentForm} from '@payload/comment';
 
 const router = Router();
 const postService = Container.get(PostService);
@@ -101,9 +103,18 @@ router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), asyn
 
 router.get('/:id/comment', async (req, res, next) => {
     const postId = +req.params.id;
-    const commentList = commentService.getCommentList(postId);
-
+    const commentList = await commentService.getCommentList(postId);
     return res.status(200).json(commentList);
-})
+});
+
+router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
+    const user = req.user;
+    const commentForm = req.body as CommentForm;
+
+    const id = await commentService.registerComment(commentForm, user);
+
+    res.setHeader('Location', `${req.get('host')}/comment/${id}`);
+    return res.status(201).send();
+});
 
 export default router;

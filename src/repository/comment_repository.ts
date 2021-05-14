@@ -36,7 +36,13 @@ export default class PostRepository {
                 id: id,
                 userId: userId,
                 isActive: true,
-            }
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
         }).then((comment) => {
             return comment;
         }).catch((err: Error) => {

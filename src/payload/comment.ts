@@ -1,3 +1,5 @@
+import { UserSummary } from '@payload/user';
+
 export interface CommentForm {
     content: string;
     postId: number;
@@ -6,7 +8,7 @@ export interface CommentForm {
 export interface CommentDetail {
     id: number;
     content: string;
-    writer: string;
+    writer: UserSummary;
     createdAt: string;
 }
 
