@@ -47,7 +47,6 @@ export default class PostService {
         if (!category) {
             throw new NotFoundError('카테고리가 존재하지 않습니다.');
         }
-
         if (category.manager.id !== user.id) {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
@@ -58,7 +57,6 @@ export default class PostService {
             title: postForm.title,
             content: postForm.content,
             userId: user.id,
-            tags: tags,
             categoryId: category.id,
         } as Post;
 

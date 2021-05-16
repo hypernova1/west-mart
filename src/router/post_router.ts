@@ -52,7 +52,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVali
         const postDto = req.body as PostForm;
         const user = req.user;
 
-        const id: number | void = await postService.registerPost(postDto, user);
+        const id: number = await postService.registerPost(postDto, user);
         if (!id) {
             res.status(403).send();
         }

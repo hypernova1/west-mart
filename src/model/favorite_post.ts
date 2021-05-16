@@ -9,7 +9,7 @@ import Post from "@model/post";
 import User from "@model/user";
 
 @Table({
-    tableName: 'favorite-post',
+    tableName: 'favorite_post',
     underscored: true,
     timestamps: false
 })

@@ -44,13 +44,13 @@ export default class PostRepository {
     }
 
     save(post: Post): Promise<Post> {
-        return Post.create(post)
-            .then((post) => {
-                return Promise.resolve(post);
-            }).catch((err) => {
-                console.log(err);
-                return Promise.reject();
-            });
+        return Post.create(post, {
+        }).then((post) => {
+            return Promise.resolve(post);
+        }).catch((err) => {
+            console.log(err);
+            return Promise.reject();
+        });
     }
 
     findById(id: number): Promise<Post> {

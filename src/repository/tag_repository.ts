@@ -31,7 +31,7 @@ export default class TagRepository {
         })
     }
 
-    saveAll(tags: Array<string>): Promise<Array<Tag>> {
+    saveAll(tags: Array<Tag>): Promise<Array<Tag>> {
         return Tag.bulkCreate(tags)
             .then((tags) => {
                 return tags;

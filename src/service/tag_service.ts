@@ -25,11 +25,19 @@ export default class TagService {
             return tag.name;
         });
 
-        const unregisterTags = tagNames.filter((name) => !names.includes(name));
+        const unregisterTags = tagNames.filter((name) => !names.includes(name))
+            .map((tagName) => {
+                return {
+                    name: tagName,
+                } as Tag;
+            });
 
-        const newTags = await this.tagRepository.saveAll(unregisterTags);
+        if (unregisterTags.length > 0) {
+            const newTags = await this.tagRepository.saveAll(unregisterTags);
+            tags.concat(newTags)
+        }
 
-        return tags.concat(newTags);
+        return tags;
     }
 
 }

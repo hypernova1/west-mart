@@ -11,6 +11,12 @@ export default class CategoryRepository {
                 id: id,
                 isActive: true,
             },
+            include: [
+                {
+                    model: User,
+                    as: 'manager',
+                }
+            ]
         }).then((category) => {
             return category;
         })

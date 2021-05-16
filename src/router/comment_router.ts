@@ -8,7 +8,6 @@ import User from '@model/user';
 import CommentService from '@service/comment_service';
 import { Container } from 'typedi';
 import Role from '@constant/role';
-import { CommentForm } from '@payload/comment';
 
 const router = Router();
 const commentService = Container.get(CommentService);

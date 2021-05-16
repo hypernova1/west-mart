@@ -17,6 +17,7 @@ import Comment from '@model/comment';
 import FavoritePost from '@model/favorite_post';
 import Category from '@model/category';
 import Tag from '@model/tag';
+import PostTag from '@model/post_tag';
 
 @Table({
     tableName: 'post',
@@ -68,7 +69,7 @@ export default class Post extends Model {
     @Column(DataType.INTEGER.UNSIGNED)
     hits: number;
 
-    @HasMany(() => Tag)
+    @BelongsToMany(() => Tag, () => PostTag)
     tags: Array<Tag>;
 
     @Default(true)
