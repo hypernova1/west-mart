@@ -10,6 +10,8 @@ import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
 import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
 import { Service } from 'typedi';
+import PostTag from '@model/post_tag';
+import PostTagRepository from '@repository/post_tag_repository';
 
 @Service()
 export default class PostService {
@@ -17,7 +19,8 @@ export default class PostService {
     constructor(private postRepository: PostRepository,
                 private favoritePostRepository: FavoritePostRepository,
                 private categoryRepository: CategoryRepository,
-                private tagService: TagService) {}
+                private tagService: TagService,
+                private postTagRepository: PostTagRepository) {}
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
         const postList = await this.postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
@@ -51,8 +54,6 @@ export default class PostService {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
 
-        const tags = await this.tagService.getListOrCreate(postForm.tags);
-
         const post = {
             title: postForm.title,
             content: postForm.content,
@@ -61,6 +62,16 @@ export default class PostService {
         } as Post;
 
         const savedPost = await this.postRepository.save(post);
+
+        const tags = await this.tagService.getListOrCreate(postForm.tags);
+        const postTags = tags.map((tag) => {
+            return {
+                postId: savedPost.id,
+                tagId: tag.id,
+            } as PostTag
+        });
+
+        await this.postTagRepository.saveAll(postTags);
 
         return savedPost.id;
     }
@@ -76,14 +87,23 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        const tags = await this.tagService.getListOrCreate(postForm.tags);
-
         await post.update({
             id: postId,
             title: postForm.title,
-            tags: tags,
             content: postForm.content,
         });
+
+        const tags = await this.tagService.getListOrCreate(postForm.tags);
+
+        const postTags = tags.map((tag) => {
+            return {
+                postId: post.id,
+                tagId: tag.id,
+            } as PostTag;
+        });
+
+        await this.postTagRepository.deleteAll(postId);
+        await this.postTagRepository.saveAll(postTags);
     }
 
     async deletePost(id: number, user: User): Promise<void> {

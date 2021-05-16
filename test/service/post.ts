@@ -3,6 +3,7 @@ import 'mocha';
 import * as chai from 'chai';
 import chaiAsPromised = require('chai-as-promised');
 import * as sinon from 'sinon';
+
 import PostService from '../../src/service/post_service';
 import PostRepository from '../../src/repository/post_repository';
 import FavoritePostRepository from '../../src/repository/favorite_post_repository';
