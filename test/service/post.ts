@@ -13,6 +13,7 @@ import TagRepository from '../../src/repository/tag_repository';
 import NotFoundError from '../../src/error/not_found_error';
 import Post from '../../src/model/post';
 import User from '../../src/model/user';
+import PostTagRepository from '../../src/repository/post_tag_repository';
 
 chai.use(chaiAsPromised);
 
@@ -25,8 +26,9 @@ describe('test getPostDetail', () => {
     const favoritePostRepository = new FavoritePostRepository();
     const categoryRepository = new CategoryRepository();
     const tagService = new TagService(new TagRepository());
+    const postTagRepository = new PostTagRepository();
 
-    const postService = new PostService(stubPostRepository, favoritePostRepository, categoryRepository, tagService);
+    const postService = new PostService(stubPostRepository, favoritePostRepository, categoryRepository, tagService, postTagRepository);
 
     afterEach(() => {
         sandbox.restore();
@@ -60,8 +62,9 @@ describe('test', () => {
     const favoritePostRepository = new FavoritePostRepository();
     const categoryRepository = new CategoryRepository();
     const tagService = new TagService(new TagRepository());
+    const postTagRepository = new PostTagRepository();
 
-    const postService = new PostService(postRepository, favoritePostRepository, categoryRepository, tagService);
+    const postService = new PostService(postRepository, favoritePostRepository, categoryRepository, tagService, postTagRepository);
 
     const findById = sinon.spy(postRepository, 'findById');
 

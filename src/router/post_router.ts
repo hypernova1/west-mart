@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { checkRole } from '@middleware/check-role';
 import { checkJwt } from '@middleware/jwt';
+import { Container } from 'typedi';
 import validate from '@validate/index';
 import postValidator from '@validate/post';
 import PostService from '@service/post_service';
@@ -8,9 +9,8 @@ import CommentService from '@service/comment_service';
 import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
-import {Container} from 'typedi';
 import commentValidator from '@validate/comment';
-import {CommentForm} from '@payload/comment';
+import { CommentForm } from '@payload/comment';
 
 const router = Router();
 const postService = Container.get(PostService);
@@ -108,13 +108,19 @@ router.get('/:id/comment', async (req, res, next) => {
 });
 
 router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
-    const user = req.user;
-    const commentForm = req.body as CommentForm;
+    try {
+        const user = req.user;
+        const postId = +req.params.id;
+        const commentForm = req.body as CommentForm;
+        commentForm.postId = postId;
 
-    const id = await commentService.registerComment(commentForm, user);
+        const id = await commentService.registerComment(commentForm, user);
 
-    res.setHeader('Location', `${req.get('host')}/comment/${id}`);
-    return res.status(201).send();
+        res.setHeader('Location', `${req.get('host')}/comment/${id}`);
+        return res.status(201).send();
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 export default router;

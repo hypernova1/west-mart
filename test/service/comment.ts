@@ -6,7 +6,7 @@ import { getToken } from "../util/auth";
 import CommentService from '../../src/service/comment_service';
 import '../../src/model';
 import * as sinon from 'sinon';
-import {CommentResponse} from '../../src/payload/comment';
+import { CommentResponse } from '../../src/payload/comment';
 
 chai.use(chaiHttp);
 
