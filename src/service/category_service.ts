@@ -26,7 +26,7 @@ export default class CategoryService {
     }
 
     async registerCategory(categoryForm: CategoryForm): Promise<number> {
-        const user = await this.userRepository.findById(categoryForm.managerId);
+        const user = await this.userRepository.findByIdAndIsActiveTrue(categoryForm.managerId);
 
         if (!user) {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
@@ -49,7 +49,7 @@ export default class CategoryService {
             throw new BadRequestError('존재하지 않는 카테고리입니다.');
         }
 
-        const user = this.userRepository.findById(categoryForm.managerId);
+        const user = this.userRepository.findByIdAndIsActiveTrue(categoryForm.managerId);
         if (!user) {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
         }

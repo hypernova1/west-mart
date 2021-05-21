@@ -8,7 +8,7 @@ export async function getToken(): Promise<string> {
         .post('/auth/login')
         .send({
             email: 'hypemova@gmail.com',
-            password: '0000',
+            password: '1111',
         }).then((res) => {
             return res.body.token;
         });

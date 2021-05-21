@@ -63,7 +63,7 @@ export default class CategoryRepository {
             });
     }
 
-    async getLastSequence(): Promise<number> {
+    getLastSequence(): Promise<number> {
         return Category.findOne({
             order: [
                 ['sequence', 'DESC'],

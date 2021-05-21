@@ -7,7 +7,7 @@ import { Service } from 'typedi';
 @Service()
 export default class PostRepository {
 
-    getListByTitleLikeOrContentLike(pageNo: number, size: number, keyword: string): Promise<Array<Post>> {
+    findAllByTitleLikeOrContentLike(pageNo: number, size: number, keyword: string): Promise<Array<Post>> {
         return Post.findAll({
             where: {
                 [Op.or]: [

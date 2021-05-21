@@ -8,7 +8,7 @@ export default class AdminService {
     constructor(private userRepository: UserRepository) {}
 
     async approveUser(userId: number): Promise<void> {
-        const user = await this.userRepository.findById(userId);
+        const user = await this.userRepository.findByIdAndIsActiveTrue(userId);
         if (user.isApprove) {
             throw new BadRequestError('이미 승인된 사용자입니다.');
         }

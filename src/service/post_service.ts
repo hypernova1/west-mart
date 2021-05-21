@@ -23,7 +23,7 @@ export default class PostService {
                 private postTagRepository: PostTagRepository) {}
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
-        const postList = await this.postRepository.getListByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
+        const postList = await this.postRepository.findAllByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
         const postDtoList = postList.map((post: Post) => {
             return {
                 id: post.id,
@@ -147,7 +147,7 @@ export default class PostService {
                 new NotFoundError('글이 존재하지 않습니다.');
             }
 
-            const favoritePost = await this.favoritePostRepository.getByUserIdAndPostId(user.id, post.id);
+            const favoritePost = await this.favoritePostRepository.findByUserIdAndPostId(user.id, post.id);
 
             if (favoritePost) {
                 await post.$remove('favorites', user);

@@ -63,7 +63,7 @@ export default class CommentService {
     }
 
     async getCommentList(postId: number): Promise<CommentResponse> {
-        const commentList = await this.commentRepository.getCommentListByPostId(postId);
+        const commentList = await this.commentRepository.findAllByPostId(postId);
 
         const commentDtoList = commentList.map((comment) => {
             return {

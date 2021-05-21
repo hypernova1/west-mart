@@ -12,7 +12,7 @@ export default class UserService {
     }
 
     async getUserById(userId: number): Promise<UserDetail> {
-        const user = await this.userRepository.findById(userId);
+        const user = await this.userRepository.findByIdAndIsActiveTrue(userId);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -25,7 +25,7 @@ export default class UserService {
     }
 
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const user = await this.userRepository.getById(userId);
+        const user = await this.userRepository.findByIdAndIsActiveTrueAndIsApproveTrue(userId);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -54,7 +54,7 @@ export default class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.findById(id);
+        const user = await this.userRepository.findByIdAndIsActiveTrue(id);
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }

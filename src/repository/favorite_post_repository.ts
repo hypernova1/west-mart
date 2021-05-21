@@ -4,7 +4,7 @@ import {Service} from 'typedi';
 @Service()
 export default class FavoritePostRepository {
 
-    getByUserIdAndPostId(userId: number, postId: number): Promise<FavoritePost | null> {
+    findByUserIdAndPostId(userId: number, postId: number): Promise<FavoritePost | null> {
         return FavoritePost.findOne({
             where: {
                 userId: userId,
@@ -15,7 +15,7 @@ export default class FavoritePostRepository {
         });
     }
 
-    async delete(favoritePost: FavoritePost): Promise<void> {
+    delete(favoritePost: FavoritePost): Promise<void> {
         return FavoritePost.destroy({
             where: {
                 userId: favoritePost.userId,
@@ -29,7 +29,7 @@ export default class FavoritePostRepository {
         })
     }
 
-    async save(userId: number, postId: number) {
+    save(userId: number, postId: number) {
         return FavoritePost.create({
             userId: userId,
             postId: postId,

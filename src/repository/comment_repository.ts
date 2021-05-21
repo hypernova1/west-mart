@@ -30,7 +30,7 @@ export default class PostRepository {
         });
     }
 
-    async findByIdAndUserId(id: number, userId: number): Promise<Comment> {
+    findByIdAndUserId(id: number, userId: number): Promise<Comment> {
         return Comment.findOne({
             where: {
                 id: id,
@@ -51,7 +51,7 @@ export default class PostRepository {
         });
     }
 
-    getCommentListByPostId(postId: number) {
+    findAllByPostId(postId: number) {
         return Comment.findAll({
             where: {
                 postId: postId,

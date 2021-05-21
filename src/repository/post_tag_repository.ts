@@ -4,23 +4,19 @@ import { Service } from 'typedi';
 @Service()
 export default class PostTagRepository {
 
-    async saveAll(postTags: Array<PostTag>) {
-        await PostTag.bulkCreate(postTags)
-            .then(() => {
-                Promise.resolve();
-            }).catch((err: Error) => {
+    saveAll(postTags: Array<PostTag>) {
+        PostTag.bulkCreate(postTags)
+            .catch((err: Error) => {
                 console.log(err);
                 return Promise.reject();
             });
     }
 
-    async deleteAll(postId: number) {
-        await PostTag.destroy({
+    deleteAll(postId: number) {
+        PostTag.destroy({
             where: {
                 postId: postId,
             }
-        }).then(() => {
-            return Promise.resolve();
         }).catch((err: Error) => {
             console.log(err);
             return Promise.reject();

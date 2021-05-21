@@ -4,7 +4,7 @@ import {Service} from 'typedi';
 @Service()
 export default class UserRepository {
 
-    async findAll(): Promise<Array<User>> {
+    findAll(): Promise<Array<User>> {
         return User.findAll({
             where: {
                 isActive: true,
@@ -28,7 +28,7 @@ export default class UserRepository {
             });
     }
 
-    findById(id: number): Promise<User> {
+    findByIdAndIsActiveTrue(id: number): Promise<User> {
         return User.findOne({
             where: {
                 id: id,
@@ -69,7 +69,7 @@ export default class UserRepository {
         });
     }
 
-    getById(id: number): Promise<User> {
+    findByIdAndIsActiveTrueAndIsApproveTrue(id: number): Promise<User> {
         return User.findOne({
             where: {
                 id: id,
