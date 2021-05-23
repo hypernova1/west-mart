@@ -8,14 +8,23 @@ import ConflictError from '../error/confict_error';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 import { Service } from 'typedi';
+import {Repository} from "sequelize-typescript";
+import sequelize from "@model/index";
 
 @Service()
 export default class AuthService {
 
-    constructor(private userRepository: UserRepository) {}
+    constructor(private userRepository: Repository<User>) {
+        this.userRepository = sequelize.getRepository(User);
+    }
 
     async login(email: string, password: string): Promise<string> {
-        const user: User = await this.userRepository.findByEmail(email);
+        const user: User = await this.userRepository.findOne({
+            where: {
+                email: email,
+                isActive: true,
+            }
+        });
 
         if (!user) {
             throw new BadRequestError('잘못된 정보입니다.');
@@ -47,7 +56,8 @@ export default class AuthService {
         } as User;
 
         try {
-            return await this.userRepository.save(user);
+            let createdUser = await this.userRepository.create(user);
+            return createdUser.id;
         } catch (err) {
             throw new ConflictError('이미 존재하는 이메일 입니다.');
         }

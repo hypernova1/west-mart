@@ -1,5 +1,3 @@
-import CommentRepository from '@repository/comment_repository';
-import PostRepository from '@repository/post_repository';
 import NotFoundError from '../error/not_found_error';
 import ForbiddenError from '../error/forbidden_error';
 import Comment from '@model/comment';
@@ -7,16 +5,37 @@ import User from '@model/user';
 import { CommentDetail, CommentForm, CommentResponse } from '@payload/comment';
 import { dateToString } from '@util/common';
 import { Service } from 'typedi';
+import {Repository} from "sequelize-typescript";
+import Post from "@model/post";
+import sequelize from "@model/index";
+import Tag from "@model/tag";
 
 @Service()
 export default class CommentService {
 
-    constructor(private commentRepository: CommentRepository,
-                private postRepository: PostRepository) {
+    constructor(private commentRepository: Repository<Comment>,
+                private postRepository: Repository<Post>) {
+        this.commentRepository = sequelize.getRepository(Comment);
+        this.postRepository = sequelize.getRepository(Post);
     }
 
     async registerComment(commentForm: CommentForm, user: User): Promise<number> {
-        const post = await this.postRepository.findById(commentForm.postId);
+        const post = await this.postRepository.findOne({
+            where: {
+                id: commentForm.postId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: Tag,
+                    as: 'tags',
+                },
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
+        });
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -28,11 +47,24 @@ export default class CommentService {
             postId: post.id,
         } as Comment;
 
-        return this.commentRepository.save(comment);
+        let createdComment = await this.commentRepository.create(comment);
+        return createdComment.id;
     }
 
     async deleteComment(id: number, userId: number): Promise<void> {
-        const comment = await this.commentRepository.findByIdAndUserId(id, userId);
+        const comment = await this.commentRepository.findOne({
+            where: {
+                id: id,
+                userId: userId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
+        });
 
         if (!comment) {
             throw new NotFoundError('댓글이 존재하지 않습니다.');
@@ -41,11 +73,24 @@ export default class CommentService {
         if (comment.writer.id !== userId && userId !== 0) {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
-        await this.commentRepository.deleteById(id);
+
+        await this.commentRepository.update({
+            isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
+        });
     }
 
     async updateComment(id: number, content: string, userId: number): Promise<void> {
-        const comment = await this.commentRepository.findByIdAndUserId(id, userId);
+        const comment = await this.commentRepository.findOne({
+            where: {
+                id: id,
+                userId: userId,
+                isActive: true,
+            },
+        });
 
         if (!comment) {
             throw new NotFoundError('댓글이 존재하지 않습니다.');
@@ -55,15 +100,28 @@ export default class CommentService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        console.log(1);
-
-        await comment.update({
+        await this.commentRepository.update({
             content: content,
+        }, {
+            where: {
+                id: id,
+            }
         });
     }
 
     async getCommentList(postId: number): Promise<CommentResponse> {
-        const commentList = await this.commentRepository.findAllByPostId(postId);
+        const commentList = await this.commentRepository.findAll({
+            where: {
+                postId: postId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'writer',
+                }
+            ]
+        });
 
         const commentDtoList = commentList.map((comment) => {
             return {

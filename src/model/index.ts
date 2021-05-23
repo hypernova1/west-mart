@@ -15,6 +15,7 @@ const { database, username, password } = config[env];
 const sequelize = new Sequelize(database, username, password, {
     dialect: "mysql",
     models: ['/src/model/*.ts'],
+    repositoryMode: true,
 });
 
 sequelize.addModels([
