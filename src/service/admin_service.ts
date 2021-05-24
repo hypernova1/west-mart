@@ -12,18 +12,11 @@ export default class AdminService {
     }
 
     async approveUser(userId: number): Promise<void> {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: userId,
-                isActive: true,
-            }
-        });
+        const user = await this.userRepository.findOne({ where: { id: userId,  isActive: true } });
         if (user.isApprove) {
             throw new BadRequestError('이미 승인된 사용자입니다.');
         }
 
-        await user.update({
-            isApprove: true,
-        });
+        await user.update({ isApprove: true });
     }
 }

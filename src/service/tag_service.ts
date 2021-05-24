@@ -13,11 +13,7 @@ export default class TagService {
 
 
     async getOrCreate(name: string) {
-        let tag = await this.tagRepository.findOne({
-            where: {
-                name: name,
-            }
-        });
+        let tag = await this.tagRepository.findOne({ where: { name: name } });
 
         if (!tag) {
             tag = await this.tagRepository.create({ name: name } as Tag);
@@ -27,11 +23,7 @@ export default class TagService {
     }
 
     async getListOrCreate(tagNames: Array<string>): Promise<Array<Tag>> {
-        let tags = await this.tagRepository.findAll({
-            where: {
-                name: tagNames,
-            }
-        });
+        let tags = await this.tagRepository.findAll({ where: { name: tagNames } });
 
         const names = tags.map((tag) => {
             return tag.name;

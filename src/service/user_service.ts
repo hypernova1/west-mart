@@ -15,12 +15,8 @@ export default class UserService {
     }
 
     async getUserById(userId: number): Promise<UserDetail> {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: userId,
-                isActive: true,
-            }
-        })
+        const user = await this.userRepository.findOne({ where: { id: userId, isActive: true } });
+
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -33,13 +29,7 @@ export default class UserService {
     }
 
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: userId,
-                isActive: true,
-                isApprove: true,
-            }
-        });
+        const user = await this.userRepository.findOne({ where: { id: userId, isActive: true, isApprove: true } });
 
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
@@ -47,19 +37,11 @@ export default class UserService {
 
         const hashedPassword = await bcrypt.hash(updateForm.password, 12);
 
-        await user.update({
-            nickname: updateForm.nickname,
-            password: hashedPassword,
-        });
+        await user.update({ nickname: updateForm.nickname, password: hashedPassword });
     }
 
     async existsByEmail(email: string): Promise<boolean> {
-        const userCount = await this.userRepository.count({
-            where: {
-                email: email,
-            }
-        });
-
+        const userCount = await this.userRepository.count({ where: { email: email } });
         return !!userCount;
     }
 
@@ -75,24 +57,15 @@ export default class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: id,
-                isActive: true,
-                isApprove: true,
-            }
-        });
+        const user = await this.userRepository.findOne({ where: { id: id, isActive: true, isApprove: true } });
 
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
 
-        await this.userRepository.update({
-            isActive: false,
-        }, {
-            where: {
-                id: id,
-            }
-        });
+        await this.userRepository.update(
+            { isActive: false },
+            { where: { id: id, } }
+        );
     }
 }

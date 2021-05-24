@@ -18,10 +18,7 @@ export default class CategoryService {
 
     async getCategories(): Promise<Array<CategoryDto>> {
         const categories = await this.categoryRepository.findAll({
-            include: [{
-                model: this.userRepository,
-                as: 'manager',
-            }],
+            include: [{ model: this.userRepository, as: 'manager' }]
         });
 
         return categories.map((category) => {
@@ -36,56 +33,36 @@ export default class CategoryService {
 
     async registerCategory(categoryForm: CategoryForm): Promise<number> {
         const user = await this.userRepository.findOne({
-            where: {
-                id: categoryForm.managerId,
-                isActive: true,
-                isApprove: true,
-            }
+            where: { id: categoryForm.managerId, isActive: true, isApprove: true }
         });
 
         if (!user) {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
         }
 
-        const category = await this.categoryRepository.findOne({
-            order: [
-                ['sequence', 'DESC'],
-            ],
-            limit: 1,
-        });
+        const category = await this.categoryRepository.findOne({ order: [['sequence', 'DESC']],  limit: 1 });
 
         let lastSequence = 1;
         if (category) {
             lastSequence = category.sequence + 1;
         }
 
-        const newCategory = {
+        const newCategory = await this.categoryRepository.create({
             name: categoryForm.name,
             userId: user.id,
             sequence: lastSequence,
-        } as Category;
-
-        const createdCategory = await this.categoryRepository.create(newCategory)
-        return createdCategory.id;
+        })
+        return newCategory.id;
     }
 
     async updateCategory(id: number, categoryForm: CategoryForm) {
-        const category = await this.categoryRepository.findOne({
-            where: {
-                id: id,
-                isActive: true,
-            }
-        });
+        const category = await this.categoryRepository.findOne({ where: { id: id, isActive: true } });
+
         if (!category) {
             throw new BadRequestError('존재하지 않는 카테고리입니다.');
         }
 
-        const user = this.userRepository.findOne({
-            where: {
-                id: id,
-                isActive: true,
-            }
-        });
+        const user = this.userRepository.findOne({ where: { id: id, isActive: true }});
 
         if (!user) {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
@@ -98,25 +75,15 @@ export default class CategoryService {
     }
 
     async deleteCategory(id: number) {
-        const category = await this.categoryRepository.findOne({
-            where: {
-                id: id,
-                isActive: true,
-            },
-            include: [
-                {
-                    model: this.userRepository,
-                    as: 'manager',
-                }
-            ]
+        const category = await this.categoryRepository.findOne(
+            { where: { id: id, isActive: true },
+            include: [{ model: this.userRepository, as: 'manager' }]
         });
 
         if (!category) {
             throw new BadRequestError('존재하지 않는 카테고리입니다.');
         }
 
-        await category.update({
-            isActive: false,
-        })
+        await category.update({ isActive: false });
     }
 }

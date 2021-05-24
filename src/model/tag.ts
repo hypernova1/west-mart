@@ -33,7 +33,7 @@ export default class Tag extends Model {
     name!: string;
 
     @BelongsToMany(() => Post, () => PostTag)
-    post: Array<Post>;
+    posts: Array<Post>;
 
     @Default(NOW)
     @AllowNull(false)

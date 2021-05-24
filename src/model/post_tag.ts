@@ -16,4 +16,5 @@ export default class PostTag extends Model {
     @ForeignKey(() => Tag)
     @Column
     tagId: number;
+
 }

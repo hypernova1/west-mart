@@ -34,16 +34,8 @@ export default class PostService {
             const postList = await this.postRepository.findAll({
                 where: {
                     [Op.or]: [
-                        {
-                            title: {
-                                [Op.like]: '%' + request.keyword + '%'
-                            }
-                        },
-                        {
-                            content: {
-                                [Op.like]: '%' + request.keyword + '%'
-                            }
-                        }
+                        { title: { [Op.like]: '%' + request.keyword + '%' } },
+                        { content: { [Op.like]: '%' + request.keyword + '%' } },
                     ],
                     isActive: true,
                 },
@@ -70,20 +62,13 @@ export default class PostService {
             const totalCount = await this.postRepository.count({
                 where: {
                     [Op.or]: [
-                        {
-                            title: {
-                                [Op.like]: '%' + request.keyword + '%'
-                            }
-                        },
-                        {
-                            content: {
-                                [Op.like]: '%' + request.keyword + '%'
-                            }
-                        }
+                        { title: { [Op.like]: '%' + request.keyword + '%' } },
+                        { content: { [Op.like]: '%' + request.keyword + '%' } },
                     ],
                     isActive: true,
                 },
             });
+
             const totalPage = totalCount / request.size;
             const isExistNextPage = totalPage > request.pageNo;
 
@@ -99,10 +84,7 @@ export default class PostService {
 
     async registerPost(postForm: PostForm, user: User): Promise<number> {
         const category = await this.categoryRepository.findOne({
-            where: {
-                id: postForm.categoryId,
-                isActive: true,
-            },
+            where: { id: postForm.categoryId,  isActive: true },
             include: [userRepository],
         });
 
@@ -131,16 +113,8 @@ export default class PostService {
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
         const post = await this.postRepository.findOne({
-            where: {
-                id: postId,
-                isActive: true,
-            },
-            include: [
-                {
-                    model: userRepository,
-                    as: 'writer',
-                }
-            ]
+            where: { id: postId,  isActive: true },
+            include: [{ model: userRepository, as: 'writer' }]
         });
 
         if (!post) {
@@ -151,14 +125,8 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        await this.postRepository.update({
-            title: postForm.title,
-            content: postForm.content,
-        }, {
-            where: {
-                id: postId,
-            }
-        });
+        await this.postRepository.update({ title: postForm.title,  content: postForm.content },
+            { where: { id: postId } });
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
 
@@ -166,12 +134,7 @@ export default class PostService {
     }
 
     async deletePost(id: number, user: User): Promise<void> {
-        const post = await this.postRepository.findOne({
-            where: {
-                id: id,
-                isActive: true,
-            }
-        });
+        const post = await this.postRepository.findOne({ where: { id: id, isActive: true } });
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -181,30 +144,17 @@ export default class PostService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        await this.postRepository.update({
-            isActive: false,
-        }, {
-            where: {
-                id: id,
-            }
-        })
+        await this.postRepository.update(
+            { isActive: false },
+            { where: { id: id } });
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
         const post = await this.postRepository.findOne({
-            where: {
-                id: postId,
-                isActive: true,
-            },
+            where: { id: postId,  isActive: true },
             include: [
-                {
-                    model: userRepository,
-                    as: 'writer',
-                },
-                {
-                    model: tagRepository,
-                    as: 'tags',
-                }
+                { model: userRepository, as: 'writer' },
+                { model: tagRepository, as: 'tags' }
             ]
         });
 
@@ -227,11 +177,9 @@ export default class PostService {
     toggleFavorite(id: number, user: User) {
         sequelize.transaction().then(async (t) => {
             const post = await this.postRepository.findOne({
-                where: {
-                    id: id,
-                    isActive: true,
-                },
-                include: [tagRepository, userRepository]
+                where: { id: id, isActive: true },
+                include: [tagRepository, userRepository],
+                transaction: t,
             });
 
             if (!post) {
@@ -239,10 +187,8 @@ export default class PostService {
             }
 
             const favoritePost = await this.favoritePostRepository.findOne({
-                where: {
-                    userId: user.id,
-                    postId: post.id,
-                }
+                where: { userId: user.id,  postId: post.id },
+                transaction: t,
             });
 
             if (favoritePost) {
@@ -259,11 +205,7 @@ export default class PostService {
     }
 
     async increasePostHits(id: number) {
-        const post = await this.postRepository.findOne({
-            where: {
-                id: id,
-            }
-        });
+        const post = await this.postRepository.findOne({ where: { id: id } });
         await post.increment({ hits: 1 });
     }
 }

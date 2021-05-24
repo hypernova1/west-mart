@@ -18,12 +18,7 @@ export default class AuthService {
     }
 
     async login(email: string, password: string): Promise<string> {
-        const user: User = await this.userRepository.findOne({
-            where: {
-                email: email,
-                isActive: true,
-            }
-        });
+        const user: User = await this.userRepository.findOne({ where: { email: email, isActive: true } });
 
         if (!user) {
             throw new BadRequestError('잘못된 정보입니다.');
@@ -46,17 +41,17 @@ export default class AuthService {
     }
 
     async join(joinForm: UserJoinForm): Promise<number> {
-        const hashedPassword: string = bcrypt.hashSync(joinForm.password, 8);
-        const user = {
-            email: joinForm.email,
-            password: hashedPassword,
-            nickname: joinForm.nickname,
-            role: Role.USER,
-        } as User;
-
         try {
-            let createdUser = await this.userRepository.create(user);
-            return createdUser.id;
+            const hashedPassword: string = bcrypt.hashSync(joinForm.password, 8);
+
+            const user = await this.userRepository.create( {
+                email: joinForm.email,
+                password: hashedPassword,
+                nickname: joinForm.nickname,
+                role: Role.USER,
+            });
+
+            return user.id;
         } catch (err) {
             throw new ConflictError('이미 존재하는 이메일 입니다.');
         }
