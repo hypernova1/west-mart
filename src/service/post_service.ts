@@ -1,51 +1,110 @@
 import sequelize from '@model/index';
-import PostRepository from '@repository/post_repository';
-import FavoritePostRepository from '@repository/favorite_post_repository';
-import CategoryRepository from '@repository/category_repository';
+import { Op } from 'sequelize';
+import { Repository } from 'sequelize-typescript';
+import { Service } from 'typedi';
+
 import TagService from '@service/tag_service';
 import Post from '@model/post';
 import User from '@model/user';
 import Role from '@constant/role';
-import NotFoundError from '../error/not_found_error';
-import ForbiddenError from '../error/forbidden_error';
+import NotFoundError from '@error/not_found_error';
+import ForbiddenError from '@error/forbidden_error';
 import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
-import { Service } from 'typedi';
-import PostTag from '@model/post_tag';
-import PostTagRepository from '@repository/post_tag_repository';
+import FavoritePost from '@model/favorite_post';
+import Category from '@model/category';
+import Tag from '@model/tag';
+
+const tagRepository = sequelize.getRepository(Tag);
+const userRepository = sequelize.getRepository(User);
 
 @Service()
 export default class PostService {
 
-    constructor(private postRepository: PostRepository,
-                private favoritePostRepository: FavoritePostRepository,
-                private categoryRepository: CategoryRepository,
+    constructor(private postRepository: Repository<Post>,
                 private tagService: TagService,
-                private postTagRepository: PostTagRepository) {}
+                private favoritePostRepository: Repository<FavoritePost>,
+                private categoryRepository: Repository<Category>) {
+        this.postRepository = sequelize.getRepository(Post);
+        this.favoritePostRepository = sequelize.getRepository(FavoritePost);
+        this.categoryRepository = sequelize.getRepository(Category);
+    }
 
     async getPostList(request: PostListRequest): Promise<PostListDto>  {
-        const postList = await this.postRepository.findAllByTitleLikeOrContentLike(request.pageNo, request.size, request.keyword);
-        const postDtoList = postList.map((post: Post) => {
+        try {
+            const postList = await this.postRepository.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: '%' + request.keyword + '%'
+                            }
+                        },
+                        {
+                            content: {
+                                [Op.like]: '%' + request.keyword + '%'
+                            }
+                        }
+                    ],
+                    isActive: true,
+                },
+                offset: request.pageNo - 1,
+                limit: request.pageNo * request.size,
+                order: [
+                    ['createdAt', 'ASC']
+                ],
+                include: [{
+                    model: userRepository,
+                    as: 'writer'
+                }]
+            });
+
+            const postDtoList = postList.map((post: Post) => {
+                return {
+                    id: post.id,
+                    title: post.title,
+                    writer: post.writer.nickname,
+                    regDate: post.createdAt
+                } as PostSummary;
+            });
+
+            const totalCount = await this.postRepository.count({
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: '%' + request.keyword + '%'
+                            }
+                        },
+                        {
+                            content: {
+                                [Op.like]: '%' + request.keyword + '%'
+                            }
+                        }
+                    ],
+                    isActive: true,
+                },
+            });
+            const totalPage = totalCount / request.size;
+            const isExistNextPage = totalPage > request.pageNo;
+
             return {
-                id: post.id,
-                title: post.title,
-                writer: post.writer.nickname,
-                regDate: post.createdAt
-            } as PostSummary;
-        });
+                postList: postDtoList,
+                isExistNextPage: isExistNextPage,
+            } as PostListDto
+        } catch (err) {
+            console.log(err);
+        }
 
-        const totalCount = await this.postRepository.countByTitleLikeOrContentLike(request.keyword);
-        const totalPage = totalCount / request.size;
-        const isExistNextPage = totalPage > request.pageNo;
-
-        return {
-            postList: postDtoList,
-            isExistNextPage: isExistNextPage,
-        } as PostListDto
     }
 
     async registerPost(postForm: PostForm, user: User): Promise<number> {
-
-        const category = await this.categoryRepository.findById(postForm.categoryId);
+        const category = await this.categoryRepository.findOne({
+            where: {
+                id: postForm.categoryId,
+                isActive: true,
+            },
+            include: [userRepository],
+        });
 
         if (!category) {
             throw new NotFoundError('카테고리가 존재하지 않습니다.');
@@ -61,23 +120,28 @@ export default class PostService {
             categoryId: category.id,
         } as Post;
 
-        const savedPost = await this.postRepository.save(post);
+        const savedPost = await this.postRepository.create(post);
+
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
-        const postTags = tags.map((tag) => {
-            return {
-                postId: savedPost.id,
-                tagId: tag.id,
-            } as PostTag
-        });
-
-        await this.postTagRepository.saveAll(postTags);
+        await savedPost.$add('tags', tags);
 
         return savedPost.id;
     }
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
-        const post = await this.postRepository.findById(postId);
+        const post = await this.postRepository.findOne({
+            where: {
+                id: postId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: userRepository,
+                    as: 'writer',
+                }
+            ]
+        });
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -87,27 +151,27 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        await post.update({
-            id: postId,
+        await this.postRepository.update({
             title: postForm.title,
             content: postForm.content,
+        }, {
+            where: {
+                id: postId,
+            }
         });
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
 
-        const postTags = tags.map((tag) => {
-            return {
-                postId: post.id,
-                tagId: tag.id,
-            } as PostTag;
-        });
-
-        await this.postTagRepository.deleteAll(postId);
-        await this.postTagRepository.saveAll(postTags);
+        await post.$set('tags', tags);
     }
 
     async deletePost(id: number, user: User): Promise<void> {
-        const post = await this.postRepository.findById(id);
+        const post = await this.postRepository.findOne({
+            where: {
+                id: id,
+                isActive: true,
+            }
+        });
 
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
@@ -117,13 +181,33 @@ export default class PostService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        await post.update({
+        await this.postRepository.update({
             isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
         })
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
-        const post = await this.postRepository.findById(postId);
+        const post = await this.postRepository.findOne({
+            where: {
+                id: postId,
+                isActive: true,
+            },
+            include: [
+                {
+                    model: userRepository,
+                    as: 'writer',
+                },
+                {
+                    model: tagRepository,
+                    as: 'tags',
+                }
+            ]
+        });
+
         if (!post) {
             throw new NotFoundError('글이 존재하지 않습니다.');
         }
@@ -142,12 +226,24 @@ export default class PostService {
 
     toggleFavorite(id: number, user: User) {
         sequelize.transaction().then(async (t) => {
-            const post = await this.postRepository.findById(id);
+            const post = await this.postRepository.findOne({
+                where: {
+                    id: id,
+                    isActive: true,
+                },
+                include: [tagRepository, userRepository]
+            });
+
             if (!post) {
                 new NotFoundError('글이 존재하지 않습니다.');
             }
 
-            const favoritePost = await this.favoritePostRepository.findByUserIdAndPostId(user.id, post.id);
+            const favoritePost = await this.favoritePostRepository.findOne({
+                where: {
+                    userId: user.id,
+                    postId: post.id,
+                }
+            });
 
             if (favoritePost) {
                 await post.$remove('favorites', user);
@@ -163,7 +259,11 @@ export default class PostService {
     }
 
     async increasePostHits(id: number) {
-        const post = await this.postRepository.findById(id);
+        const post = await this.postRepository.findOne({
+            where: {
+                id: id,
+            }
+        });
         await post.increment({ hits: 1 });
     }
 }

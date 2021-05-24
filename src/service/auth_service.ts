@@ -1,15 +1,14 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { Service } from 'typedi';
+import { Repository } from "sequelize-typescript";
 
+import sequelize from "@model/index";
 import User from '@model/user';
-import UserRepository from '@repository/user_repository';
-import BadRequestError from '../error/bad_request_error';
-import ConflictError from '../error/confict_error';
+import BadRequestError from '@error/bad_request_error';
+import ConflictError from '@error/confict_error';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
-import { Service } from 'typedi';
-import {Repository} from "sequelize-typescript";
-import sequelize from "@model/index";
 
 @Service()
 export default class AuthService {

@@ -1,4 +1,4 @@
-import BadRequestError from '../error/bad_request_error';
+import BadRequestError from '@error/bad_request_error';
 import { Service } from 'typedi';
 import { Repository } from 'sequelize-typescript';
 import sequelize from "@model/index";

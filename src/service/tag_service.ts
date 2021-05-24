@@ -1,25 +1,37 @@
+import { Service } from 'typedi';
+import { Repository } from 'sequelize-typescript';
+
+import sequelize from '@model/index';
 import Tag from '@model/tag';
-import TagRepository from '@repository/tag_repository';
-import {Service} from 'typedi';
 
 @Service()
 export default class TagService {
 
-    constructor(private tagRepository: TagRepository) {}
+    constructor(private tagRepository: Repository<Tag>) {
+        this.tagRepository = sequelize.getRepository(Tag);
+    }
 
 
     async getOrCreate(name: string) {
-        let tag = await this.tagRepository.findByName(name);
+        let tag = await this.tagRepository.findOne({
+            where: {
+                name: name,
+            }
+        });
 
         if (!tag) {
-            tag = await this.tagRepository.save({ name: name } as Tag);
+            tag = await this.tagRepository.create({ name: name } as Tag);
         }
 
         return tag.id;
     }
 
     async getListOrCreate(tagNames: Array<string>): Promise<Array<Tag>> {
-        const tags = await this.tagRepository.findAllByNameIn(tagNames);
+        let tags = await this.tagRepository.findAll({
+            where: {
+                name: tagNames,
+            }
+        });
 
         const names = tags.map((tag) => {
             return tag.name;
@@ -33,8 +45,8 @@ export default class TagService {
             });
 
         if (unregisterTags.length > 0) {
-            const newTags = await this.tagRepository.saveAll(unregisterTags);
-            tags.concat(newTags)
+            const newTags = await this.tagRepository.bulkCreate(unregisterTags);
+            tags = tags.concat(newTags);
         }
 
         return tags;

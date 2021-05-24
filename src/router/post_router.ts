@@ -17,13 +17,18 @@ const postService = Container.get(PostService);
 const commentService = Container.get(CommentService);
 
 router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
-    const request: PostListRequest = {};
-    request.pageNo = +req.query.pageNo || 1;
-    request.size = +req.query.size || 10;
-    request.keyword = req.query.keyword as string || '';
+    try {
+        const request: PostListRequest = {};
+        request.pageNo = +req.query.pageNo || 1;
+        request.size = +req.query.size || 10;
+        request.keyword = req.query.keyword as string || '';
 
-    const result = await postService.getPostList(request);
-    res.status(200).json(result);
+        const result = await postService.getPostList(request);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        return errorHandler(res, err);
+    }
 });
 
 router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
@@ -60,6 +65,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVali
         res.setHeader('Location', `${req.get('host')}/post/${id}`);
         return res.status(201).send();
     } catch (err) {
+        console.error(err);
         return errorHandler(res, err);
     }
 })

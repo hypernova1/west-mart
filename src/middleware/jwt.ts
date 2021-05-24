@@ -1,8 +1,9 @@
 import * as jwt from 'jsonwebtoken';
-import { NextFunction, Request, Response } from 'express';
-import UserRepository from '@repository/user_repository';
+import sequelize from '@model/index';
+import {NextFunction, Request, Response} from 'express';
+import User from '@model/user';
 
-const userRepository = new UserRepository();
+const userRepository = sequelize.getRepository(User);
 
 export const checkJwt = async (req: Request, res: Response, next: NextFunction) => {
     const token = <string>req.headers['authorization'].split(' ')[1];
@@ -23,7 +24,11 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         expiresIn: '1h'
     });
 
-    req.user = await userRepository.findByEmail(email);
+    req.user = await userRepository.findOne({
+        where: {
+            email: email
+        }
+    });
 
     res.setHeader('token', newToken);
 

@@ -7,9 +7,10 @@ import UserService from '@service/user_service';
 import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
+import {Container} from 'typedi';
 
 const router = express.Router();
-const userService = new UserService();
+const userService = Container.get(UserService);
 
 router.get('/', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
     const userList = await userService.getUserList();

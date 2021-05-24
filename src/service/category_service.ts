@@ -1,22 +1,28 @@
-import Category from '@model/category';
-import BadRequestError from '../error/bad_request_error';
-import { CategoryDto, CategoryForm } from '@payload/category';
-import {Service} from 'typedi';
-import {Repository} from "sequelize-typescript";
-import User from "@model/user";
+import { Service } from 'typedi';
+import { Repository } from "sequelize-typescript";
+
 import sequelize from "@model/index";
+import Category from '@model/category';
+import BadRequestError from '@error/bad_request_error';
+import { CategoryDto, CategoryForm } from '@payload/category';
+import User from "@model/user";
 
 @Service()
 export default class CategoryService {
 
     constructor(private categoryRepository: Repository<Category>,
-                private userRepository: Repository<User>) {
+                private readonly userRepository: Repository<User>) {
         this.categoryRepository = sequelize.getRepository(Category);
         this.userRepository = sequelize.getRepository(User);
     }
 
     async getCategories(): Promise<Array<CategoryDto>> {
-        const categories = await this.categoryRepository.findAll();
+        const categories = await this.categoryRepository.findAll({
+            include: [{
+                model: this.userRepository,
+                as: 'manager',
+            }],
+        });
 
         return categories.map((category) => {
             return {
@@ -99,7 +105,7 @@ export default class CategoryService {
             },
             include: [
                 {
-                    model: User,
+                    model: this.userRepository,
                     as: 'manager',
                 }
             ]

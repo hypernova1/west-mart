@@ -1,18 +1,26 @@
 import * as bcrypt from 'bcryptjs';
-import UserRepository from '@repository/user_repository';
-import {UserDetail, UserSummary, UserUpdateForm} from '@payload/user';
-import NotFoundError from '../error/not_found_error';
+import { Service } from 'typedi';
+import { Repository } from 'sequelize-typescript';
 
+import sequelize from '@model/index';
+import NotFoundError from '@error/not_found_error';
+import User from '@model/user';
+import { UserDetail, UserSummary, UserUpdateForm } from '@payload/user';
+
+@Service()
 export default class UserService {
 
-    private userRepository: UserRepository;
-
-    constructor() {
-        this.userRepository = new UserRepository();
+    constructor(private userRepository: Repository<User>) {
+        this.userRepository = sequelize.getRepository(User);
     }
 
     async getUserById(userId: number): Promise<UserDetail> {
-        const user = await this.userRepository.findByIdAndIsActiveTrue(userId);
+        const user = await this.userRepository.findOne({
+            where: {
+                id: userId,
+                isActive: true,
+            }
+        })
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -25,7 +33,14 @@ export default class UserService {
     }
 
     async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const user = await this.userRepository.findByIdAndIsActiveTrueAndIsApproveTrue(userId);
+        const user = await this.userRepository.findOne({
+            where: {
+                id: userId,
+                isActive: true,
+                isApprove: true,
+            }
+        });
+
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
@@ -39,7 +54,13 @@ export default class UserService {
     }
 
     async existsByEmail(email: string): Promise<boolean> {
-        return await this.userRepository.existsByEmail(email);
+        const userCount = await this.userRepository.count({
+            where: {
+                email: email,
+            }
+        });
+
+        return !!userCount;
     }
 
     async getUserList(): Promise<Array<UserSummary>> {
@@ -54,11 +75,24 @@ export default class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.findByIdAndIsActiveTrue(id);
+        const user = await this.userRepository.findOne({
+            where: {
+                id: id,
+                isActive: true,
+                isApprove: true,
+            }
+        });
+
         if (!user) {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
 
-        await this.userRepository.deleteById(id);
+        await this.userRepository.update({
+            isActive: false,
+        }, {
+            where: {
+                id: id,
+            }
+        });
     }
 }

@@ -1,14 +1,18 @@
-import NotFoundError from '../error/not_found_error';
-import ForbiddenError from '../error/forbidden_error';
+import { Service } from 'typedi';
+import { Repository } from "sequelize-typescript";
+
+import NotFoundError from '@error/not_found_error';
+import ForbiddenError from '@error/forbidden_error';
 import Comment from '@model/comment';
 import User from '@model/user';
 import { CommentDetail, CommentForm, CommentResponse } from '@payload/comment';
 import { dateToString } from '@util/common';
-import { Service } from 'typedi';
-import {Repository} from "sequelize-typescript";
 import Post from "@model/post";
 import sequelize from "@model/index";
 import Tag from "@model/tag";
+
+const userRepository = sequelize.getRepository(User);
+const tagRepository = sequelize.getRepository(Tag);
 
 @Service()
 export default class CommentService {
@@ -27,11 +31,11 @@ export default class CommentService {
             },
             include: [
                 {
-                    model: Tag,
+                    model: tagRepository,
                     as: 'tags',
                 },
                 {
-                    model: User,
+                    model: userRepository,
                     as: 'writer',
                 }
             ]
@@ -60,7 +64,7 @@ export default class CommentService {
             },
             include: [
                 {
-                    model: User,
+                    model: userRepository,
                     as: 'writer',
                 }
             ]
@@ -117,7 +121,7 @@ export default class CommentService {
             },
             include: [
                 {
-                    model: User,
+                    model: userRepository,
                     as: 'writer',
                 }
             ]
