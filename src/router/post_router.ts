@@ -86,12 +86,16 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVa
 });
 
 router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
-    const user = req.user;
-    const postId = +req.params.id;
+    try {
+        const user = req.user;
+        const postId = +req.params.id;
 
-    await postService.deletePost(postId, user);
+        await postService.deletePost(postId, user);
 
-    return res.status(204).send();
+        return res.status(204).send();
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {

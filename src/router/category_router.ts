@@ -14,9 +14,13 @@ const router = Router();
 const categoryService = Container.get(CategoryService);
 
 router.get('/', async (req, res, next) => {
-    const categories = await categoryService.getCategories();
+    try {
+        const categories = await categoryService.getCategories();
 
-    return res.status(HttpStatus.OK).json(categories);
+        return res.status(HttpStatus.OK).json(categories);
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {

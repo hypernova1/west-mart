@@ -91,6 +91,7 @@ export default class PostService {
         if (!category) {
             throw new NotFoundError('카테고리가 존재하지 않습니다.');
         }
+
         if (category.manager.id !== user.id) {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
@@ -103,7 +104,6 @@ export default class PostService {
         } as Post;
 
         const savedPost = await this.postRepository.create(post);
-
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
         await savedPost.$add('tags', tags);
@@ -125,8 +125,10 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        await this.postRepository.update({ title: postForm.title,  content: postForm.content },
-            { where: { id: postId } });
+        await this.postRepository.update(
+            { title: postForm.title,  content: postForm.content },
+            { where: { id: postId } }
+        );
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
 
@@ -146,7 +148,8 @@ export default class PostService {
 
         await this.postRepository.update(
             { isActive: false },
-            { where: { id: id } });
+            { where: { id: id } }
+        );
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
@@ -176,32 +179,35 @@ export default class PostService {
 
     toggleFavorite(id: number, user: User) {
         sequelize.transaction().then(async (t) => {
-            const post = await this.postRepository.findOne({
-                where: { id: id, isActive: true },
-                include: [tagRepository, userRepository],
-                transaction: t,
-            });
+            try {
+                const post = await this.postRepository.findOne({
+                    where: { id: id, isActive: true },
+                    include: [tagRepository, userRepository],
+                    transaction: t,
+                });
 
-            if (!post) {
-                new NotFoundError('글이 존재하지 않습니다.');
+                if (!post) {
+                    new NotFoundError('글이 존재하지 않습니다.');
+                }
+
+                const favoritePost = await this.favoritePostRepository.findOne({
+                    where: { userId: user.id,  postId: post.id },
+                    transaction: t,
+                });
+
+                if (favoritePost) {
+                    await post.$remove('favorites', user);
+                    await post.decrement({ favorite: 1 });
+
+                } else {
+                    await post.$add('favorites', user);
+                    await post.increment({ favorite: 1 });
+                }
+            } catch (err) {
+                await t.rollback();
             }
-
-            const favoritePost = await this.favoritePostRepository.findOne({
-                where: { userId: user.id,  postId: post.id },
-                transaction: t,
-            });
-
-            if (favoritePost) {
-                await post.$remove('favorites', user);
-                await post.decreaseFavorite();
-
-            } else {
-                await post.$add('favorites', user);
-                await post.increaseFavorite();
-            }
-
-            await t.commit();
         });
+
     }
 
     async increasePostHits(id: number) {

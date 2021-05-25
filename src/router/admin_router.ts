@@ -27,20 +27,28 @@ router.patch('/user/:userId/approve', checkJwt, checkRole([Role.ADMIN]), async (
 });
 
 router.delete('/post/:postId', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
-    const user = req.user;
-    const postId = +req.params.postId;
+    try {
+        const user = req.user;
+        const postId = +req.params.postId;
 
-    await postService.deletePost(postId, user);
+        await postService.deletePost(postId, user);
 
-    return res.status(200).send();
+        return res.status(200).send();
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 router.delete('/comment/:commentId', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
-    const commentId = +req.params.commentId;
+    try {
+        const commentId = +req.params.commentId;
 
-    await commentService.deleteComment(commentId, 0);
+        await commentService.deleteComment(commentId, 0);
 
-    return res.status(200).send();
+        return res.status(200).send();
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 export default router;
