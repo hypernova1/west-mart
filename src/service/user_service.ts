@@ -63,9 +63,6 @@ export default class UserService {
             throw new NotFoundError('존재하지 않는 사용자입니다.');
         }
 
-        await this.userRepository.update(
-            { isActive: false },
-            { where: { id: id, } }
-        );
+        await user.update({ isActive: false });
     }
 }

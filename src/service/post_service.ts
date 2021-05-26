@@ -10,7 +10,6 @@ import Role from '@constant/role';
 import NotFoundError from '@error/not_found_error';
 import ForbiddenError from '@error/forbidden_error';
 import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
-import FavoritePost from '@model/favorite_post';
 import Category from '@model/category';
 import Tag from '@model/tag';
 
@@ -22,10 +21,8 @@ export default class PostService {
 
     constructor(private postRepository: Repository<Post>,
                 private tagService: TagService,
-                private favoritePostRepository: Repository<FavoritePost>,
                 private categoryRepository: Repository<Category>) {
         this.postRepository = sequelize.getRepository(Post);
-        this.favoritePostRepository = sequelize.getRepository(FavoritePost);
         this.categoryRepository = sequelize.getRepository(Category);
     }
 
@@ -96,19 +93,17 @@ export default class PostService {
             throw new ForbiddenError('작성 권한이 없습니다.');
         }
 
-        const post = {
+        const post = await category.$create('post', {
             title: postForm.title,
             content: postForm.content,
             userId: user.id,
-            categoryId: category.id,
-        } as Post;
-
-        const savedPost = await this.postRepository.create(post);
+        });
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
-        await savedPost.$add('tags', tags);
 
-        return savedPost.id;
+        await post.$add('tags', tags);
+
+        return post.id;
     }
 
     async updatePost(postForm: PostForm, postId: number, userId: number): Promise<void> {
@@ -125,10 +120,7 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        await this.postRepository.update(
-            { title: postForm.title,  content: postForm.content },
-            { where: { id: postId } }
-        );
+        await post.update({ title: postForm.title,  content: postForm.content });
 
         const tags = await this.tagService.getListOrCreate(postForm.tags);
 
@@ -146,10 +138,7 @@ export default class PostService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        await this.postRepository.update(
-            { isActive: false },
-            { where: { id: id } }
-        );
+        await post.update({ isActive: false });
     }
 
     async getPostDetail(postId: number): Promise<PostDetail> {
@@ -182,7 +171,6 @@ export default class PostService {
             try {
                 const post = await this.postRepository.findOne({
                     where: { id: id, isActive: true },
-                    include: [tagRepository, userRepository],
                     transaction: t,
                 });
 
@@ -190,20 +178,19 @@ export default class PostService {
                     new NotFoundError('글이 존재하지 않습니다.');
                 }
 
-                const favoritePost = await this.favoritePostRepository.findOne({
-                    where: { userId: user.id,  postId: post.id },
-                    transaction: t,
-                });
+                const favorites = await post.$get('favorites', { where: { id: user.id } });
 
-                if (favoritePost) {
-                    await post.$remove('favorites', user);
-                    await post.decrement({ favorite: 1 });
+                if (favorites.length !== 0) {
+                    await post.$remove('favorites', user, { transaction: t });
+                    await post.decrement({ favorite: 1 }, { transaction: t });
 
                 } else {
-                    await post.$add('favorites', user);
-                    await post.increment({ favorite: 1 });
+                    await post.$add('favorites', user, { transaction: t });
+                    await post.increment({ favorite: 1 }, { transaction: t });
                 }
+                await t.commit();
             } catch (err) {
+                console.log(err);
                 await t.rollback();
             }
         });

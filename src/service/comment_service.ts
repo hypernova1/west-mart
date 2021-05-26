@@ -36,14 +36,13 @@ export default class CommentService {
             throw new NotFoundError('글이 존재하지 않습니다.');
         }
 
-        const comment = {
+        const comment = await post.$create('comment', {
             content: commentForm.content,
             userId: user.id,
             postId: post.id,
-        } as Comment;
+        }) as Comment;
 
-        let createdComment = await this.commentRepository.create(comment);
-        return createdComment.id;
+        return comment.id;
     }
 
     async deleteComment(id: number, userId: number): Promise<void> {
@@ -60,10 +59,7 @@ export default class CommentService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        await this.commentRepository.update(
-            { isActive: false },
-            { where: { id: id } }
-        );
+        await comment.update({ isActive: false })
     }
 
     async updateComment(id: number, content: string, userId: number): Promise<void> {
@@ -77,15 +73,20 @@ export default class CommentService {
             throw new ForbiddenError('삭제 권한이 없습니다.');
         }
 
-        await this.commentRepository.update(
-            { content: content },
-            { where: { id: id } }
-        );
+        await comment.update({ content: content });
     }
 
     async getCommentList(postId: number): Promise<CommentResponse> {
-        const commentList = await this.commentRepository.findAll({
-            where: { postId: postId, isActive: true },
+        const post = await this.postRepository.findOne({ where: { id: postId } });
+
+        if (!post) {
+            throw new NotFoundError('post not found');
+        }
+
+        const commentList = await post.$get('comments', {
+            where: {
+                isActive: true,
+            },
             include: [{ model: userRepository, as: 'writer' }]
         });
 

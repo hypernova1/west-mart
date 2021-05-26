@@ -5,12 +5,13 @@ import {
     Column,
     CreatedAt,
     DataType,
-    Default, ForeignKey,
+    Default, ForeignKey, HasMany,
     Model,
     PrimaryKey, Table, Unique,
     UpdatedAt
 } from 'sequelize-typescript';
 import User from '@model/user';
+import Post from '@model/post';
 
 @Table({
     tableName: 'category',
@@ -35,6 +36,9 @@ export default class Category extends Model {
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
     userId: number;
+
+    @HasMany(() => Post)
+    posts: Array<Post>;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)

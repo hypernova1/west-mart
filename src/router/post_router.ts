@@ -112,9 +112,13 @@ router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), asyn
 });
 
 router.get('/:id/comment', async (req, res, next) => {
-    const postId = +req.params.id;
-    const commentList = await commentService.getCommentList(postId);
-    return res.status(200).json(commentList);
+    try {
+        const postId = +req.params.id;
+        const commentList = await commentService.getCommentList(postId);
+        return res.status(200).json(commentList);
+    } catch (err) {
+        return errorHandler(res, err);
+    }
 });
 
 router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {

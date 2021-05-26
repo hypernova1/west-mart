@@ -40,19 +40,19 @@ export default class CategoryService {
             throw new BadRequestError('존재하지 않는 사용자입니다.');
         }
 
-        const category = await this.categoryRepository.findOne({ order: [['sequence', 'DESC']],  limit: 1 });
+        const lastCategory = await this.categoryRepository.findOne({ order: [['sequence', 'DESC']],  limit: 1 });
 
         let lastSequence = 1;
-        if (category) {
-            lastSequence = category.sequence + 1;
+        if (lastCategory) {
+            lastSequence = lastCategory.sequence + 1;
         }
 
-        const newCategory = await this.categoryRepository.create({
+        const category = await this.categoryRepository.create({
             name: categoryForm.name,
             userId: user.id,
             sequence: lastSequence,
         })
-        return newCategory.id;
+        return category.id;
     }
 
     async updateCategory(id: number, categoryForm: CategoryForm) {
