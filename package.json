@@ -5,10 +5,23 @@
   "main": "index.js",
   "scripts": {
     "ts-node": "ts-node -r tsconfig-paths/register ./src/index.ts",
-    "start": "node --trace-deprecation dist/src/index.js",
+    "start": "node --trace-deprecation -r module-alias/register dist/src/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "build": "tsc -p .",
     "test": "yarn mocha test/**/*.ts -r ts-node/register"
+  },
+  "_moduleAliases": {
+    "@root": "dist/src",
+    "@controller": "dist/src/controller",
+    "@util": "dist/src/util",
+    "@router": "dist/src/router",
+    "@model": "dist/src/model",
+    "@service": "dist/src/service",
+    "@error": "dist/src/error",
+    "@payload": "dist/src/payload",
+    "@validate": "dist/src/validate",
+    "@constant": "dist/src/constant",
+    "@middleware": "dist/src/middleware"
   },
   "keywords": [],
   "author": "",
@@ -38,6 +51,7 @@
     "helmet": "^4.4.1",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
     "pm2": "^4.5.6",
