@@ -9,6 +9,7 @@ import { CategoryForm } from '@payload/category';
 import Role from '@constant/role';
 import HttpStatus from "@constant/http_status";
 import {Container} from 'typedi';
+import logger from "@config/winston";
 
 const router = Router();
 const categoryService = Container.get(CategoryService);
@@ -19,6 +20,7 @@ router.get('/', async (req, res, next) => {
 
         return res.status(HttpStatus.OK).json(categories);
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -32,6 +34,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['
         res.setHeader('Location', `${req.get('host')}/category/${id}`);
         return res.status(HttpStatus.CREATED).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 })
@@ -45,6 +48,7 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator
 
         return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 
@@ -58,6 +62,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) 
 
         return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
+        logger.error(err);
         errorHandler(res, err);
     }
 });

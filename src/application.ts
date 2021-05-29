@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import { sequelize } from '@model/index';
 import 'reflect-metadata';
 import setRouter from './router';
+import logger from '@config/winston';
 
 export default class Application {
     public application: express.Application;
@@ -20,11 +21,11 @@ export default class Application {
     }
 
     setSequelize() {
-        sequelize.sync({ force: false })
+        sequelize.sync()
             .then(() => {
-                console.log('database connection,');
+                logger.info('database connection,');
             }).catch((err: Error) => {
-            console.log(err);
+            logger.error(err);
         });
     }
 
@@ -52,7 +53,7 @@ export default class Application {
 
     start() {
         this.application.listen(this.application.get('port'), () => {
-            console.log('server start.');
+            logger.info('server start.');
         });
     }
 

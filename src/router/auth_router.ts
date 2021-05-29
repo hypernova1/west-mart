@@ -6,6 +6,7 @@ import validate from '@validate/index';
 import authValidator from '@validate/auth';
 import errorHandler from '@util/error_handler';
 import { Container } from 'typedi';
+import logger from "@config/winston";
 
 const router = express.Router();
 const authService = Container.get(AuthService);
@@ -17,6 +18,7 @@ router.post('/login', validate(authValidator['login']), async (req, res, next) =
 
         return res.send({ token: token });
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -30,6 +32,7 @@ router.post('/join', validate(authValidator['join']), async (req, res, next) => 
         res.setHeader('Location', `${req.get('host')}/user/${userId}`);
         res.status(201).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });

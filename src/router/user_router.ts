@@ -8,6 +8,7 @@ import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 import {Container} from 'typedi';
+import logger from "@config/winston";
 
 const router = express.Router();
 const userService = Container.get(UserService);
@@ -22,6 +23,7 @@ router.get('/:id', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => 
         const user = await userService.getUserById(Number(req.params.id));
         return res.json(user);
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -35,6 +37,7 @@ router.put('/:id', checkJwt, checkRole([Role.USER]), validate(userValidator['upd
 
         return res.status(200).send('success');
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -61,6 +64,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, 
 
         return res.status(204).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 })

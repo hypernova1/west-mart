@@ -12,6 +12,7 @@ import ForbiddenError from '@error/forbidden_error';
 import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from '@payload/post';
 import Category from '@model/category';
 import Tag from '@model/tag';
+import logger from "@config/winston";
 
 const tagRepository = sequelize.getRepository(Tag);
 const userRepository = sequelize.getRepository(User);
@@ -74,7 +75,7 @@ export default class PostService {
                 isExistNextPage: isExistNextPage,
             } as PostListDto
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
 
     }
@@ -190,7 +191,7 @@ export default class PostService {
                 }
                 await t.commit();
             } catch (err) {
-                console.log(err);
+                logger.error(err);
                 await t.rollback();
             }
         });

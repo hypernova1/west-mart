@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-type Config = {
+type Database = {
   username: string,
   password: string,
   database: string,
@@ -11,9 +11,9 @@ type Config = {
 }
 
 interface IConfigGroup {
-  development: Config;
-  test: Config;
-  production: Config
+  development: Database;
+  test: Database;
+  production: Database
 }
 
 const config: IConfigGroup = {

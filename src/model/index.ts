@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import config from '../../config/config';
+import config from '@config/database';
 
 import User from '@model/user';
 import Post from '@model/post';
@@ -16,6 +16,9 @@ const sequelize = new Sequelize(database, username, password, {
     dialect: "mysql",
     models: ['/src/model/*.ts'],
     repositoryMode: true,
+    sync: {
+        force: false,
+    }
 });
 
 sequelize.addModels([

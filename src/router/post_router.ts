@@ -11,6 +11,7 @@ import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
 import commentValidator from '@validate/comment';
 import { CommentForm } from '@payload/comment';
+import logger from "@config/winston";
 
 const router = Router();
 const postService = Container.get(PostService);
@@ -26,7 +27,7 @@ router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, n
         const result = await postService.getPostList(request);
         res.status(200).json(result);
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -48,6 +49,7 @@ router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res
         const postDetail = await postService.getPostDetail(postId);
         return res.status(200).json(postDetail);
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -65,7 +67,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVali
         res.setHeader('Location', `${req.get('host')}/post/${id}`);
         return res.status(201).send();
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         return errorHandler(res, err);
     }
 })
@@ -80,6 +82,7 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVa
 
         return res.status(200).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 
@@ -94,6 +97,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, 
 
         return res.status(204).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -107,6 +111,7 @@ router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), asyn
 
         return res.status(204).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -117,6 +122,7 @@ router.get('/:id/comment', async (req, res, next) => {
         const commentList = await commentService.getCommentList(postId);
         return res.status(200).json(commentList);
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -133,6 +139,7 @@ router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), valida
         res.setHeader('Location', `${req.get('host')}/comment/${id}`);
         return res.status(201).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });

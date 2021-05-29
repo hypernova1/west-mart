@@ -23,7 +23,8 @@
       "@validate/*": ["validate/*"],
       "@constant/*": ["constant/*"],
       "@util/*": ["util/*"],
-      "@error/*": ["error/*"]
+      "@error/*": ["error/*"],
+      "@config/*": ["config/*"]
     },
     "typeRoots": [
       "./@types"

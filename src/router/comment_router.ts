@@ -8,6 +8,7 @@ import User from '@model/user';
 import CommentService from '@service/comment_service';
 import { Container } from 'typedi';
 import Role from '@constant/role';
+import logger from "@config/winston";
 
 const router = Router();
 const commentService = Container.get(CommentService);
@@ -21,6 +22,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, 
 
         return res.status(204).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 });
@@ -35,6 +37,7 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commen
 
         return res.status(204).send();
     } catch (err) {
+        logger.error(err);
         return errorHandler(res, err);
     }
 

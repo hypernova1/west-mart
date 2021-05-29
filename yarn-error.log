@@ -1,30 +1,25 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.19.0/libexec/bin/yarn.js add modul-alias
+  /usr/bin/node /usr/bin/yarn install
 
 PATH: 
-  /Users/melchor/.sdkman/candidates/java/current/bin:/Users/melchor/.sdkman/candidates/gradle/current/bin:/Library/Frameworks/Python.framework/Versions/3.8/bin:/Users/melchor/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/melchor/dev/Git/west-mart/node_modules/.bin: /Users/melchor/.yarn-global/bin
+  /home/melchor/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/melchor/develop/gitRepo/west-mart/node_modules/.bin:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/chtls/develop/jdk/jdk-11/bin:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files (x86)/Yarn/bin/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Users/chtls/anaconda3:/mnt/c/Users/chtls/anaconda3/Library/mingw-w64/bin:/mnt/c/Users/chtls/anaconda3/Library/usr/bin:/mnt/c/Users/chtls/anaconda3/Library/bin:/mnt/c/Users/chtls/anaconda3/Scripts:/mnt/c/Users/chtls/Python/Python3.8/Scripts/:/mnt/c/Users/chtls/Python/Python3.8/:/mnt/c/Users/chtls/.cargo/bin:/mnt/c/Users/chtls/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/Bandizip/:/mnt/c/Users/chtls/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/chtls/AppData/Local/Programs/Fiddler:/mnt/c/Program Files/heroku/bin:/mnt/c/Users/chtls/AppData/Local/Yarn/bin:/mnt/c/Users/chtls/.dotnet/tools:/mnt/c/Users/chtls/AppData/Local/gitkraken/bin:/mnt/c/Users/chtls/AppData/Roaming/npm
 
 Yarn version: 
-  1.19.0
+  1.22.10
 
 Node version: 
-  14.16.0
+  14.16.1
 
 Platform: 
-  darwin x64
+  linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/modul-alias: Not found
-      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.19.0/libexec/lib/cli.js:66918:18)
-      at Request.self.callback (/usr/local/Cellar/yarn/1.19.0/libexec/lib/cli.js:140539:22)
-      at Request.emit (events.js:315:20)
-      at Request.<anonymous> (/usr/local/Cellar/yarn/1.19.0/libexec/lib/cli.js:141511:10)
-      at Request.emit (events.js:315:20)
-      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.19.0/libexec/lib/cli.js:141433:12)
-      at Object.onceWrapper (events.js:421:28)
-      at IncomingMessage.emit (events.js:327:22)
-      at endReadableNT (internal/streams/readable.js:1327:12)
-      at processTicksAndRejections (internal/process/task_queues.js:80:21)
+  SyntaxError: /home/melchor/develop/gitRepo/west-mart/package.json: Unexpected token ; in JSON at position 846
+      at JSON.parse (<anonymous>)
+      at /usr/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/lib/node_modules/yarn/lib/cli.js:321:13
 
 npm manifest: 
   {
@@ -38,6 +33,20 @@ npm manifest:
       "dev": "nodemon -r tsconfig-paths/register src/index.ts",
       "build": "tsc -p .",
       "test": "yarn mocha test/**/*.ts -r ts-node/register"
+    },
+    "_moduleAliases": {
+      "@root": "dist/src",
+      "@controller": "dist/src/controller",
+      "@util": "dist/src/util",
+      "@router": "dist/src/router",
+      "@model": "dist/src/model",
+      "@service": "dist/src/service",
+      "@error": "dist/src/error",
+      "@payload": "dist/src/payload",
+      "@validate": "dist/src/validate",
+      "@constant": "dist/src/constant",
+      "@middleware": "dist/src/middleware",
+      "@config": "dist/src/config";
     },
     "keywords": [],
     "author": "",
@@ -67,6 +76,7 @@ npm manifest:
       "helmet": "^4.4.1",
       "hpp": "^0.2.3",
       "jsonwebtoken": "^8.5.1",
+      "module-alias": "^2.2.2",
       "morgan": "^1.10.0",
       "mysql2": "^2.2.5",
       "pm2": "^4.5.6",
@@ -2367,6 +2377,11 @@ Lockfile:
       yargs "16.2.0"
       yargs-parser "20.2.4"
       yargs-unparser "2.0.0"
+  
+  module-alias@^2.2.2:
+    version "2.2.2"
+    resolved "https://registry.yarnpkg.com/module-alias/-/module-alias-2.2.2.tgz#151cdcecc24e25739ff0aa6e51e1c5716974c0e0"
+    integrity sha512-A/78XjoX2EmNvppVWEhM2oGk3x4lLxnkEA4jTbaK97QKSDjkIoOsKQlfylt/d3kKKi596Qy3NP5XrXJ6fZIC9Q==
   
   module-details-from-path@^1.0.3:
     version "1.0.3"
