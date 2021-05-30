@@ -9,13 +9,16 @@ import { sequelize } from '@model/index';
 import 'reflect-metadata';
 import setRouter from './router';
 import logger from '@config/winston';
+const path = require('path');
 
 export default class Application {
     public application: express.Application;
     public prod: boolean = process.env.NODE_ENV === 'production';
 
     constructor() {
-        dotenv.config();
+        dotenv.config({
+            path: path.join('env/' + process.env.NODE_ENV + '.env')
+        });
         this.application = express();
         this.application.set('port', this.prod ? process.env.PORT : 3000);
     }

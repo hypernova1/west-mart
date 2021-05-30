@@ -1,5 +1,11 @@
 import * as dotenv from 'dotenv';
-dotenv.config();
+const path = require('path');
+
+const env = process.env.NODE_ENV || 'production';
+
+dotenv.config({
+  path: path.join('env/' + env + '.env')
+});
 
 type Database = {
   username: string,
@@ -11,20 +17,20 @@ type Database = {
 }
 
 interface IConfigGroup {
-  development: Database;
-  test: Database;
+  dev: Database;
+  local: Database;
   production: Database
 }
 
 const config: IConfigGroup = {
-  development: {
+  dev: {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: "mysql",
   },
-  test: {
+  local: {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,

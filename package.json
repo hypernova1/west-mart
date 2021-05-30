@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "ts-node": "ts-node -r tsconfig-paths/register ./src/index.ts",
-    "start": "node --trace-deprecation -r module-alias/register dist/src/index.js",
-    "dev": "nodemon -r tsconfig-paths/register src/index.ts",
+    "local": "NODE_ENV=local nodemon -r tsconfig-paths/register src/index.ts",
+    "production": "NODE_ENV=production nodemon -r tsconfig-paths/register src/index.ts",
+    "test": "NODE_ENV=prod yarn mocha test/**/*.ts -r ts-node/register",
     "build": "tsc -p .",
-    "test": "yarn mocha test/**/*.ts -r ts-node/register"
+    "start": "NODE_ENV=production node --trace-deprecation -r module-alias/register dist/src/index.js"
   },
   "_moduleAliases": {
     "@root": "dist/src",
