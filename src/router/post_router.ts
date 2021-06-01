@@ -12,6 +12,7 @@ import { PostListRequest, PostForm } from '@payload/post';
 import commentValidator from '@validate/comment';
 import { CommentForm } from '@payload/comment';
 import logger from "@config/winston";
+import HttpStatus from '@constant/http_status';
 
 const router = Router();
 const postService = Container.get(PostService);
@@ -25,7 +26,7 @@ router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, n
         request.keyword = req.query.keyword as string || '';
 
         const result = await postService.getPostList(request);
-        res.status(200).json(result);
+        res.status(HttpStatus.OK).json(result);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -47,7 +48,7 @@ router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res
         }
 
         const postDetail = await postService.getPostDetail(postId);
-        return res.status(200).json(postDetail);
+        return res.status(HttpStatus.OK).json(postDetail);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -65,7 +66,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVali
         }
 
         res.setHeader('Location', `${req.get('host')}/post/${id}`);
-        return res.status(201).send();
+        return res.status(HttpStatus.CREATED).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -80,7 +81,7 @@ router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVa
 
         await postService.updatePost(postForm, postId, user.id);
 
-        return res.status(200).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -95,7 +96,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, 
 
         await postService.deletePost(postId, user);
 
-        return res.status(204).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -109,7 +110,7 @@ router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), asyn
 
         await postService.toggleFavorite(id, user);
 
-        return res.status(204).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -120,7 +121,7 @@ router.get('/:id/comment', async (req, res, next) => {
     try {
         const postId = +req.params.id;
         const commentList = await commentService.getCommentList(postId);
-        return res.status(200).json(commentList);
+        return res.status(HttpStatus.OK).json(commentList);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -137,7 +138,7 @@ router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), valida
         const id = await commentService.registerComment(commentForm, user);
 
         res.setHeader('Location', `${req.get('host')}/comment/${id}`);
-        return res.status(201).send();
+        return res.status(HttpStatus.CREATED).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);

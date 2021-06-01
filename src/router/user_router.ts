@@ -9,6 +9,7 @@ import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 import {Container} from 'typedi';
 import logger from "@config/winston";
+import HttpStatus from '@constant/http_status';
 
 const router = express.Router();
 const userService = Container.get(UserService);
@@ -21,7 +22,7 @@ router.get('/', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
 router.get('/:id', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
     try {
         const user = await userService.getUserById(Number(req.params.id));
-        return res.json(user);
+        return res.status(HttpStatus.OK).json(user);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -35,7 +36,7 @@ router.put('/:id', checkJwt, checkRole([Role.USER]), validate(userValidator['upd
 
         await userService.updateUser(userId, userDto);
 
-        return res.status(200).send('success');
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -46,9 +47,9 @@ router.get('/email/:email', async (req, res, next) => {
     const email: string = req.params.email as string;
     const isExistUser = await userService.existsByEmail(email);
     if (!isExistUser) {
-        return res.status(404).send();
+        return res.status(HttpStatus.NOT_FOUND).send();
     }
-    return res.status(200).send();
+    return res.status(HttpStatus.NO_CONTENT).send();
 });
 
 router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
@@ -62,7 +63,7 @@ router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, 
 
         await userService.deleteUser(userId);
 
-        return res.status(204).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);

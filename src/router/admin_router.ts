@@ -8,6 +8,7 @@ import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { Container } from 'typedi';
 import logger from "@config/winston";
+import HttpStatus from '@constant/http_status';
 
 const router = Router();
 const adminService = Container.get(AdminService);
@@ -20,7 +21,7 @@ router.patch('/user/:userId/approve', checkJwt, checkRole([Role.ADMIN]), async (
 
         await adminService.approveUser(userId);
 
-        return res.status(200).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -34,7 +35,7 @@ router.delete('/post/:postId', checkJwt, checkRole([Role.ADMIN]), async (req, re
 
         await postService.deletePost(postId, user);
 
-        return res.status(200).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
@@ -47,7 +48,7 @@ router.delete('/comment/:commentId', checkJwt, checkRole([Role.ADMIN]), async (r
 
         await commentService.deleteComment(commentId, 0);
 
-        return res.status(200).send();
+        return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
