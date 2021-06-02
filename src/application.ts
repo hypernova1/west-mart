@@ -28,7 +28,7 @@ export default class Application {
             .then(() => {
                 logger.info('database connection,');
             }).catch((err: Error) => {
-            logger.error(err);
+            console.log(err);
         });
     }
 

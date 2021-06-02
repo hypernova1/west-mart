@@ -6,6 +6,7 @@
   "scripts": {
     "ts-node": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "local": "NODE_ENV=local nodemon -r tsconfig-paths/register src/index.ts",
+    "dev": "NODE_ENV=dev nodemon -r tsconfig-paths/register src/index.ts",
     "production": "NODE_ENV=production nodemon -r tsconfig-paths/register src/index.ts",
     "test": "NODE_ENV=prod yarn mocha test/**/*.ts -r ts-node/register",
     "build": "tsc -p .",
