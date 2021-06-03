@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';

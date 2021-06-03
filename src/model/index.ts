@@ -8,7 +8,6 @@ import Category from '@model/category';
 import FavoritePost from "@model/favorite_post";
 import Tag from '@model/tag';
 import PostTag from '@model/post_tag';
-import user from '@validate/user';
 
 const env = process.env.NODE_ENV as ('production' | 'local' | 'dev') || 'dev';
 

@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "ts-node": "ts-node -r tsconfig-paths/register ./src/index.ts",
-    "local": "NODE_ENV=local nodemon -r tsconfig-paths/register src/index.ts",
-    "dev": "NODE_ENV=dev nodemon -r tsconfig-paths/register src/index.ts",
-    "production": "NODE_ENV=production nodemon -r tsconfig-paths/register src/index.ts",
-    "test": "NODE_ENV=prod yarn mocha test/**/*.ts -r ts-node/register",
+    "local": "NODE_ENV=local nodemon -r tsconfig-paths/register -r source-map-support/register src/index.ts",
+    "dev": "NODE_ENV=dev nodemon -r tsconfig-paths/register -r source-map-support/register src/index.ts",
+    "production": "NODE_ENV=production nodemon -r tsconfig-paths/register -r source-map-support/register src/index.ts",
+    "test": "NODE_ENV=prod yarn mocha test/**/*.ts -r ts-node/register -r source-map-support/register",
     "build": "tsc -p .",
     "clean": "rm -rf dist",
-    "start": "NODE_ENV=production node --trace-deprecation -r module-alias/register dist/src/index.js"
+    "start": "NODE_ENV=production node --trace-deprecation -r module-alias/register -r source-map-support/register dist/src/index.js"
   },
   "_moduleAliases": {
     "@root": "dist/src",
@@ -63,6 +63,7 @@
     "sequelize": "^6.5.0",
     "sequelize-cli": "^6.2.0",
     "sequelize-typescript": "^2.1.0",
+    "source-map-support": "^0.5.19",
     "ts-node-dev": "^1.1.6",
     "typedi": "^0.10.0",
     "winston": "^3.3.3"
