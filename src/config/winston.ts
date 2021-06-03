@@ -21,8 +21,15 @@ const logger = createLogger({
             ),
         }),
         new transports.File({
-            filename: 'logs/error.log',
-            level: 'error',
+            filename: 'logs/log.log',
+            level: 'debug',
+            format: format.combine(
+                format.label({ label: '' }),
+                format.timestamp({
+                    format: 'YYYY-MM-DD HH:mm:ss'
+                }),
+                format.printf((info: TransformableInfo) => `${info.timestamp} - ${info.level}: ${info.label} ${info.message}`),
+            ),
         }),
     ]
 });

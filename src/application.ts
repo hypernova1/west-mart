@@ -28,7 +28,7 @@ export default class Application {
             .then(() => {
                 logger.info('database connection,');
             }).catch((err: Error) => {
-            console.log(err);
+            logger.error(err.stack);
         });
     }
 
@@ -56,7 +56,7 @@ export default class Application {
 
     start() {
         this.application.listen(this.application.get('port'), () => {
-            logger.info('server start.');
+            logger.info(`server start. port: ${this.application.get('port')}`);
         });
     }
 
