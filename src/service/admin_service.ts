@@ -19,4 +19,14 @@ export default class AdminService {
 
         await user.update({ isApprove: true });
     }
+
+    async banUser(userId: number) {
+        const user = await this.userRepository.findOne({ where: { id: userId,  isActive: true } });
+        if (!user.isApprove) {
+            throw new BadRequestError('승인 처리 되지 않은 사용자입니다.');
+        }
+
+        await user.update({ isApprove: false });
+    }
+
 }
