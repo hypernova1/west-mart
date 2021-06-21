@@ -28,6 +28,19 @@ router.patch('/user/:userId/approve', checkJwt, checkRole([Role.ADMIN]), async (
     }
 });
 
+router.patch('/user/:userId/ban', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
+    try {
+        const userId = +req.params.userId;
+
+        await adminService.banUser(userId);
+
+        return res.status(HttpStatus.NO_CONTENT).send();
+    } catch (err) {
+        logger.error(err);
+        return errorHandler(res, err);
+    }
+});
+
 router.delete('/post/:postId', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
     try {
         const user = req.user;
