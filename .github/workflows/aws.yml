@@ -8,7 +8,6 @@ name: Deploy to Amazon ECS
 
 jobs:
   build:
-      if: github.ref == 'refs/heads/master'
       runs-on: ubuntu-latest
 
       strategy:
@@ -27,8 +26,9 @@ jobs:
         run: yarn install
 
       - run: yarn test
-      
+
   deploy:
+    if: github.ref == 'refs/heads/master'
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
