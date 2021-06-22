@@ -21,6 +21,7 @@ export default class Application {
             path: path.join('env/' + process.env.NODE_ENV + '.env')
         });
         this.application = express();
+        console.log(this.prod ? process.env.PORT : 3000);
         this.application.set('port', this.prod ? process.env.PORT : 3000);
     }
 

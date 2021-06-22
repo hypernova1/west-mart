@@ -9,9 +9,9 @@ import FavoritePost from "@model/favorite_post";
 import Tag from '@model/tag';
 import PostTag from '@model/post_tag';
 
-// const env = process.env.NODE_ENV as ('production' | 'local' | 'dev') || 'dev';
+const env = process.env.NODE_ENV as ('production' | 'local' | 'dev') || 'dev';
 
-// const { database, username, password } = config[env];
+const { database, username, password } = config[env];
 
 const sequelize = new Sequelize( {
     host: process.env.DB_HOST,
