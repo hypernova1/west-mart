@@ -9,7 +9,7 @@ import categoryRouter from '@router/category_router';
 const router = Router();
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.send('hello west mart!');
+    res.send('hello develop west mart!');
 });
 
 const setRouter = (express: Application) => {
