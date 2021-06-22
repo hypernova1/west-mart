@@ -27,12 +27,11 @@ jobs:
 
       - run: yarn test
 
-  if: github.ref == 'refs/heads/master'
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: production
+    - name: Deploy
+      runs-on: ubuntu-latest
+      environment: production
 
-    steps:
+      steps:
       - name: Checkout
         uses: actions/checkout@v2
 
