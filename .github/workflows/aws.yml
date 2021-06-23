@@ -25,9 +25,9 @@ jobs:
 
       - name: create env file
         run: |
-          mkdir env
-          touch env/prod.env
-          echo SECRET=${{ secrets.PROD_ENV }} >> env/prod.env
+          mkdir /home/runner/work/west-mart/west-mart/env
+          touch /home/runner/work/west-mart/west-mart/env/prod.env
+          echo SECRET=${{ secrets.PROD_ENV }} >> /home/runner/work/west-mart/west-mart/env/prod.env
 
       - name: Install dependencies
         run: yarn install
