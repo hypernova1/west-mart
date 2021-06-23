@@ -9,7 +9,7 @@ import FavoritePost from "@model/favorite_post";
 import Tag from '@model/tag';
 import PostTag from '@model/post_tag';
 
-const env = process.env.NODE_ENV as ('production' | 'local' | 'dev') || 'dev';
+const env = process.env.NODE_ENV as ('prod' | 'local' | 'dev') || 'dev';
 
 const { database, username, password } = config[env];
 
