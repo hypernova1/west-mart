@@ -71,4 +71,4 @@ jobs:
           service: west-mart-service
           cluster: west-mart-cluster
           wait-for-service-stability: true
-
+          
