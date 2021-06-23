@@ -4,6 +4,13 @@ on:
   pull_request:
     branches: [ master, develop ]
 
+env:
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  PORT: ${{ secrets.PORT }}
+
 name: Deploy to Amazon ECS
 
 jobs:
@@ -22,12 +29,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: create env file
-        run: |
-          mkdir /home/runner/work/west-mart/west-mart/env
-          touch /home/runner/work/west-mart/west-mart/env/prod.env
-          echo SECRET=${{ secrets.PROD_ENV }} >> /home/runner/work/west-mart/west-mart/env/prod.env
 
       - name: Install dependencies
         run: yarn install
