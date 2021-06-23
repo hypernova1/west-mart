@@ -13,6 +13,9 @@ const env = process.env.NODE_ENV as ('prod' | 'local' | 'dev') || 'dev';
 
 const { host, database, username, password } = config[env];
 
+console.log(host);
+console.log(username);
+
 const sequelize = new Sequelize( {
     host: host,
     database: database,
