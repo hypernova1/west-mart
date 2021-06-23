@@ -26,6 +26,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - run: yarn build
       - run: yarn test
 
       - name: Checkout
@@ -71,4 +72,3 @@ jobs:
           service: west-mart-service
           cluster: west-mart-cluster
           wait-for-service-stability: true
-          
