@@ -14,7 +14,7 @@ const path = require('path');
 
 export default class Application {
     public application: express.Application;
-    public prod: boolean = process.env.NODE_ENV === 'production';
+    public prod: boolean = process.env.NODE_ENV === 'prod';
 
     constructor() {
         dotenv.config({

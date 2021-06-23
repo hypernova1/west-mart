@@ -11,14 +11,14 @@ import PostTag from '@model/post_tag';
 
 const env = process.env.NODE_ENV as ('prod' | 'local' | 'dev') || 'dev';
 
-const { database, username, password } = config[env];
+const { host, database, username, password } = config[env];
 
 const sequelize = new Sequelize( {
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
+    host: host,
+    database: database,
     dialectOptions: { decimalNumbers: true },
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    username: username,
+    password: password,
     repositoryMode: true,
     models: ['/src/model/*.ts'],
     dialect: 'mysql',

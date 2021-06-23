@@ -24,7 +24,6 @@ describe('router test', () => {
                 password: 'test desc',
             })
             .then((res) => {
-                console.log(res);
                 return expect(res.status).to.eq(422);
             })
     })
