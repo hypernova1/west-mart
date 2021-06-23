@@ -23,6 +23,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: create env file
+        run: |
+          mkdir env
+          touch env/prod.env
+          echo SECRET=${{ secrets.PROD_ENV }} >> env/prod.env
+
       - name: Install dependencies
         run: yarn install
 

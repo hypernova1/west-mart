@@ -17,9 +17,13 @@ export default class Application {
     public prod: boolean = process.env.NODE_ENV === 'prod';
 
     constructor() {
+        const envPath = 'env/' + process.env.NODE_ENV + '.env';
         dotenv.config({
-            path: path.join('env/' + process.env.NODE_ENV + '.env')
+            path: path.join(envPath)
         });
+
+        console.log(`load ${envPath}`)
+
         this.application = express();
         this.application.set('port', this.prod ? process.env.PORT : 3000);
     }
