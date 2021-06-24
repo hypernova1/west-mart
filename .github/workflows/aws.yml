@@ -25,12 +25,13 @@ jobs:
 
       - name: create env file
         run: |
-          touch .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo PORT=${{ secrets.PORT }} >> .env
+          mkdir env
+          touch env/prod.env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> env/prod.env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> env/prod.env
+          echo DB_USER=${{ secrets.DB_USER }} >> env/prod.env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> env/prod.env
+          echo PORT=${{ secrets.PORT }} >> env/prod.env
 
       - name: Install dependencies
         run: yarn install
