@@ -42,6 +42,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: create env
+        run: |
+          mkdir env
+          touch env/prod.env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> env/prod.env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> env/prod.env
+          echo DB_USER=${{ secrets.DB_USER }} >> env/prod.env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> env/prod.env
+          echo PORT=${{ secrets.PORT }} >> env/prod.env
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
