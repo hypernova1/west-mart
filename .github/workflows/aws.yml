@@ -4,13 +4,6 @@ on:
   pull_request:
     branches: [ master, develop ]
 
-env:
-  DB_HOST: ${{ secrets.DB_HOST }}
-  DB_NAME: ${{ secrets.DB_NAME }}
-  DB_USER: ${{ secrets.DB_USER }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  PORT: ${{ secrets.PORT }}
-
 name: Deploy to Amazon ECS
 
 jobs:
@@ -29,6 +22,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: create env file
+        run: |
+          touch .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo DB_USER=${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo PORT=${{ secrets.PORT }} >> .env
 
       - name: Install dependencies
         run: yarn install
