@@ -5,7 +5,7 @@ import {
     Column,
     CreatedAt,
     DataType,
-    Default, ForeignKey, HasMany,
+    Default, HasMany,
     Model,
     PrimaryKey, Table, Unique,
     UpdatedAt
@@ -30,14 +30,10 @@ export default class Category extends Model {
     @Column(DataType.CHAR)
     name!: string;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, 'userId')
     manager!: User;
 
-    @ForeignKey(() => User)
-    @Column(DataType.INTEGER.UNSIGNED)
-    userId: number;
-
-    @HasMany(() => Post)
+    @HasMany(() => Post, 'categoryId')
     posts: Array<Post>;
 
     @AllowNull(false)

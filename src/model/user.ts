@@ -40,10 +40,10 @@ export default class User extends Model {
   @Column(DataType.CHAR)
   password!: string;
 
-  @HasMany(() => Post)
+  @HasMany(() => Post, 'userId')
   posts: Post[];
 
-  @HasMany(() => Comment)
+  @HasMany(() => Comment, 'userId')
   comments: Comment[];
 
   @BelongsToMany(() => Post, () => FavoritePost)

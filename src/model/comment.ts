@@ -5,8 +5,7 @@ import {
   Column,
   CreatedAt,
   DataType,
-  Default, ForeignKey,
-  Model,
+  Default, Model,
   PrimaryKey, Table,
   UpdatedAt
 } from 'sequelize-typescript';
@@ -29,19 +28,11 @@ export default class Comment extends Model {
   @Column(DataType.TEXT)
   content!: string;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, 'userId')
   writer: User;
 
-  @ForeignKey(() => User)
-  @Column(DataType.INTEGER.UNSIGNED)
-  userId!: number;
-
-  @BelongsTo(() => Post)
+  @BelongsTo(() => Post, 'postId')
   post: Post;
-
-  @ForeignKey(() => Post)
-  @Column(DataType.INTEGER.UNSIGNED)
-  postId!: number;
 
   @Default(true)
   @AllowNull(false)
