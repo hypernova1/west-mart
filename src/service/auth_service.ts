@@ -9,6 +9,7 @@ import BadRequestError from '@error/bad_request_error';
 import ConflictError from '@error/confict_error';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
+import { LoginResponse } from '@payload/auth';
 
 @Service()
 export default class AuthService {
@@ -17,7 +18,7 @@ export default class AuthService {
         this.userRepository = sequelize.getRepository(User);
     }
 
-    async login(email: string, password: string): Promise<string> {
+    async login(email: string, password: string): Promise<LoginResponse> {
         const user: User = await this.userRepository.findOne({ where: { email: email, isActive: true } });
 
         if (!user) {
@@ -30,7 +31,13 @@ export default class AuthService {
             throw new BadRequestError('잘못된 정보입니다.');
         }
 
-        return jwt.sign({
+        const userInfo = {
+            email: user.email,
+            nickname: user.nickname,
+            role: user.role,
+        }
+
+        let token = jwt.sign({
             id: user.id,
             email: user.email,
             nickname: user.nickname,
@@ -38,6 +45,10 @@ export default class AuthService {
         }, 'secret', {
             expiresIn: '1h',
         });
+        return {
+            userInfo: userInfo,
+            token: token,
+        } as LoginResponse;
     }
 
     async join(joinForm: UserJoinForm): Promise<number> {

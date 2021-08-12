@@ -25,7 +25,7 @@ export default class Application {
         console.log(`load ${envPath}`)
 
         this.application = express();
-        this.application.set('port', this.prod ? process.env.PORT : 3000);
+        this.application.set('port', this.prod ? process.env.PORT : 3001);
     }
 
     setSequelize() {

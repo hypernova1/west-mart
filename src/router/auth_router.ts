@@ -15,9 +15,9 @@ const authService = Container.get(AuthService);
 router.post('/login', validate(authValidator['login']), async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const token = await authService.login(email, password);
+        const response = await authService.login(email, password);
 
-        return res.status(HttpStatus.OK).send({ token: token });
+        return res.status(HttpStatus.OK).send(response);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
