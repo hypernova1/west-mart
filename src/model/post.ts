@@ -10,7 +10,7 @@ import {
     Default,
     UpdatedAt,
     CreatedAt,
-    ForeignKey, HasMany, BelongsTo, BelongsToMany
+    HasMany, BelongsTo, BelongsToMany
 } from 'sequelize-typescript'
 import User from "@model/user";
 import Comment from '@model/comment';
@@ -39,21 +39,13 @@ export default class Post extends Model {
     @Column(DataType.TEXT)
     content!: string;
 
-    @BelongsTo(() => Category)
+    @BelongsTo(() => Category, 'categoryId')
     category: Category;
 
-    @ForeignKey(() => Category)
-    @Column(DataType.INTEGER.UNSIGNED)
-    categoryId: number;
-
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, 'userIdx')
     writer: User;
 
-    @ForeignKey(() => User)
-    @Column(DataType.INTEGER.UNSIGNED)
-    userId: number;
-
-    @HasMany(() => Comment)
+    @HasMany(() => Comment, 'postId')
     comments: Comment[];
 
     @Default(0)
