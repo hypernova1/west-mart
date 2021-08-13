@@ -1,3 +1,5 @@
+import Role from '@constant/role';
+
 export interface UserDetail {
     id: number;
     email: string;
@@ -25,4 +27,5 @@ export interface UserSummary {
     id: number;
     email: string;
     nickname: string;
+    role: Role
 }

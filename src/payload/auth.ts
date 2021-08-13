@@ -1,11 +1,6 @@
-import Role from '@constant/role';
+import { UserSummary } from '@payload/user';
 
 export interface LoginResponse {
-  userInfo: {
-    id: number;
-    email: string;
-    nickname: string;
-    role: Role;
-  },
+  userInfo: UserSummary,
   token: string;
 }

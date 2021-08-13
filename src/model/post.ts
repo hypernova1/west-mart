@@ -42,7 +42,7 @@ export default class Post extends Model {
     @BelongsTo(() => Category, 'categoryId')
     category: Category;
 
-    @BelongsTo(() => User, 'userIdx')
+    @BelongsTo(() => User, 'userId')
     writer: User;
 
     @HasMany(() => Comment, 'postId')

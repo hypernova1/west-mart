@@ -13,6 +13,7 @@ import { PostDetail, PostForm, PostListDto, PostListRequest, PostSummary } from 
 import Category from '@model/category';
 import Tag from '@model/tag';
 import logger from "@config/winston";
+import BadRequestError from '@error/bad_request_error';
 
 const tagRepository = sequelize.getRepository(Tag);
 const userRepository = sequelize.getRepository(User);
@@ -121,11 +122,11 @@ export default class PostService {
             throw new ForbiddenError('수정 권한이 없습니다.');
         }
 
-        await post.update({ title: postForm.title,  content: postForm.content });
+        post.title = postForm.title;
+        post.content = postForm.content;
+        post.tags = await this.tagService.getListOrCreate(postForm.tags);
 
-        const tags = await this.tagService.getListOrCreate(postForm.tags);
-
-        await post.$set('tags', tags);
+        await post.save();
     }
 
     async deletePost(id: number, user: User): Promise<void> {

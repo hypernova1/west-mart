@@ -42,12 +42,9 @@ export default class Application {
             this.application.use(hpp());
             this.application.use(helmet());
             this.application.use(morgan('combined'));
-            this.application.use(cors({
-                origin: /nodebird\.com$/,
-                credentials: true,
-            }));
         }
 
+        this.application.use(cors({}));
         this.application.use('/', express.static('uploads'));
         this.application.use(morgan('dev'));
         this.application.use(express.json());
