@@ -22,7 +22,7 @@ export interface PostDetail {
     id: number;
     title: string;
     content: string;
-    writerId: number;
+    userId: number;
     tags: Array<string>;
     writerName: string;
 }

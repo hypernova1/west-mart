@@ -76,6 +76,7 @@ export default class PostService {
                 isExistNextPage: isExistNextPage,
             } as PostListDto
         } catch (err) {
+            console.log(err);
             logger.error(err);
         }
 
@@ -162,7 +163,7 @@ export default class PostService {
             id: post.id,
             title: post.title,
             content: post.content,
-            writerId: post.writer.id,
+            userId: post.writer.id,
             tags: tagNames,
             writerName: post.writer.nickname,
         } as PostDetail;

@@ -28,7 +28,6 @@ router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, n
         const result = await postService.getPostList(request);
         res.status(HttpStatus.OK).json(result);
     } catch (err) {
-        logger.error(err);
         return errorHandler(res, err);
     }
 });
