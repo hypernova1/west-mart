@@ -8,8 +8,9 @@ import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
 import Role from '@constant/role';
 import HttpStatus from "@constant/http_status";
-import {Container} from 'typedi';
+import { Container } from 'typedi';
 import logger from "@config/winston";
+import { PostListRequest } from '@payload/post';
 
 const router = Router();
 const categoryService = Container.get(CategoryService);
@@ -19,6 +20,23 @@ router.get('/', async (req, res, next) => {
         const categories = await categoryService.getCategories();
 
         return res.status(HttpStatus.OK).json(categories);
+    } catch (err) {
+        logger.error(err);
+        return errorHandler(res, err);
+    }
+});
+
+router.get('/:categoryName/post', checkJwt, checkRole([Role.USER, Role.ADMIN]), async (req, res, next) => {
+    try {
+        const categoryName = req.params.categoryName;
+        const request: PostListRequest = {};
+        request.pageNo = +req.query.pageNo || 1;
+        request.size = +req.query.size || 10;
+        request.keyword = req.query.keyword as string || '';
+
+        const posts = await categoryService.getPosts(categoryName, request);
+
+        return res.status(HttpStatus.OK).json(posts);
     } catch (err) {
         logger.error(err);
         return errorHandler(res, err);
