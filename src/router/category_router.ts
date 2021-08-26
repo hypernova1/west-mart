@@ -43,11 +43,11 @@ router.get('/:categoryName/post', checkJwt, checkRole([Role.USER, Role.ADMIN]), 
     }
 });
 
-router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['create']), async (req, res, next) => {
     try {
         const categoryForm = req.body as CategoryForm;
 
-        const id = await categoryService.registerCategory(categoryForm);
+        const id = await categoryService.createCategory(categoryForm);
 
         res.setHeader('Location', `${req.get('host')}/category/${id}`);
         return res.status(HttpStatus.CREATED).send();
@@ -57,7 +57,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['
     }
 })
 
-router.put('/:id', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['register']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole([Role.ADMIN]), validate(categoryValidator['create']), async (req, res, next) => {
     try {
         const categoryId = +req.params.id;
         const categoryForm = req.body as CategoryForm;

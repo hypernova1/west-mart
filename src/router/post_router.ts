@@ -54,12 +54,12 @@ router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res
     }
 });
 
-router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['register']), async (req, res, next) => {
+router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['create']), async (req, res, next) => {
     try {
         const postDto = req.body as PostForm;
         const user = req.user;
 
-        const id: number = await postService.registerPost(postDto, user);
+        const id: number = await postService.createPost(postDto, user);
         if (!id) {
             res.status(403).send();
         }
@@ -72,7 +72,7 @@ router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postVali
     }
 })
 
-router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['register']), async (req, res, next) => {
+router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['create']), async (req, res, next) => {
     try {
         const user = req.user;
         const postId  = +req.params.id;
@@ -127,7 +127,7 @@ router.get('/:id/comment', async (req, res, next) => {
     }
 });
 
-router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['register']), async (req, res, next) => {
+router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['create']), async (req, res, next) => {
     try {
         const user = req.user;
         const postId = +req.params.id;

@@ -29,15 +29,15 @@ export default class TagService {
             return tag.name;
         });
 
-        const unregisterTags = tagNames.filter((name) => !names.includes(name))
+        const filteredTags = tagNames.filter((name) => !names.includes(name))
             .map((tagName) => {
                 return {
                     name: tagName,
                 } as Tag;
             });
 
-        if (unregisterTags.length > 0) {
-            const newTags = await this.tagRepository.bulkCreate(unregisterTags);
+        if (filteredTags.length > 0) {
+            const newTags = await this.tagRepository.bulkCreate(filteredTags);
             tags = tags.concat(newTags);
         }
 

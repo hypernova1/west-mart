@@ -35,7 +35,7 @@ export default class CategoryService {
         });
     }
 
-    async registerCategory(categoryForm: CategoryForm): Promise<number> {
+    async createCategory(categoryForm: CategoryForm): Promise<number> {
         const user = await this.userRepository.findOne({
             where: { id: categoryForm.managerId, isActive: true, isApprove: true }
         });

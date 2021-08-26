@@ -1,7 +1,7 @@
 import { check } from 'express-validator';
 
 const commentValidator = {
-    register: [
+    create: [
         check('content').notEmpty().withMessage('내용은 필수입니다.'),
     ],
     update: [

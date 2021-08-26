@@ -82,7 +82,7 @@ export default class PostService {
 
     }
 
-    async registerPost(postForm: PostForm, user: User): Promise<number> {
+    async createPost(postForm: PostForm, user: User): Promise<number> {
         const category = await this.categoryRepository.findOne({
             where: { id: postForm.categoryId,  isActive: true },
             include: [userRepository],
