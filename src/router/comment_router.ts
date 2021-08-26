@@ -8,40 +8,50 @@ import User from '@model/user';
 import CommentService from '@service/comment_service';
 import { Container } from 'typedi';
 import Role from '@constant/role';
-import logger from "@config/winston";
+import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = Router();
 const commentService = Container.get(CommentService);
 
-router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.delete(
+  '/:id',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     try {
-        const user = req.user as User;
-        const commentId = +req.params.id;
+      const user = req.user as User;
+      const commentId = +req.params.id;
 
-        await commentService.deleteComment(commentId, user.id);
+      await commentService.deleteComment(commentId, user.id);
 
-        return res.status(HttpStatus.NO_CONTENT).send();
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['update']), async (req, res, next) => {
+router.put(
+  '/:id',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  validate(commentValidator['update']),
+  async (req, res, next) => {
     try {
-        const userId: number = req.user.id;
-        const id: number = +req.params.id;
-        const content: string = req.body.content;
+      const userId: number = req.user.id;
+      const id: number = +req.params.id;
+      const content: string = req.body.content;
 
-        await commentService.updateComment(id, content, userId);
+      await commentService.updateComment(id, content, userId);
 
-        return res.status(HttpStatus.NO_CONTENT).send();
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-
-})
+  }
+);
 
 export default router;

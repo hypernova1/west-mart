@@ -9,17 +9,17 @@ import categoryRouter from '@router/category_router';
 const router = Router();
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.send('hello west mart!');
+  res.send('hello west mart!');
 });
 
 const setRouter = (express: Application) => {
-    express.use('/admin', adminRouter);
-    express.use('/auth', authRouter);
-    express.use('/category', categoryRouter);
-    express.use('/comment', commentRouter);
-    express.use('/post', postRouter);
-    express.use('/user', userRouter);
-    express.use('/', router);
-}
+  express.use('/admin', adminRouter);
+  express.use('/auth', authRouter);
+  express.use('/category', categoryRouter);
+  express.use('/comment', commentRouter);
+  express.use('/post', postRouter);
+  express.use('/user', userRouter);
+  express.use('/', router);
+};
 
 export default setRouter;

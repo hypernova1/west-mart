@@ -1,26 +1,24 @@
 import {
-    Column,
-    DataType,
-    ForeignKey,
-    Model,
-    Table,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
 } from 'sequelize-typescript';
-import Post from "@model/post";
-import User from "@model/user";
+import Post from '@model/post';
+import User from '@model/user';
 
 @Table({
-    tableName: 'favorite_post',
-    underscored: true,
-    timestamps: false
+  tableName: 'favorite_post',
+  underscored: true,
+  timestamps: false,
 })
 export default class FavoritePost extends Model {
+  @ForeignKey(() => Post)
+  @Column(DataType.INTEGER.UNSIGNED)
+  postId: number;
 
-    @ForeignKey(() => Post)
-    @Column(DataType.INTEGER.UNSIGNED)
-    postId: number;
-
-    @ForeignKey(() => User)
-    @Column(DataType.INTEGER.UNSIGNED)
-    userId: number;
-
+  @ForeignKey(() => User)
+  @Column(DataType.INTEGER.UNSIGNED)
+  userId: number;
 }

@@ -6,7 +6,7 @@ import validate from '@validate/index';
 import authValidator from '@validate/auth';
 import errorHandler from '@util/error_handler';
 import { Container } from 'typedi';
-import logger from "@config/winston";
+import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 import { checkRole } from '@middleware/check-role';
 import Role from '@constant/role';
@@ -15,43 +15,56 @@ import { checkJwt } from '@middleware/jwt';
 const router = express.Router();
 const authService = Container.get(AuthService);
 
-router.post('/login', validate(authValidator['login']), async (req, res, next) => {
+router.post(
+  '/login',
+  validate(authValidator['login']),
+  async (req, res, next) => {
     try {
-        const { email, password } = req.body;
-        const response = await authService.login(email, password);
+      const { email, password } = req.body;
+      const response = await authService.login(email, password);
 
-        return res.status(HttpStatus.OK).send(response);
+      return res.status(HttpStatus.OK).send(response);
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.post('/join', validate(authValidator['join']), async (req, res, next) => {
+router.post(
+  '/join',
+  validate(authValidator['join']),
+  async (req, res, next) => {
     try {
-        const joinForm = req.body as UserJoinForm;
+      const joinForm = req.body as UserJoinForm;
 
-        const userId = await authService.join(joinForm);
+      const userId = await authService.join(joinForm);
 
-        res.setHeader('Location', `${req.get('host')}/user/${userId}`);
-        res.status(HttpStatus.CREATED).send();
+      res.setHeader('Location', `${req.get('host')}/user/${userId}`);
+      res.status(HttpStatus.CREATED).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.post('/verify', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.post(
+  '/verify',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     const user = req.user;
 
     const userInfo = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        nickname: user.nickname,
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      nickname: user.nickname,
     } as UserSummary;
 
     return res.status(HttpStatus.OK).send(userInfo);
-})
+  }
+);
 
 export default router;

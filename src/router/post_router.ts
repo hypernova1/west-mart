@@ -11,137 +11,174 @@ import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
 import commentValidator from '@validate/comment';
 import { CommentForm } from '@payload/comment';
-import logger from "@config/winston";
+import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = Router();
 const postService = Container.get(PostService);
 const commentService = Container.get(CommentService);
 
-router.get('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.get(
+  '/',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     try {
-        const request: PostListRequest = {};
-        request.pageNo = +req.query.pageNo || 1;
-        request.size = +req.query.size || 10;
-        request.keyword = req.query.keyword as string || '';
+      const request: PostListRequest = {};
+      request.pageNo = +req.query.pageNo || 1;
+      request.size = +req.query.size || 10;
+      request.keyword = (req.query.keyword as string) || '';
 
-        const result = await postService.getPostList(request);
-        res.status(HttpStatus.OK).json(result);
+      const result = await postService.getPostList(request);
+      res.status(HttpStatus.OK).json(result);
     } catch (err) {
-        return errorHandler(res, err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.get('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.get(
+  '/:id',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     try {
-        const postId = +req.params.id;
-        const cookie = req.cookies.post;
+      const postId = +req.params.id;
+      const cookie = req.cookies.post;
 
-        if (cookie) {
-            if (cookie.indexOf(postId) === -1) {
-                req.cookies.post += ',' + postId;
-                await postService.increasePostHits(postId);
-            }
-        } else {
-            req.cookies.post = postId;
+      if (cookie) {
+        if (cookie.indexOf(postId) === -1) {
+          req.cookies.post += ',' + postId;
+          await postService.increasePostHits(postId);
         }
+      } else {
+        req.cookies.post = postId;
+      }
 
-        const postDetail = await postService.getPostDetail(postId);
-        return res.status(HttpStatus.OK).json(postDetail);
+      const postDetail = await postService.getPostDetail(postId);
+      return res.status(HttpStatus.OK).json(postDetail);
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.post('/', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['create']), async (req, res, next) => {
+router.post(
+  '/',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  validate(postValidator['create']),
+  async (req, res, next) => {
     try {
-        const postDto = req.body as PostForm;
-        const user = req.user;
+      const postDto = req.body as PostForm;
+      const user = req.user;
 
-        const id: number = await postService.createPost(postDto, user);
-        if (!id) {
-            res.status(403).send();
-        }
+      const id: number = await postService.createPost(postDto, user);
+      if (!id) {
+        res.status(403).send();
+      }
 
-        res.setHeader('Location', `${req.get('host')}/post/${id}`);
-        return res.status(HttpStatus.CREATED).send();
+      res.setHeader('Location', `${req.get('host')}/post/${id}`);
+      return res.status(HttpStatus.CREATED).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-})
+  }
+);
 
-router.put('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(postValidator['create']), async (req, res, next) => {
+router.put(
+  '/:id',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  validate(postValidator['create']),
+  async (req, res, next) => {
     try {
-        const user = req.user;
-        const postId  = +req.params.id;
-        const postForm = req.body as PostForm;
+      const user = req.user;
+      const postId = +req.params.id;
+      const postForm = req.body as PostForm;
 
-        await postService.updatePost(postForm, postId, user.id);
+      await postService.updatePost(postForm, postId, user.id);
 
-        return res.status(HttpStatus.NO_CONTENT).send();
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
+  }
+);
 
-});
-
-router.delete('/:id', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.delete(
+  '/:id',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     try {
-        const user = req.user;
-        const postId = +req.params.id;
+      const user = req.user;
+      const postId = +req.params.id;
 
-        await postService.deletePost(postId, user);
+      await postService.deletePost(postId, user);
 
-        return res.status(HttpStatus.NO_CONTENT).send();
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
-router.patch('/:id/favorite', checkJwt, checkRole([Role.ADMIN, Role.USER]), async (req, res, next) => {
+router.patch(
+  '/:id/favorite',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  async (req, res, next) => {
     try {
-        const user = req.user;
-        const id = +req.params.id;
+      const user = req.user;
+      const id = +req.params.id;
 
-        await postService.toggleFavorite(id, user);
+      await postService.toggleFavorite(id, user);
 
-        return res.status(HttpStatus.NO_CONTENT).send();
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
 router.get('/:id/comment', async (req, res, next) => {
-    try {
-        const postId = +req.params.id;
-        const commentList = await commentService.getCommentList(postId);
-        return res.status(HttpStatus.OK).json(commentList);
-    } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
-    }
+  try {
+    const postId = +req.params.id;
+    const commentList = await commentService.getCommentList(postId);
+    return res.status(HttpStatus.OK).json(commentList);
+  } catch (err) {
+    logger.error(err);
+    return errorHandler(res, err);
+  }
 });
 
-router.post('/:id/comment', checkJwt, checkRole([Role.ADMIN, Role.USER]), validate(commentValidator['create']), async (req, res, next) => {
+router.post(
+  '/:id/comment',
+  checkJwt,
+  checkRole([Role.ADMIN, Role.USER]),
+  validate(commentValidator['create']),
+  async (req, res, next) => {
     try {
-        const user = req.user;
-        const postId = +req.params.id;
-        const commentForm = req.body as CommentForm;
-        commentForm.postId = postId;
+      const user = req.user;
+      const postId = +req.params.id;
+      const commentForm = req.body as CommentForm;
+      commentForm.postId = postId;
 
-        const id = await commentService.registerComment(commentForm, user);
+      const id = await commentService.registerComment(commentForm, user);
 
-        res.setHeader('Location', `${req.get('host')}/comment/${id}`);
-        return res.status(HttpStatus.CREATED).send();
+      res.setHeader('Location', `${req.get('host')}/comment/${id}`);
+      return res.status(HttpStatus.CREATED).send();
     } catch (err) {
-        logger.error(err);
-        return errorHandler(res, err);
+      logger.error(err);
+      return errorHandler(res, err);
     }
-});
+  }
+);
 
 export default router;

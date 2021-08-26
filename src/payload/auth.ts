@@ -1,6 +1,6 @@
 import { UserSummary } from '@payload/user';
 
 export interface LoginResponse {
-  userInfo: UserSummary,
+  userInfo: UserSummary;
   token: string;
 }

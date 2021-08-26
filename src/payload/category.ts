@@ -1,11 +1,11 @@
 export interface CategoryDto {
-    id: number;
-    sequence: number;
-    name: string;
-    managerId: number;
+  id: number;
+  sequence: number;
+  name: string;
+  managerId: number;
 }
 
 export interface CategoryForm {
-    name: string;
-    managerId: number;
+  name: string;
+  managerId: number;
 }

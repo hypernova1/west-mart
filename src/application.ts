@@ -10,65 +10,57 @@ import { sequelize } from '@model/index';
 import 'reflect-metadata';
 import setRouter from './router';
 import logger from '@config/winston';
-const path = require('path');
+import path = require('path');
 
 export default class Application {
-    public application: express.Application;
-    public prod: boolean = process.env.NODE_ENV === 'prod';
+  public application: express.Application;
+  public prod: boolean = process.env.NODE_ENV === 'prod';
 
-    constructor() {
-        const envPath = 'env/' + process.env.NODE_ENV + '.env';
-        dotenv.config({
-            path: path.join(envPath)
-        });
+  constructor() {
+    const envPath = 'env/' + process.env.NODE_ENV + '.env';
+    dotenv.config({
+      path: path.join(envPath),
+    });
 
-        console.log(`load ${envPath}`)
+    console.log(`load ${envPath}`);
 
-        this.application = express();
-        this.application.set('port', this.prod ? process.env.PORT : 3001);
+    this.application = express();
+    this.application.set('port', this.prod ? process.env.PORT : 3001);
+  }
+
+  setSequelize() {
+    sequelize
+      .sync()
+      .then(() => {
+        logger.info('database connection,');
+      })
+      .catch((err: Error) => {
+        logger.error(err.stack);
+      });
+  }
+
+  setMiddleware() {
+    if (this.prod) {
+      this.application.use(hpp());
+      this.application.use(helmet());
+      this.application.use(morgan('combined'));
     }
 
-    setSequelize() {
-        sequelize.sync()
-            .then(() => {
-                logger.info('database connection,');
-            }).catch((err: Error) => {
-            logger.error(err.stack);
-        });
-    }
+    this.application.use(cors({}));
+    this.application.use('/', express.static('uploads'));
+    this.application.use(morgan('dev'));
+    this.application.use(express.json());
+    this.application.use(express.urlencoded({ extended: false }));
+    this.application.use(cookieParser(process.env.COOKIE_SECRET));
+  }
 
-    setMiddleware() {
-        if (this.prod) {
-            this.application.use(hpp());
-            this.application.use(helmet());
-            this.application.use(morgan('combined'));
-        }
+  setRouter() {
+    setRouter(this.application);
+  }
 
-        this.application.use(cors({}));
-        this.application.use('/', express.static('uploads'));
-        this.application.use(morgan('dev'));
-        this.application.use(express.json());
-        this.application.use(express.urlencoded({ extended: false }));
-        this.application.use(cookieParser(process.env.COOKIE_SECRET));
-    }
-
-    setRouter() {
-        setRouter(this.application);
-    }
-
-    start() {
-        this.application.listen(this.application.get('port'), () => {
-            logger.info(`server start. port: ${this.application.get('port')}`);
-        });
-    }
-
+  start() {
+    this.application.listen(this.application.get('port'), () => {
+      logger.info(`server start. port: ${this.application.get('port')}`);
+    });
+  }
 }
-
-
-
-
-
-
-
-
-

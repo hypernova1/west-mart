@@ -1,24 +1,26 @@
 import { NOW } from 'sequelize';
 import {
   AllowNull,
-  AutoIncrement, BelongsTo,
+  AutoIncrement,
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
-  Default, Model,
-  PrimaryKey, Table,
-  UpdatedAt
+  Default,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
 } from 'sequelize-typescript';
-import Post from "@model/post";
-import User from "@model/user";
+import Post from '@model/post';
+import User from '@model/user';
 
 @Table({
   tableName: 'comment',
   underscored: true,
-  timestamps: false
+  timestamps: false,
 })
 export default class Comment extends Model {
-
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER.UNSIGNED)
@@ -50,5 +52,4 @@ export default class Comment extends Model {
   @Column(DataType.DATE)
   @UpdatedAt
   updatedAt!: Date;
-
 }

@@ -15,17 +15,17 @@ app.setSequelize();
 app.setMiddleware();
 
 describe('router test', () => {
-    it('login test', () => {
-        return chai.request(app.application)
-            .post('/auth/login')
-            .set('content-type', 'application/json')
-            .send({
-                email: 'test title',
-                password: 'test desc',
-            })
-            .then((res) => {
-                return expect(res.status).to.eq(422);
-            })
-    })
-
-})
+  it('login test', () => {
+    return chai
+      .request(app.application)
+      .post('/auth/login')
+      .set('content-type', 'application/json')
+      .send({
+        email: 'test title',
+        password: 'test desc',
+      })
+      .then((res) => {
+        return expect(res.status).to.eq(422);
+      });
+  });
+});

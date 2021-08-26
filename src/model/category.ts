@@ -1,60 +1,62 @@
 import { NOW } from 'sequelize';
 import {
-    AllowNull,
-    AutoIncrement, BelongsTo,
-    Column,
-    CreatedAt,
-    DataType,
-    Default, HasMany,
-    Model,
-    PrimaryKey, Table, Unique,
-    UpdatedAt
+  AllowNull,
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import User from '@model/user';
 import Post from '@model/post';
 
 @Table({
-    tableName: 'category',
-    underscored: true,
-    timestamps: false
+  tableName: 'category',
+  underscored: true,
+  timestamps: false,
 })
 export default class Category extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER.UNSIGNED)
+  readonly id!: number;
 
-    @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER.UNSIGNED)
-    readonly id!: number;
+  @Unique
+  @AllowNull(false)
+  @Column(DataType.CHAR)
+  name!: string;
 
-    @Unique
-    @AllowNull(false)
-    @Column(DataType.CHAR)
-    name!: string;
+  @BelongsTo(() => User, 'userId')
+  manager!: User;
 
-    @BelongsTo(() => User, 'userId')
-    manager!: User;
+  @HasMany(() => Post, 'categoryId')
+  posts: Array<Post>;
 
-    @HasMany(() => Post, 'categoryId')
-    posts: Array<Post>;
+  @AllowNull(false)
+  @Column(DataType.INTEGER.UNSIGNED)
+  sequence!: number;
 
-    @AllowNull(false)
-    @Column(DataType.INTEGER.UNSIGNED)
-    sequence!: number;
+  @Default(true)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  isActive: boolean;
 
-    @Default(true)
-    @AllowNull(false)
-    @Column(DataType.BOOLEAN)
-    isActive: boolean;
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @CreatedAt
+  readonly createdAt!: Date;
 
-    @Default(NOW)
-    @AllowNull(false)
-    @Column(DataType.DATE)
-    @CreatedAt
-    readonly createdAt!: Date;
-
-    @Default(NOW)
-    @AllowNull(false)
-    @Column(DataType.DATE)
-    @UpdatedAt
-    updatedAt!: Date;
-
+  @Default(NOW)
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  @UpdatedAt
+  updatedAt!: Date;
 }

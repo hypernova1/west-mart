@@ -11,7 +11,10 @@
     "test": "NODE_ENV=prod yarn mocha test/**/*.ts -r ts-node/register -r source-map-support/register",
     "build": "tsc -p .",
     "clean": "rm -rf dist",
-    "start": "NODE_ENV=prod node --trace-deprecation -r module-alias/register -r source-map-support/register dist/src/index.js"
+    "start": "NODE_ENV=prod node --trace-deprecation -r module-alias/register -r source-map-support/register dist/src/index.js",
+    "prettier": "prettier --write --config ./.prettierrc \"**/*.ts\"",
+    "lint": "eslint './src/**/*.ts'",
+    "lint:fix": "eslint --fix './src/**/*.ts'"
   },
   "_moduleAliases": {
     "@root": "dist/src",
@@ -77,10 +80,16 @@
     "@types/mocha": "^8.2.2",
     "@types/sinon": "^10.0.0",
     "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
     "mocha": "^8.3.2",
     "nodemon": "^2.0.7",
+    "prettier": "2.3.2",
     "sinon": "^10.0.0",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",

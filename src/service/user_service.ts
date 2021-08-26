@@ -9,60 +9,70 @@ import { UserDetail, UserSummary, UserUpdateForm } from '@payload/user';
 
 @Service()
 export default class UserService {
+  constructor(private userRepository: Repository<User>) {
+    this.userRepository = sequelize.getRepository(User);
+  }
 
-    constructor(private userRepository: Repository<User>) {
-        this.userRepository = sequelize.getRepository(User);
+  async getUserById(userId: number): Promise<UserDetail> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId, isActive: true },
+    });
+
+    if (!user) {
+      throw new NotFoundError('존재하지 않는 사용자입니다.');
     }
 
-    async getUserById(userId: number): Promise<UserDetail> {
-        const user = await this.userRepository.findOne({ where: { id: userId, isActive: true } });
+    return {
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+    } as UserDetail;
+  }
 
-        if (!user) {
-            throw new NotFoundError('존재하지 않는 사용자입니다.');
-        }
+  async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId, isActive: true, isApprove: true },
+    });
 
-        return {
-            id: user.id,
-            email: user.email,
-            nickname: user.nickname,
-        } as UserDetail;
+    if (!user) {
+      throw new NotFoundError('존재하지 않는 사용자입니다.');
     }
 
-    async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
-        const user = await this.userRepository.findOne({ where: { id: userId, isActive: true, isApprove: true } });
+    const hashedPassword = await bcrypt.hash(updateForm.password, 12);
 
-        if (!user) {
-            throw new NotFoundError('존재하지 않는 사용자입니다.');
-        }
+    await user.update({
+      nickname: updateForm.nickname,
+      password: hashedPassword,
+    });
+  }
 
-        const hashedPassword = await bcrypt.hash(updateForm.password, 12);
+  async existsByEmail(email: string): Promise<boolean> {
+    const userCount = await this.userRepository.count({
+      where: { email: email },
+    });
+    return !!userCount;
+  }
 
-        await user.update({ nickname: updateForm.nickname, password: hashedPassword });
+  async getUserList(): Promise<Array<UserSummary>> {
+    const userList = await this.userRepository.findAll();
+    return userList.map((user) => {
+      return {
+        id: user.id,
+        email: user.email,
+        nickname: user.nickname,
+      } as UserSummary;
+    });
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: id, isActive: true, isApprove: true },
+    });
+
+    if (!user) {
+      throw new NotFoundError('존재하지 않는 사용자입니다.');
     }
 
-    async existsByEmail(email: string): Promise<boolean> {
-        const userCount = await this.userRepository.count({ where: { email: email } });
-        return !!userCount;
-    }
-
-    async getUserList(): Promise<Array<UserSummary>> {
-        const userList = await this.userRepository.findAll();
-        return userList.map((user) => {
-            return {
-                id: user.id,
-                email: user.email,
-                nickname: user.nickname,
-            } as UserSummary;
-        });
-    }
-
-    async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.findOne({ where: { id: id, isActive: true, isApprove: true } });
-
-        if (!user) {
-            throw new NotFoundError('존재하지 않는 사용자입니다.');
-        }
-
-        await user.update({ isActive: false });
-    }
+    await user.update({ isActive: false });
+  }
 }

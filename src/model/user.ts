@@ -8,7 +8,11 @@ import {
   AllowNull,
   Default,
   CreatedAt,
-  UpdatedAt, HasMany, Table, BelongsToMany, Unique
+  UpdatedAt,
+  HasMany,
+  Table,
+  BelongsToMany,
+  Unique,
 } from 'sequelize-typescript';
 import Post from '@model/post';
 import Comment from '@model/comment';
@@ -18,10 +22,9 @@ import Role from '@constant/role';
 @Table({
   tableName: 'user',
   underscored: true,
-  timestamps: false
+  timestamps: false,
 })
 export default class User extends Model {
-
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER.UNSIGNED)
@@ -74,5 +77,4 @@ export default class User extends Model {
   @Column(DataType.DATE)
   @UpdatedAt
   updatedAt: Date;
-
 }
