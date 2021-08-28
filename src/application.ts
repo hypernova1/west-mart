@@ -11,6 +11,8 @@ import 'reflect-metadata';
 import setRouter from './router';
 import logger from '@config/winston';
 import path = require('path');
+import { NextFunction, Request, Response } from 'express';
+import errorHandler from '@util/error_handler';
 
 export default class Application {
   public application: express.Application;
@@ -28,7 +30,7 @@ export default class Application {
     this.application.set('port', this.prod ? process.env.PORT : 3001);
   }
 
-  setSequelize() {
+  setSequelize(): void {
     sequelize
       .sync()
       .then(() => {
@@ -39,7 +41,7 @@ export default class Application {
       });
   }
 
-  setMiddleware() {
+  setMiddleware(): void {
     if (this.prod) {
       this.application.use(hpp());
       this.application.use(helmet());
@@ -54,11 +56,15 @@ export default class Application {
     this.application.use(cookieParser(process.env.COOKIE_SECRET));
   }
 
-  setRouter() {
+  setRouter(): void {
     setRouter(this.application);
+    this.application.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      console.log(err);
+      return errorHandler(res, err);
+    })
   }
 
-  start() {
+  start(): void {
     this.application.listen(this.application.get('port'), () => {
       logger.info(`server start. port: ${this.application.get('port')}`);
     });

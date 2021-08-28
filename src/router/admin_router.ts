@@ -4,10 +4,8 @@ import { checkRole } from '@middleware/check-role';
 import AdminService from '@service/admin_service';
 import PostService from '@service/post_service';
 import CommentService from '@service/comment_service';
-import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { Container } from 'typedi';
-import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = Router();
@@ -27,8 +25,7 @@ router.patch(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -45,8 +42,7 @@ router.patch(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -64,8 +60,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -82,8 +77,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err)
     }
   }
 );
