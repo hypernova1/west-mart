@@ -29,6 +29,13 @@ const sequelize = new Sequelize({
   sync: {
     force: false,
   },
+  define: {
+    timestamps: true,
+    underscored: true,
+    paranoid: true,
+    collate: 'utf8_general_ci',
+    charset: 'utf8',
+  },
   port: 3306,
   ssl: true,
 });

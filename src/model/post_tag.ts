@@ -1,19 +1,16 @@
 import {
   Column,
   ForeignKey,
-  Model,
-  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import Post from '@model/post';
 import Tag from '@model/tag';
+import BaseModel from '@model/base_model';
 
 @Table({
   tableName: 'post_tag',
-  underscored: true,
-  timestamps: false,
 })
-export default class PostTag extends Model {
+export default class PostTag extends BaseModel {
   @ForeignKey(() => Post)
   @Column
   postId: number;

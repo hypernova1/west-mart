@@ -15,7 +15,7 @@ export default class UserService {
 
   async getUserById(userId: number): Promise<UserDetail> {
     const user = await this.userRepository.findOne({
-      where: { id: userId, isActive: true },
+      where: { id: userId },
     });
 
     if (!user) {
@@ -31,7 +31,7 @@ export default class UserService {
 
   async updateUser(userId: number, updateForm: UserUpdateForm): Promise<void> {
     const user = await this.userRepository.findOne({
-      where: { id: userId, isActive: true, isApprove: true },
+      where: { id: userId, isApprove: true },
     });
 
     if (!user) {
@@ -66,13 +66,13 @@ export default class UserService {
 
   async deleteUser(id: number): Promise<void> {
     const user = await this.userRepository.findOne({
-      where: { id: id, isActive: true, isApprove: true },
+      where: { id: id, isApprove: true },
     });
 
     if (!user) {
       throw new NotFoundError('존재하지 않는 사용자입니다.');
     }
 
-    await user.update({ isActive: false });
+    await user.destroy();
   }
 }

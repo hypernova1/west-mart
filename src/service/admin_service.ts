@@ -15,17 +15,13 @@ export default class AdminService {
 
   async approveUser(userId: number): Promise<void> {
     const user = await this.userRepository.findOne({
-      where: { id: userId, isActive: true },
+      where: { id: userId },
     });
     if (user.isApprove) {
       throw new BadRequestError('이미 승인된 사용자입니다.');
     }
 
-    const categoryCount = await this.categoryRepository.count({
-      where: {
-        isActive: true,
-      }
-    });
+    const categoryCount = await this.categoryRepository.count();
 
     console.log(user.id);
 
@@ -40,20 +36,18 @@ export default class AdminService {
 
   async banUser(userId: number): Promise<void> {
     const user = await this.userRepository.findOne({
-      where: { id: userId, isActive: true },
+      where: { id: userId },
     });
     if (!user.isApprove) {
       throw new BadRequestError('승인 처리 되지 않은 사용자입니다.');
     }
 
-    await this.categoryRepository.update({
-      isActive: false,
-    }, {
+    await this.categoryRepository.destroy({
       where: {
         userId: user.id,
       }
     })
 
-    await user.update({ isApprove: false });
+    await user.destroy();
   }
 }

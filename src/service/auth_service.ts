@@ -19,7 +19,7 @@ export default class AuthService {
 
   async login(email: string, password: string): Promise<LoginResponse> {
     const user: User = await this.userRepository.findOne({
-      where: { email: email, isActive: true },
+      where: { email: email },
     });
 
     if (!user) {
