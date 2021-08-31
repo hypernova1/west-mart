@@ -213,7 +213,7 @@ export default class PostService {
     });
   }
 
-  async increasePostHits(id: number): void {
+  async increasePostHits(id: number): Promise<void> {
     const post = await this.postRepository.findOne({ where: { id: id } });
     await post.increment({ hits: 1 });
   }
