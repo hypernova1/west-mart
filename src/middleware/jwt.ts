@@ -3,8 +3,6 @@ import sequelize from '@model/index';
 import { NextFunction, Request, Response } from 'express';
 import User from '@model/user';
 import errorHandler from '@util/error_handler';
-import HttpStatus from '@constant/http_status';
-import RequestError from '@error/request_error';
 import UnauthorizedError from '@error/unauthorized_error';
 
 const userRepository = sequelize.getRepository(User);

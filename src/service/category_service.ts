@@ -15,7 +15,6 @@ export default class CategoryService {
   constructor(
     private categoryRepository: Repository<Category>,
     private readonly userRepository: Repository<User>,
-    private postRepository: Repository<Post>
   ) {
     this.categoryRepository = sequelize.getRepository(Category);
     this.userRepository = sequelize.getRepository(User);
@@ -63,7 +62,7 @@ export default class CategoryService {
     return category.id;
   }
 
-  async updateCategory(id: number, categoryForm: CategoryForm) {
+  async updateCategory(id: number, categoryForm: CategoryForm): Promise<void> {
     const category = await this.categoryRepository.findOne({
       where: { id: id, isActive: true },
     });
@@ -86,7 +85,7 @@ export default class CategoryService {
     });
   }
 
-  async deleteCategory(id: number) {
+  async deleteCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOne({
       where: { id: id, isActive: true },
       include: [{ model: this.userRepository, as: 'manager' }],
@@ -99,7 +98,7 @@ export default class CategoryService {
     await category.update({ isActive: false });
   }
 
-  async getPosts(categoryName: string, request: PostListRequest) {
+  async getPosts(categoryName: string, request: PostListRequest): Promise<PostListDto> {
     const category = await this.categoryRepository.findOne({
       where: {
         name: categoryName,

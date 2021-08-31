@@ -2,7 +2,6 @@ import {
   Column,
   ForeignKey,
   Model,
-  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import Post from '@model/post';

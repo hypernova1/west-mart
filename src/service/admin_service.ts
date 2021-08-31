@@ -21,7 +21,7 @@ export default class AdminService {
     await user.update({ isApprove: true });
   }
 
-  async banUser(userId: number) {
+  async banUser(userId: number): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id: userId, isActive: true },
     });

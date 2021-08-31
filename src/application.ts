@@ -28,7 +28,7 @@ export default class Application {
     this.application.set('port', this.prod ? process.env.PORT : 3001);
   }
 
-  setSequelize() {
+  setSequelize(): void {
     sequelize
       .sync()
       .then(() => {
@@ -39,7 +39,7 @@ export default class Application {
       });
   }
 
-  setMiddleware() {
+  setMiddleware(): void {
     if (this.prod) {
       this.application.use(hpp());
       this.application.use(helmet());
@@ -54,11 +54,11 @@ export default class Application {
     this.application.use(cookieParser(process.env.COOKIE_SECRET));
   }
 
-  setRouter() {
+  setRouter(): void {
     setRouter(this.application);
   }
 
-  start() {
+  start(): void {
     this.application.listen(this.application.get('port'), () => {
       logger.info(`server start. port: ${this.application.get('port')}`);
     });

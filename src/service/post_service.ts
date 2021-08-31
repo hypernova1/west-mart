@@ -19,7 +19,6 @@ import {
 import Category from '@model/category';
 import Tag from '@model/tag';
 import logger from '@config/winston';
-import BadRequestError from '@error/bad_request_error';
 
 const tagRepository = sequelize.getRepository(Tag);
 const userRepository = sequelize.getRepository(User);
@@ -181,7 +180,7 @@ export default class PostService {
     } as PostDetail;
   }
 
-  toggleFavorite(id: number, user: User) {
+  toggleFavorite(id: number, user: User): void {
     sequelize.transaction().then(async (t) => {
       try {
         const post = await this.postRepository.findOne({
@@ -212,7 +211,7 @@ export default class PostService {
     });
   }
 
-  async increasePostHits(id: number) {
+  async increasePostHits(id: number): void {
     const post = await this.postRepository.findOne({ where: { id: id } });
     await post.increment({ hits: 1 });
   }

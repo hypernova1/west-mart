@@ -8,7 +8,7 @@ import User from '@model/user';
 import BadRequestError from '@error/bad_request_error';
 import ConflictError from '@error/confict_error';
 import Role from '@constant/role';
-import { UserJoinForm, UserSummary } from '@payload/user';
+import { UserJoinForm } from '@payload/user';
 import { LoginResponse } from '@payload/auth';
 
 @Service()

@@ -10,7 +10,7 @@ export default class TagService {
     this.tagRepository = sequelize.getRepository(Tag);
   }
 
-  async getOrCreate(name: string) {
+  async getOrCreate(name: string): Promise<number> {
     let tag = await this.tagRepository.findOne({ where: { name: name } });
 
     if (!tag) {

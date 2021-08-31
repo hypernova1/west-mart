@@ -12,7 +12,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
   res.send('hello west mart!');
 });
 
-const setRouter = (express: Application) => {
+const setRouter = (express: Application): void => {
   express.use('/admin', adminRouter);
   express.use('/auth', authRouter);
   express.use('/category', categoryRouter);
