@@ -2,7 +2,6 @@ import * as jwt from 'jsonwebtoken';
 import sequelize from '@model/index';
 import { NextFunction, Request, Response } from 'express';
 import User from '@model/user';
-import errorHandler from '@util/error_handler';
 import UnauthorizedError from '@error/unauthorized_error';
 
 const userRepository = sequelize.getRepository(User);
@@ -11,11 +10,13 @@ export const checkJwt = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const token = <string>req.headers['authorization'];
 
   if (!token || token.split(' ').length !== 2) {
-    next(new UnauthorizedError('토큰이 존재하지 않거나 올바른 형식이 아닙니다.'));
+    next(
+      new UnauthorizedError('토큰이 존재하지 않거나 올바른 형식이 아닙니다.')
+    );
   }
 
   let jwtPayload;

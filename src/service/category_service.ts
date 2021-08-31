@@ -14,7 +14,7 @@ import { Op } from 'sequelize';
 export default class CategoryService {
   constructor(
     private categoryRepository: Repository<Category>,
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>
   ) {
     this.categoryRepository = sequelize.getRepository(Category);
     this.userRepository = sequelize.getRepository(User);
@@ -98,7 +98,10 @@ export default class CategoryService {
     await category.destroy();
   }
 
-  async getPosts(categoryName: string, request: PostListRequest): Promise<PostListDto> {
+  async getPosts(
+    categoryName: string,
+    request: PostListRequest
+  ): Promise<PostListDto> {
     const category = await this.categoryRepository.findOne({
       where: {
         name: categoryName,

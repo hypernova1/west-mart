@@ -18,7 +18,7 @@ export default class AuthService {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const user: User = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email: email },
     });
 
@@ -30,6 +30,10 @@ export default class AuthService {
 
     if (!isEqual) {
       throw new BadRequestError('잘못된 정보입니다.');
+    }
+
+    if (!user.isApprove) {
+      throw new BadRequestError('승인되지 않은 사용자입니다.');
     }
 
     const userInfo = {

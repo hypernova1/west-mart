@@ -140,10 +140,12 @@ export default class PostService {
   async deletePost(id: number, user: User): Promise<void> {
     const post = await this.postRepository.findOne({
       where: { id: id },
-      include: [{
-        model: userRepository,
-        as: 'writer',
-      }],
+      include: [
+        {
+          model: userRepository,
+          as: 'writer',
+        },
+      ],
     });
 
     if (!post) {

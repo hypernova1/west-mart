@@ -13,7 +13,6 @@ import BaseModel from '@model/base_model';
 
 @Table({
   tableName: 'comment',
-
 })
 export default class Comment extends BaseModel {
   @PrimaryKey
@@ -30,5 +29,4 @@ export default class Comment extends BaseModel {
 
   @BelongsTo(() => Post, 'postId')
   post: Post;
-
 }

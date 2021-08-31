@@ -58,10 +58,12 @@ export default class Application {
 
   setRouter(): void {
     setRouter(this.application);
-    this.application.use((err: any, req: Request, res: Response, next: NextFunction) => {
-      console.log(err);
-      return errorHandler(res, err);
-    })
+    this.application.use(
+      (err: any, req: Request, res: Response, next: NextFunction) => {
+        console.log(err);
+        return errorHandler(res, err);
+      }
+    );
   }
 
   start(): void {

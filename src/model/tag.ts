@@ -28,5 +28,4 @@ export default class Tag extends BaseModel {
 
   @BelongsToMany(() => Post, () => PostTag)
   posts: Array<Post>;
-
 }

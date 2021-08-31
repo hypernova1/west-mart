@@ -13,8 +13,12 @@ const router = express.Router();
 const userService = Container.get(UserService);
 
 router.get('/', checkJwt, checkRole([Role.ADMIN]), async (req, res, next) => {
-  const userList = await userService.getUserList();
-  return res.status(200).json(userList);
+  try {
+    const userList = await userService.getUserList();
+    return res.status(200).json(userList);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get(
@@ -51,12 +55,16 @@ router.put(
 );
 
 router.get('/email/:email', async (req, res, next) => {
-  const email: string = req.params.email as string;
-  const isExistUser = await userService.existsByEmail(email);
-  if (!isExistUser) {
-    return res.status(HttpStatus.NOT_FOUND).send();
+  try {
+    const email = req.params.email;
+    const isExistUser = await userService.existsByEmail(email);
+    if (!isExistUser) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+    return res.status(HttpStatus.NO_CONTENT).send();
+  } catch (err) {
+    next(err);
   }
-  return res.status(HttpStatus.NO_CONTENT).send();
 });
 
 router.delete(

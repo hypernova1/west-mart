@@ -55,5 +55,4 @@ export default class User extends BaseModel {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   isApprove: boolean;
-
 }

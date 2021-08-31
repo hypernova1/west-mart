@@ -7,12 +7,11 @@ import {
   Default,
   DeletedAt,
   Model,
-  UpdatedAt
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { NOW } from 'sequelize';
 
 export default class BaseModel extends Model {
-
   @Default(NOW)
   @AllowNull(false)
   @UpdatedAt
@@ -31,5 +30,4 @@ export default class BaseModel extends Model {
   @Comment('삭제 일시')
   @Column(DataType.DATE)
   deletedAt!: Date;
-
 }

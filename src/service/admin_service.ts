@@ -7,8 +7,10 @@ import Category from '@model/category';
 
 @Service()
 export default class AdminService {
-  constructor(private userRepository: Repository<User>,
-              private categoryRepository: Repository<Category>) {
+  constructor(
+    private userRepository: Repository<User>,
+    private categoryRepository: Repository<Category>
+  ) {
     this.userRepository = sequelize.getRepository(User);
     this.categoryRepository = sequelize.getRepository(Category);
   }
@@ -45,8 +47,8 @@ export default class AdminService {
     await this.categoryRepository.destroy({
       where: {
         userId: user.id,
-      }
-    })
+      },
+    });
 
     await user.destroy();
   }

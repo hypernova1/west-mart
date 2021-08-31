@@ -36,5 +36,4 @@ export default class Category extends BaseModel {
   @AllowNull(false)
   @Column(DataType.INTEGER.UNSIGNED)
   sequence!: number;
-
 }

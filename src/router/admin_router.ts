@@ -77,7 +77,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 );
