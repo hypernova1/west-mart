@@ -15,10 +15,7 @@ export const checkJwt = async (
   const token = <string>req.headers['authorization'];
 
   if (!token || token.split(' ').length !== 2) {
-    return errorHandler(
-      res,
-      new UnauthorizedError('토큰이 존재하지 않거나 올바른 형식이 아닙니다.')
-    );
+    next(new UnauthorizedError('토큰이 존재하지 않거나 올바른 형식이 아닙니다.'));
   }
 
   let jwtPayload;
@@ -26,11 +23,7 @@ export const checkJwt = async (
     jwtPayload = <any>jwt.verify(token.split(' ')[1], 'secret');
     res.locals.jwtPayload = jwtPayload;
   } catch (err) {
-    console.log(err);
-    return errorHandler(
-      res,
-      new UnauthorizedError('토큰 검증이 실패했습니다.')
-    );
+    next(new UnauthorizedError('토큰 검증이 실패했습니다.'));
   }
 
   const { id, email, nickname, role } = jwtPayload;

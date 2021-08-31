@@ -1,15 +1,11 @@
-import { NOW } from 'sequelize';
 import {
   AutoIncrement,
   Column,
-  Model,
   PrimaryKey,
   Table,
   DataType,
   AllowNull,
   Default,
-  UpdatedAt,
-  CreatedAt,
   HasMany,
   BelongsTo,
   BelongsToMany,
@@ -20,13 +16,12 @@ import FavoritePost from '@model/favorite_post';
 import Category from '@model/category';
 import Tag from '@model/tag';
 import PostTag from '@model/post_tag';
+import BaseModel from '@model/base_model';
 
 @Table({
   tableName: 'post',
-  underscored: true,
-  timestamps: false,
 })
-export default class Post extends Model {
+export default class Post extends BaseModel {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER.UNSIGNED)
@@ -65,20 +60,4 @@ export default class Post extends Model {
   @BelongsToMany(() => Tag, () => PostTag)
   tags: Array<Tag>;
 
-  @Default(true)
-  @AllowNull(false)
-  @Column(DataType.BOOLEAN)
-  isActive: boolean;
-
-  @Default(NOW)
-  @AllowNull(false)
-  @Column(DataType.DATE)
-  @UpdatedAt
-  updatedAt!: Date;
-
-  @Default(NOW)
-  @AllowNull(false)
-  @Column(DataType.DATE)
-  @CreatedAt
-  readonly createdAt!: Date;
 }

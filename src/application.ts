@@ -11,6 +11,8 @@ import 'reflect-metadata';
 import setRouter from './router';
 import logger from '@config/winston';
 import path = require('path');
+import { NextFunction, Request, Response } from 'express';
+import errorHandler from '@util/error_handler';
 
 export default class Application {
   public application: express.Application;
@@ -56,6 +58,10 @@ export default class Application {
 
   setRouter(): void {
     setRouter(this.application);
+    this.application.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      console.log(err);
+      return errorHandler(res, err);
+    })
   }
 
   start(): void {

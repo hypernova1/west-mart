@@ -26,7 +26,7 @@ export default class CommentService {
 
   async registerComment(commentForm: CommentForm, user: User): Promise<number> {
     const post = await this.postRepository.findOne({
-      where: { id: commentForm.postId, isActive: true },
+      where: { id: commentForm.postId },
       include: [
         { model: tagRepository, as: 'tags' },
         { model: userRepository, as: 'writer' },
@@ -48,7 +48,7 @@ export default class CommentService {
 
   async deleteComment(id: number, userId: number): Promise<void> {
     const comment = await this.commentRepository.findOne({
-      where: { id: id, userId: userId, isActive: true },
+      where: { id: id, userId: userId },
       include: [{ model: userRepository, as: 'writer' }],
     });
 
@@ -60,7 +60,7 @@ export default class CommentService {
       throw new ForbiddenError('삭제 권한이 없습니다.');
     }
 
-    await comment.update({ isActive: false });
+    await comment.destroy();
   }
 
   async updateComment(
@@ -69,7 +69,7 @@ export default class CommentService {
     userId: number
   ): Promise<void> {
     const comment = await this.commentRepository.findOne({
-      where: { id: id, userId: userId, isActive: true },
+      where: { id: id, userId: userId },
     });
 
     if (!comment) {
@@ -91,9 +91,6 @@ export default class CommentService {
     }
 
     const commentList = await post.$get('comments', {
-      where: {
-        isActive: true,
-      },
       include: [{ model: userRepository, as: 'writer' }],
     });
 

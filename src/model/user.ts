@@ -1,14 +1,10 @@
-import { NOW } from 'sequelize';
 import {
-  Model,
   DataType,
   AutoIncrement,
   PrimaryKey,
   Column,
   AllowNull,
   Default,
-  CreatedAt,
-  UpdatedAt,
   HasMany,
   Table,
   BelongsToMany,
@@ -18,13 +14,12 @@ import Post from '@model/post';
 import Comment from '@model/comment';
 import FavoritePost from '@model/favorite_post';
 import Role from '@constant/role';
+import BaseModel from '@model/base_model';
 
 @Table({
   tableName: 'user',
-  underscored: true,
-  timestamps: false,
 })
-export default class User extends Model {
+export default class User extends BaseModel {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER.UNSIGNED)
@@ -56,25 +51,9 @@ export default class User extends Model {
   @Column(DataType.CHAR)
   role: Role;
 
-  @Default(true)
-  @AllowNull(false)
-  @Column(DataType.BOOLEAN)
-  isActive: boolean;
-
   @Default(false)
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   isApprove: boolean;
 
-  @Default(NOW)
-  @AllowNull(false)
-  @Column(DataType.DATE)
-  @CreatedAt
-  readonly createdAt!: Date;
-
-  @Default(NOW)
-  @AllowNull(false)
-  @Column(DataType.DATE)
-  @UpdatedAt
-  updatedAt: Date;
 }

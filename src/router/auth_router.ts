@@ -4,9 +4,7 @@ import AuthService from '@service/auth_service';
 import { UserJoinForm, UserSummary } from '@payload/user';
 import validate from '@validate/index';
 import authValidator from '@validate/auth';
-import errorHandler from '@util/error_handler';
 import { Container } from 'typedi';
-import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 import { checkRole } from '@middleware/check-role';
 import Role from '@constant/role';
@@ -25,8 +23,7 @@ router.post(
 
       return res.status(HttpStatus.OK).send(response);
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -43,8 +40,7 @@ router.post(
       res.setHeader('Location', `${req.get('host')}/user/${userId}`);
       res.status(HttpStatus.CREATED).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -54,16 +50,20 @@ router.post(
   checkJwt,
   checkRole([Role.ADMIN, Role.USER]),
   async (req, res, next) => {
-    const user = req.user;
+    try {
+      const user = req.user;
 
-    const userInfo = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      nickname: user.nickname,
-    } as UserSummary;
+      const userInfo = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        nickname: user.nickname,
+      } as UserSummary;
 
-    return res.status(HttpStatus.OK).send(userInfo);
+      return res.status(HttpStatus.OK).send(userInfo);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 

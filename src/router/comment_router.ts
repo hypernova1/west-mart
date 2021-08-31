@@ -3,12 +3,10 @@ import { checkJwt } from '@middleware/jwt';
 import { checkRole } from '@middleware/check-role';
 import validate from '@validate/index';
 import commentValidator from '@validate/comment';
-import errorHandler from '@util/error_handler';
 import User from '@model/user';
 import CommentService from '@service/comment_service';
 import { Container } from 'typedi';
 import Role from '@constant/role';
-import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = Router();
@@ -27,8 +25,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -48,8 +45,7 @@ router.put(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );

@@ -6,12 +6,10 @@ import validate from '@validate/index';
 import postValidator from '@validate/post';
 import PostService from '@service/post_service';
 import CommentService from '@service/comment_service';
-import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { PostListRequest, PostForm } from '@payload/post';
 import commentValidator from '@validate/comment';
 import { CommentForm } from '@payload/comment';
-import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = Router();
@@ -32,7 +30,7 @@ router.get(
       const result = await postService.getPostList(request);
       res.status(HttpStatus.OK).json(result);
     } catch (err) {
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -58,8 +56,7 @@ router.get(
       const postDetail = await postService.getPostDetail(postId);
       return res.status(HttpStatus.OK).json(postDetail);
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -82,8 +79,7 @@ router.post(
       res.setHeader('Location', `${req.get('host')}/post/${id}`);
       return res.status(HttpStatus.CREATED).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -103,8 +99,7 @@ router.put(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -122,8 +117,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -141,8 +135,7 @@ router.patch(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err)
     }
   }
 );
@@ -153,8 +146,7 @@ router.get('/:id/comment', async (req, res, next) => {
     const commentList = await commentService.getCommentList(postId);
     return res.status(HttpStatus.OK).json(commentList);
   } catch (err) {
-    logger.error(err);
-    return errorHandler(res, err);
+    next(err);
   }
 });
 
@@ -175,8 +167,7 @@ router.post(
       res.setHeader('Location', `${req.get('host')}/comment/${id}`);
       return res.status(HttpStatus.CREATED).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );

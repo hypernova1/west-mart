@@ -37,7 +37,7 @@ export default class CategoryService {
 
   async createCategory(categoryForm: CategoryForm): Promise<number> {
     const user = await this.userRepository.findOne({
-      where: { id: categoryForm.managerId, isActive: true, isApprove: true },
+      where: { id: categoryForm.managerId, isApprove: true },
     });
 
     if (!user) {
@@ -64,7 +64,7 @@ export default class CategoryService {
 
   async updateCategory(id: number, categoryForm: CategoryForm): Promise<void> {
     const category = await this.categoryRepository.findOne({
-      where: { id: id, isActive: true },
+      where: { id: id },
     });
 
     if (!category) {
@@ -72,7 +72,7 @@ export default class CategoryService {
     }
 
     const user = this.userRepository.findOne({
-      where: { id: id, isActive: true },
+      where: { id: id },
     });
 
     if (!user) {
@@ -87,7 +87,7 @@ export default class CategoryService {
 
   async deleteCategory(id: number): Promise<void> {
     const category = await this.categoryRepository.findOne({
-      where: { id: id, isActive: true },
+      where: { id: id },
       include: [{ model: this.userRepository, as: 'manager' }],
     });
 
@@ -95,7 +95,7 @@ export default class CategoryService {
       throw new BadRequestError('존재하지 않는 카테고리입니다.');
     }
 
-    await category.update({ isActive: false });
+    await category.destroy();
   }
 
   async getPosts(categoryName: string, request: PostListRequest): Promise<PostListDto> {
@@ -115,7 +115,6 @@ export default class CategoryService {
           { title: { [Op.like]: '%' + request.keyword + '%' } },
           { content: { [Op.like]: '%' + request.keyword + '%' } },
         ],
-        isActive: true,
       },
       offset: request.pageNo - 1,
       limit: request.pageNo * request.size,
@@ -143,7 +142,6 @@ export default class CategoryService {
           { title: { [Op.like]: '%' + request.keyword + '%' } },
           { content: { [Op.like]: '%' + request.keyword + '%' } },
         ],
-        isActive: true,
       },
     });
 

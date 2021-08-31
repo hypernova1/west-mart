@@ -42,7 +42,6 @@ export default class PostService {
             { title: { [Op.like]: '%' + request.keyword + '%' } },
             { content: { [Op.like]: '%' + request.keyword + '%' } },
           ],
-          isActive: true,
         },
         offset: request.pageNo - 1,
         limit: request.pageNo * request.size,
@@ -70,7 +69,6 @@ export default class PostService {
             { title: { [Op.like]: '%' + request.keyword + '%' } },
             { content: { [Op.like]: '%' + request.keyword + '%' } },
           ],
-          isActive: true,
         },
       });
 
@@ -89,7 +87,7 @@ export default class PostService {
 
   async createPost(postForm: PostForm, user: User): Promise<number> {
     const category = await this.categoryRepository.findOne({
-      where: { id: postForm.categoryId, isActive: true },
+      where: { id: postForm.categoryId },
       include: [userRepository],
     });
 
@@ -120,7 +118,7 @@ export default class PostService {
     userId: number
   ): Promise<void> {
     const post = await this.postRepository.findOne({
-      where: { id: postId, isActive: true },
+      where: { id: postId },
       include: [{ model: userRepository, as: 'writer' }],
     });
 
@@ -141,23 +139,27 @@ export default class PostService {
 
   async deletePost(id: number, user: User): Promise<void> {
     const post = await this.postRepository.findOne({
-      where: { id: id, isActive: true },
+      where: { id: id },
+      include: [{
+        model: userRepository,
+        as: 'writer',
+      }],
     });
 
     if (!post) {
       throw new NotFoundError('글이 존재하지 않습니다.');
     }
 
-    if (post.writer !== user && user.role !== Role.ADMIN) {
+    if (post.writer.id !== user.id && user.role !== Role.ADMIN) {
       throw new ForbiddenError('삭제 권한이 없습니다.');
     }
 
-    await post.update({ isActive: false });
+    await post.destroy();
   }
 
   async getPostDetail(postId: number): Promise<PostDetail> {
     const post = await this.postRepository.findOne({
-      where: { id: postId, isActive: true },
+      where: { id: postId },
       include: [
         { model: userRepository, as: 'writer' },
         { model: tagRepository, as: 'tags' },
@@ -184,7 +186,7 @@ export default class PostService {
     sequelize.transaction().then(async (t) => {
       try {
         const post = await this.postRepository.findOne({
-          where: { id: id, isActive: true },
+          where: { id: id },
           transaction: t,
         });
 

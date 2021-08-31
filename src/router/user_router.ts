@@ -4,11 +4,9 @@ import { checkRole } from '@middleware/check-role';
 import validate from '@validate/index';
 import userValidator from '@validate/user';
 import UserService from '@service/user_service';
-import errorHandler from '@util/error_handler';
 import Role from '@constant/role';
 import { UserJoinForm } from '@payload/user';
 import { Container } from 'typedi';
-import logger from '@config/winston';
 import HttpStatus from '@constant/http_status';
 
 const router = express.Router();
@@ -28,8 +26,7 @@ router.get(
       const user = await userService.getUserById(Number(req.params.id));
       return res.status(HttpStatus.OK).json(user);
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -48,8 +45,7 @@ router.put(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -80,8 +76,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );

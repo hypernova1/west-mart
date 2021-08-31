@@ -4,12 +4,10 @@ import { checkRole } from '@middleware/check-role';
 import { validate } from '@validate/index';
 import categoryValidator from '@validate/category';
 import CategoryService from '@service/category_service';
-import errorHandler from '@util/error_handler';
 import { CategoryForm } from '@payload/category';
 import Role from '@constant/role';
 import HttpStatus from '@constant/http_status';
 import { Container } from 'typedi';
-import logger from '@config/winston';
 import { PostListRequest } from '@payload/post';
 
 const router = Router();
@@ -21,8 +19,7 @@ router.get('/', async (req, res, next) => {
 
     return res.status(HttpStatus.OK).json(categories);
   } catch (err) {
-    logger.error(err);
-    return errorHandler(res, err);
+    next(err);
   }
 });
 
@@ -42,8 +39,7 @@ router.get(
 
       return res.status(HttpStatus.OK).json(posts);
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -62,8 +58,7 @@ router.post(
       res.setHeader('Location', `${req.get('host')}/category/${id}`);
       return res.status(HttpStatus.CREATED).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -82,8 +77,7 @@ router.put(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      return errorHandler(res, err);
+      next(err);
     }
   }
 );
@@ -100,8 +94,7 @@ router.delete(
 
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (err) {
-      logger.error(err);
-      errorHandler(res, err);
+      next(err);
     }
   }
 );
