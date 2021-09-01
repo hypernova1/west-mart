@@ -25,8 +25,6 @@ export default class AdminService {
 
     const categoryCount = await this.categoryRepository.count();
 
-    console.log(user.id);
-
     await this.categoryRepository.create({
       name: user.nickname,
       sequence: categoryCount + 1,
@@ -43,12 +41,6 @@ export default class AdminService {
     if (!user.isApprove) {
       throw new BadRequestError('승인 처리 되지 않은 사용자입니다.');
     }
-
-    await this.categoryRepository.destroy({
-      where: {
-        userId: user.id,
-      },
-    });
 
     await user.destroy();
   }

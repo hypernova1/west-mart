@@ -18,7 +18,6 @@ import {
 } from '@payload/post';
 import Category from '@model/category';
 import Tag from '@model/tag';
-import logger from '@config/winston';
 
 const tagRepository = sequelize.getRepository(Tag);
 const userRepository = sequelize.getRepository(User);
@@ -35,54 +34,49 @@ export default class PostService {
   }
 
   async getPostList(request: PostListRequest): Promise<PostListDto> {
-    try {
-      const postList = await this.postRepository.findAll({
-        where: {
-          [Op.or]: [
-            { title: { [Op.like]: '%' + request.keyword + '%' } },
-            { content: { [Op.like]: '%' + request.keyword + '%' } },
-          ],
-        },
-        offset: request.pageNo - 1,
-        limit: request.pageNo * request.size,
-        order: [['createdAt', 'ASC']],
-        include: [
-          {
-            model: userRepository,
-            as: 'writer',
-          },
+    const postList = await this.postRepository.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: '%' + request.keyword + '%' } },
+          { content: { [Op.like]: '%' + request.keyword + '%' } },
         ],
-      });
-
-      const postDtoList = postList.map((post: Post) => {
-        return {
-          id: post.id,
-          title: post.title,
-          writer: post.writer.nickname,
-          regDate: post.createdAt,
-        } as PostSummary;
-      });
-
-      const totalCount = await this.postRepository.count({
-        where: {
-          [Op.or]: [
-            { title: { [Op.like]: '%' + request.keyword + '%' } },
-            { content: { [Op.like]: '%' + request.keyword + '%' } },
-          ],
+      },
+      offset: request.pageNo - 1,
+      limit: request.pageNo * request.size,
+      order: [['createdAt', 'ASC']],
+      include: [
+        {
+          model: userRepository,
+          as: 'writer',
         },
-      });
+      ],
+    });
 
-      const totalPage = totalCount / request.size;
-      const isExistNextPage = totalPage > request.pageNo;
-
+    const postDtoList = postList.map((post: Post) => {
       return {
-        postList: postDtoList,
-        isExistNextPage: isExistNextPage,
-      } as PostListDto;
-    } catch (err) {
-      console.log(err);
-      logger.error(err);
-    }
+        id: post.id,
+        title: post.title,
+        writer: post.writer.nickname,
+        regDate: post.createdAt,
+      } as PostSummary;
+    });
+
+    const totalCount = await this.postRepository.count({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: '%' + request.keyword + '%' } },
+          { content: { [Op.like]: '%' + request.keyword + '%' } },
+        ],
+      },
+    });
+
+    const totalPage = totalCount / request.size;
+    const isExistNextPage = totalPage > request.pageNo;
+
+    return {
+      postList: postDtoList,
+      isExistNextPage: isExistNextPage,
+    } as PostListDto;
   }
 
   async createPost(postForm: PostForm, user: User): Promise<number> {
@@ -172,7 +166,7 @@ export default class PostService {
       throw new NotFoundError('글이 존재하지 않습니다.');
     }
 
-    const tagNames = await post.tags.map((tag) => tag.name);
+    const tagNames = post.tags.map((tag) => tag.name);
 
     return {
       id: post.id,
@@ -209,7 +203,7 @@ export default class PostService {
         }
         await t.commit();
       } catch (err) {
-        logger.error(err);
+        console.log(err);
         await t.rollback();
       }
     });

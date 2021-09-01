@@ -37,7 +37,7 @@ export default class Application {
         logger.info('database connection,');
       })
       .catch((err: Error) => {
-        logger.error(err.stack);
+        console.log(err);
       });
   }
 
