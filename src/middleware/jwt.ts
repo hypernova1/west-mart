@@ -3,6 +3,7 @@ import sequelize from '@model/index';
 import { NextFunction, Request, Response } from 'express';
 import User from '@model/user';
 import UnauthorizedError from '@error/unauthorized_error';
+import { Jwt } from '@payload/auth';
 
 const userRepository = sequelize.getRepository(User);
 
@@ -21,7 +22,7 @@ export const checkJwt = async (
 
   let jwtPayload;
   try {
-    jwtPayload = <any>jwt.verify(token.split(' ')[1], 'secret');
+    jwtPayload = <Jwt>jwt.verify(token.split(' ')[1], 'secret');
     res.locals.jwtPayload = jwtPayload;
   } catch (err) {
     next(new UnauthorizedError('토큰 검증이 실패했습니다.'));
